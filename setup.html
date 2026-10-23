@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assistente de Configuração — NEXVON</title>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Sora',sans-serif;background:#05060f;color:#e8f0ff;line-height:1.6;min-height:100vh}
+.bg-grid{position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.04) 1px,transparent 1px);background-size:48px 48px;pointer-events:none}
+.wrap{max-width:760px;margin:0 auto;padding:40px 20px;position:relative;z-index:2}
+h1{font-family:'Chakra Petch',monospace;font-size:1.8rem;background:linear-gradient(90deg,#00e5ff,#a855f7,#ff2d95);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.sub{color:#8a97b8;font-size:.9rem;margin-bottom:24px}
+.card{background:rgba(16,22,44,.8);border:1px solid rgba(0,229,255,.25);border-radius:14px;padding:24px;margin-bottom:18px;backdrop-filter:blur(10px)}
+.card h2{font-family:'Chakra Petch',monospace;font-size:1.1rem;color:#00e5ff;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.step{display:flex;gap:12px;margin:14px 0;align-items:flex-start}
+.step-num{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#00e5ff,#a855f7);color:#04121a;font-family:'Chakra Petch',monospace;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:.85rem}
+.step p{font-size:.88rem;color:#c8d2e8;flex:1}
+.step b{color:#00e5ff}
+.btn{display:inline-block;padding:11px 22px;border-radius:9px;border:none;cursor:pointer;font-family:'Chakra Petch',monospace;font-weight:600;font-size:.82rem;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;transition:.25s;margin:6px 6px 6px 0}
+.btn-primary{background:linear-gradient(135deg,#00e5ff,#4dd0ff);color:#04121a;box-shadow:0 0 20px rgba(0,229,255,.4)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 30px rgba(0,229,255,.6)}
+.btn-violet{background:linear-gradient(135deg,#a855f7,#ff2d95);color:#fff;box-shadow:0 0 20px rgba(168,85,247,.4)}
+.btn-green{background:linear-gradient(135deg,#00ff9d,#4dffb8);color:#04121a}
+.btn-ghost{background:transparent;border:1px solid rgba(0,229,255,.3);color:#8a97b8}
+.field{margin:12px 0}
+.field label{display:block;font-size:.72rem;color:#8a97b8;margin-bottom:5px;letter-spacing:1px;text-transform:uppercase;font-family:'Chakra Petch',monospace}
+.field input{width:100%;padding:11px 13px;background:rgba(0,0,0,.35);border:1px solid rgba(0,229,255,.3);border-radius:9px;color:#e8f0ff;font-family:monospace;font-size:.85rem;outline:none}
+.field input:focus{border-color:#00e5ff;box-shadow:0 0 12px rgba(0,229,255,.3)}
+.url-box{background:rgba(0,255,157,.08);border:1px solid rgba(0,255,157,.4);border-radius:9px;padding:12px;margin:10px 0;font-family:monospace;font-size:.8rem;color:#00ff9d;word-break:break-all;position:relative}
+.copy-btn{position:absolute;top:8px;right:8px;padding:4px 10px;background:rgba(0,255,157,.2);border:1px solid rgba(0,255,157,.5);border-radius:6px;color:#00ff9d;font-size:.7rem;cursor:pointer;font-family:'Chakra Petch',monospace}
+.status{padding:12px 16px;border-radius:9px;margin:12px 0;font-size:.85rem;display:none}
+.status.ok{display:block;background:rgba(0,255,157,.1);border:1px solid rgba(0,255,157,.4);color:#00ff9d}
+.status.err{display:block;background:rgba(255,92,122,.1);border:1px solid rgba(255,92,122,.4);color:#ff5c7a}
+.progress{height:6px;background:rgba(0,0,0,.4);border-radius:3px;overflow:hidden;margin:16px 0}
+.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#00e5ff,#a855f7,#ff2d95);transition:width .5s;border-radius:3px}
+.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:.68rem;font-family:'Chakra Petch',monospace;letter-spacing:1px;text-transform:uppercase;margin-left:8px}
+.badge.done{background:rgba(0,255,157,.15);color:#00ff9d;border:1px solid rgba(0,255,157,.4)}
+.badge.todo{background:rgba(255,194,75,.15);color:#ffc24b;border:1px solid rgba(255,194,75,.4)}
+.tip{background:rgba(255,194,75,.08);border:1px solid rgba(255,194,75,.4);border-radius:9px;padding:12px;margin:12px 0;font-size:.82rem;color:#ffd98a}
+.warn{background:rgba(255,92,122,.08);border:1px solid rgba(255,92,122,.4);border-radius:9px;padding:12px;margin:12px 0;font-size:.82rem;color:#ffb3c1}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="wrap">
+  <h1>⚡ ASSISTENTE DE CONFIGURAÇÃO</h1>
+  <p class="sub">Configure o login real do Google e Facebook em ~5 minutos. Suas chaves são salvas automaticamente neste navegador.</p>
+
+  <div class="progress"><div class="progress-fill" id="progFill"></div></div>
+  <p style="font-size:.78rem;color:#8a97b8;font-family:'Chakra Petch',monospace;margin-bottom:20px" id="progText">Progresso: 0 / 2 concluído</p>
+
+  <!-- DOMÍNIO DETECTADO -->
+  <div class="card">
+    <h2>🌐 Seu domínio (detectado automaticamente)</h2>
+    <p style="font-size:.88rem;color:#c8d2e8;margin-bottom:10px">Este é o endereço do seu site. Você vai precisar dele nos passos abaixo:</p>
+    <div class="url-box" id="domainBox">
+      <span id="domainText">carregando...</span>
+      <button class="copy-btn" onclick="copyDomain()">Copiar</button>
+    </div>
+    <div class="tip">💡 Se estiver testando localmente (arquivo aberto direto), o login real não funciona — precisa ser pelo link do GitHub Pages.</div>
+  </div>
+
+  <!-- GOOGLE -->
+  <div class="card">
+    <h2>🔵 Login do Google <span class="badge todo" id="gBadge">Pendente</span></h2>
+    <div class="step"><div class="step-num">1</div><p>Abra o <b>Google Cloud Console</b> (faça login com sua conta Google):</p></div>
+    <a class="btn btn-primary" href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener">Abrir Google Cloud →</a>
+    <div class="step"><div class="step-num">2</div><p>Crie um projeto (nome: <b>NEXVON</b>) → vá em <b>Credenciais</b> → <b>+ Criar credenciais</b> → <b>ID do cliente OAuth</b> → tipo <b>Aplicativo da Web</b>.</p></div>
+    <div class="step"><div class="step-num">3</div><p>Em <b>Origens JavaScript autorizadas</b>, clique em <b>+ Adicionar URI</b> e cole o domínio acima (sem barra no final).</p></div>
+    <div class="step"><div class="step-num">4</div><p>Copie o <b>Client ID</b> gerado e cole abaixo:</p></div>
+    <div class="field"><label>Google Client ID</label><input type="text" id="gcid" placeholder="123456789-abcdef.apps.googleusercontent.com"></div>
+    <button class="btn btn-green" onclick="saveGoogle()">💾 Salvar chave do Google</button>
+    <div class="status" id="gStatus"></div>
+  </div>
+
+  <!-- FACEBOOK -->
+  <div class="card">
+    <h2>🔵 Login do Facebook <span class="badge todo" id="fBadge">Pendente</span></h2>
+    <div class="step"><div class="step-num">1</div><p>Abra o <b>Meta for Developers</b> (faça login com sua conta do Facebook):</p></div>
+    <a class="btn btn-violet" href="https://developers.facebook.com/apps/" target="_blank" rel="noopener">Abrir Meta Developers →</a>
+    <div class="step"><div class="step-num">2</div><p>Clique em <b>Create App</b> → tipo <b>Outro/Nenhum</b> → nome: <b>NEXVON</b> → criar.</p></div>
+    <div class="step"><div class="step-num">3</div><p>Adicione o produto <b>Facebook Login</b> → em <b>Configurações</b> adicione seu domínio em <b>Domínios do App</b>.</p></div>
+    <div class="step"><div class="step-num">4</div><p>Em <b>Configurações → Básico</b>, copie o <b>App ID</b> (só números) e cole abaixo:</p></div>
+    <div class="field"><label>Facebook App ID</label><input type="text" id="fbid" placeholder="1234567890123456"></div>
+    <button class="btn btn-green" onclick="saveFacebook()">💾 Salvar chave do Facebook</button>
+    <div class="status" id="fStatus"></div>
+  </div>
+
+  <!-- FINAL -->
+  <div class="card" style="text-align:center">
+    <h2 style="justify-content:center">✅ Concluir Configuração</h2>
+    <p style="font-size:.88rem;color:#c8d2e8;margin-bottom:14px">Após salvar as chaves, vá para o sistema:</p>
+    <a class="btn btn-primary" href="index.html">🚀 Ir para o NEXVON</a>
+    <div class="warn" style="text-align:left;margin-top:16px">⚠️ As chaves ficam salvas apenas neste navegador. Se acessar de outro dispositivo, refaça a configuração (ou compartilhe este link de setup com sua equipe).</div>
+  </div>
+</div>
+
+<script>
+var domain=location.origin && location.origin.indexOf('file')!==0 ? location.origin : 'https://SEU-USUARIO.github.io/SEU-REPO';
+document.getElementById('domainText').textContent=domain;
+function copyDomain(){navigator.clipboard.writeText(domain).then(function(){alert('Domínio copiado!')})}
+function loadKeys(){
+  var g=localStorage.getItem('nexvon_gcid'), f=localStorage.getItem('nexvon_fbid');
+  if(g){document.getElementById('gcid').value=g;document.getElementById('gBadge').textContent='Concluído';document.getElementById('gBadge').className='badge done'}
+  if(f){document.getElementById('fbid').value=f;document.getElementById('fBadge').textContent='Concluído';document.getElementById('fBadge').className='badge done'}
+  updateProgress();
+}
+function updateProgress(){
+  var g=localStorage.getItem('nexvon_gcid'), f=localStorage.getItem('nexvon_fbid');
+  var done=(g?1:0)+(f?1:0);
+  document.getElementById('progFill').style.width=(done/2*100)+'%';
+  document.getElementById('progText').textContent='Progresso: '+done+' / 2 concluído';
+}
+function saveGoogle(){
+  var v=document.getElementById('gcid').value.trim();
+  if(!v||v.indexOf('.googleusercontent.com')<0){var s=document.getElementById('gStatus');s.className='status err';s.textContent='Client ID inválido. Deve terminar com .googleusercontent.com';return}
+  localStorage.setItem('nexvon_gcid',v);
+  document.getElementById('gBadge').textContent='Concluído';document.getElementById('gBadge').className='badge done';
+  var s=document.getElementById('gStatus');s.className='status ok';s.textContent='✅ Chave do Google salva!';
+  updateProgress();
+}
+function saveFacebook(){
+  var v=document.getElementById('fbid').value.trim();
+  if(!v||!/^\d+$/.test(v)){var s=document.getElementById('fStatus');s.className='status err';s.textContent='App ID inválido. Deve conter apenas números.';return}
+  localStorage.setItem('nexvon_fbid',v);
+  document.getElementById('fBadge').textContent='Concluído';document.getElementById('fBadge').className='badge done';
+  var s=document.getElementById('fStatus');s.className='status ok';s.textContent='✅ Chave do Facebook salva!';
+  updateProgress();
+}
+loadKeys();
+</script>
+</body>
+</html>

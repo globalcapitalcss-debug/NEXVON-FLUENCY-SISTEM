@@ -1,0 +1,20 @@
+{
+  "name": "NEXVON — Fluência Imersiva",
+  "short_name": "NEXVON",
+  "description": "Sistema de aprendizado de idiomas baseado no Language Reactor",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#05060f",
+  "theme_color": "#05060f",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Guia Visual de Deploy — NEXVON Fluência Imersiva</title>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Sora',sans-serif;background:#05060f;color:#e8f0ff;line-height:1.6;padding:0}
+.page{max-width:820px;margin:0 auto;padding:40px 48px;page-break-after:always;position:relative}
+.page:last-child{page-break-after:auto}
+h1,h2,h3,.tech{font-family:'Chakra Petch',monospace;letter-spacing:.5px}
+h1{font-size:2.2rem;background:linear-gradient(90deg,#00e5ff,#a855f7,#ff2d95);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+h2{font-size:1.4rem;color:#00e5ff;margin:28px 0 14px;border-left:4px solid #00e5ff;padding-left:12px}
+h3{font-size:1.05rem;color:#a855f7;margin:18px 0 8px}
+p{margin:8px 0;font-size:.92rem;color:#c8d2e8}
+.sub{color:#8a97b8;font-size:.85rem;margin-bottom:24px}
+.eyebrow{display:inline-block;font-size:.7rem;letter-spacing:3px;color:#00e5ff;text-transform:uppercase;border:1px solid rgba(0,229,255,.3);padding:4px 12px;border-radius:14px;margin-bottom:10px;font-family:'Chakra Petch',monospace}
+.step{display:flex;gap:16px;margin:18px 0;align-items:flex-start}
+.step-num{flex-shrink:0;width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#00e5ff,#a855f7);color:#04121a;font-family:'Chakra Petch',monospace;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:1rem}
+.step-body{flex:1}
+.step-body b{color:#00e5ff}
+.mockup{background:#0a0e1f;border:1px solid rgba(0,229,255,.25);border-radius:12px;padding:18px;margin:14px 0;position:relative;box-shadow:0 4px 24px rgba(0,0,0,.5)}
+.mockup .bar{height:22px;background:rgba(255,255,255,.06);border-radius:6px;margin-bottom:10px;display:flex;align-items:center;padding:0 10px;gap:6px}
+.mockup .dot{width:10px;height:10px;border-radius:50%}
+.mockup .url{flex:1;height:12px;background:rgba(255,255,255,.1);border-radius:6px;margin-left:8px}
+.mockup .btn-hl{display:inline-block;background:linear-gradient(135deg,#00e5ff,#4dd0ff);color:#04121a;padding:8px 16px;border-radius:8px;font-family:'Chakra Petch',monospace;font-weight:700;font-size:.8rem;position:relative;box-shadow:0 0 16px rgba(0,229,255,.5);animation:pulse 1.5s infinite}
+.mockup .btn-hl::after{content:'← CLIQUE AQUI';position:absolute;left:calc(100% + 12px);top:50%;transform:translateY(-50%);color:#ff2d95;font-size:.7rem;font-family:'Chakra Petch',monospace;white-space:nowrap;letter-spacing:1px}
+@keyframes pulse{0%,100%{box-shadow:0 0 16px rgba(0,229,255,.5)}50%{box-shadow:0 0 28px rgba(0,229,255,.9)}}
+.mockup .field-mock{background:rgba(0,0,0,.3);border:1px solid rgba(0,229,255,.3);border-radius:6px;padding:8px 12px;margin:6px 0;font-size:.8rem;color:#8a97b8;font-family:monospace}
+.mockup .field-mock b{color:#00ff9d}
+.arrow{text-align:center;color:#00e5ff;font-size:1.4rem;margin:6px 0;font-family:'Chakra Petch',monospace}
+.checklist{background:rgba(0,255,157,.06);border:1px solid rgba(0,255,157,.3);border-radius:12px;padding:16px 20px;margin:16px 0}
+.checklist div{margin:6px 0;font-size:.88rem}
+.checklist div::before{content:'☐ ';color:#00ff9d;font-weight:700}
+.warn{background:rgba(255,92,122,.08);border:1px solid rgba(255,92,122,.4);border-radius:10px;padding:12px 16px;margin:14px 0;font-size:.85rem;color:#ffb3c1}
+.tip{background:rgba(255,194,75,.08);border:1px solid rgba(255,194,75,.4);border-radius:10px;padding:12px 16px;margin:14px 0;font-size:.85rem;color:#ffd98a}
+.cover{display:flex;flex-direction:column;justify-content:center;min-height:90vh;text-align:center}
+.cover .logo{font-size:4rem;font-family:'Chakra Petch',monospace;font-weight:700;letter-spacing:8px;background:linear-gradient(90deg,#00e5ff,#a855f7,#ff2d95);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
+.cover .title{font-size:1.6rem;margin-bottom:8px}
+.cover .meta{color:#8a97b8;font-size:.9rem;margin-top:30px}
+.toc{background:rgba(0,0,0,.3);border:1px solid rgba(0,229,255,.2);border-radius:12px;padding:20px 24px;margin-top:20px}
+.toc div{padding:6px 0;border-bottom:1px dashed rgba(138,151,184,.2);font-size:.9rem}
+.toc div:last-child{border:none}
+.toc span{color:#00e5ff;font-family:'Chakra Petch',monospace;margin-right:10px}
+.footer{position:absolute;bottom:20px;left:48px;right:48px;text-align:center;font-size:.7rem;color:#5a6788;font-family:'Chakra Petch',monospace;letter-spacing:2px;border-top:1px solid rgba(0,229,255,.15);padding-top:10px}
+@media print{body{background:#05060f;-webkit-print-color-adjust:exact;print-color-adjust:exact}.page{padding:30px 40px}}
+</style>
+</head>
+<body>
+
+<!-- CAPA -->
+<div class="page cover">
+  <div class="eyebrow">Documento de Implantação · v2100</div>
+  <div class="logo">NEXVON</div>
+  <div class="title">Guia Visual de Deploy</div>
+  <p style="max-width:520px;margin:0 auto">Como colocar o sistema NEXVON Fluência Imersiva no ar em minutos, com login real do Google e Facebook.</p>
+  <div class="toc" style="text-align:left;max-width:520px;margin:30px auto">
+    <div><span>01</span>Deploy mais rápido: Netlify Drop</div>
+    <div><span>02</span>Deploy com Vercel</div>
+    <div><span>03</span>Deploy com GitHub Pages</div>
+    <div><span>04</span>Deploy com cPanel / FTP</div>
+    <div><span>05</span>Configurar Login real do Google</div>
+    <div><span>06</span>Configurar Login real do Facebook</div>
+    <div><span>07</span>Pós-deploy: segurança e testes</div>
+    <div><span>08</span>Checklist final</div>
+  </div>
+  <div class="meta">NEXVON · Fluência Imersiva · Sistema v2100 · 2026</div>
+  <div class="footer">NEXVON — GUIA VISUAL DE DEPLOY · PÁGINA 1</div>
+</div>
+
+<!-- 01 NETLIFY -->
+<div class="page">
+  <div class="eyebrow">Capítulo 01 · 5 minutos</div>
+  <h1>Deploy mais rápido: Netlify Drop</h1>
+  <p class="sub">Sem cadastro demorado, sem terminal. Arraste e solte.</p>
+
+  <div class="step"><div class="step-num">1</div><div class="step-body">
+    <h3>Descompacte o pacote</h3>
+    <p>Extraia o arquivo <b>nexvon-site.zip</b> para uma pasta no seu computador. Você verá os arquivos: <b>index.html</b>, <b>favicon.svg</b>, <b>README.md</b> e arquivos de configuração.</p>
+  </div></div>
+
+  <div class="step"><div class="step-num">2</div><div class="step-body">
+    <h3>Acesse o Netlify Drop</h3>
+    <p>Abra <b>https://app.netlify.com/drop</b> no navegador. (Crie uma conta gratuita se for solicitado — leva 30 segundos com Google.)</p>
+    <div class="mockup">
+      <div class="bar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span><div class="url">app.netlify.com/drop</div></div>
+      <div style="border:2px dashed rgba(0,229,255,.5);border-radius:12px;padding:40px;text-align:center;margin-top:10px">
+        <div style="font-size:2.5rem;margin-bottom:8px">📁</div>
+        <div style="font-family:'Chakra Petch',monospace;color:#00e5ff;font-weight:700">Arraste sua pasta aqui</div>
+        <div style="font-size:.78rem;color:#8a97b8;margin-top:6px">ou procure no computador</div>
+      </div>
+    </div>
+  </div></div>
+
+  <div class="step"><div class="step-num">3</div><div class="step-body">
+    <h3>Arraste a pasta</h3>
+    <p>Pegue a pasta <b>nexvon-site</b> (descompactada) e arraste para dentro da área pontilhada. O upload começa automaticamente.</p>
+    <div class="arrow">▼ aguarde o upload ▼</div>
+  </div></div>
+
+  <div class="step"><div class="step-num">4</div><div class="step-body">
+    <h3>Site no ar!</h3>
+    <p>Em ~30 segundos você recebe um link: <b>https://nome-aleatorio.netlify.app</b>. Clique e seu sistema NEXVON estará funcionando com HTTPS.</p>
+    <div class="mockup">
+      <div class="field-mock">✅ Deploy concluído! Seu site: <b>https://nexvon-fluencia.netlify.app</b></div>
+      <span class="btn-hl">Abrir site</span>
+    </div>
+  </div></div>
+
+  <div class="tip">💡 Dica: em <b>Site settings → Change site name</b>, personalize o endereço (ex: <b>nexvon-fluencia.netlify.app</b>). Para domínio próprio (ex: <b>fluencia.seusite.com</b>, vá em <b>Domain settings → Add custom domain</b>.</div>
+  <div class="footer">NEXVON — GUIA VISUAL DE DEPLOY · PÁGINA 2</div>
+</div>
+
+<!-- 02 + 03 VERCEL + GITHUB -->
+<div class="page">
+  <div class="eyebrow">Capítulos 02 e 03 · 10 minutos</div>
+  <h1>Vercel & GitHub Pages</h1>
+
+  <h2>Opção A — Vercel (via terminal)</h2>
+  <div class="step"><div class="step-num">1</div><div class="step-body"><p>Instale a ferramenta: abra o terminal e digite <b>npm i -g vercel</b> (requer Node.js instalado).</p></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-body"><p>Entre na pasta do projeto: <b>cd nexvon-site</b></p></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-body"><p>Digite <b>vercel</b> e responda às perguntas (Enter para tudo padrão). Em ~20 segundos: <b>https://seu-projeto.vercel.app</b></p></div></div>
+  <div class="mockup"><div class="field-mock">$ vercel<br>✅ Deployed → <b>https://nexvon.vercel.app</b></div></div>
+
+  <h2>Opção B — GitHub Pages (gratuito, sem terminal)</h2>
+  <div class="step"><div class="step-num">1</div><div class="step-body"><p>Crie uma conta no <b>github.com</b> e clique em <b>New repository</b>. Dê um nome (ex: <b>nexvon</b>) e marque <b>Public</b>.</p></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-body"><p>Na página do repositório, clique em <b>uploading an existing file</b> e arraste todos os arquivos da pasta <b>nexvon-site</b> (incluindo os arquivos que começam com ponto: <b>.htaccess</b>, <b>.nojekyll</b>). Clique em <b>Commit changes</b>.</p></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-body"><p>Vá em <b>Settings → Pages</b>. Em <b>Branch</b> selecione <b>main</b> e pasta <b>/ (root)</b>. Clique em <b>Save</b>.</p>
+    <div class="mockup">
+      <div class="field-mock">Source: Deploy from a branch</div>
+      <div class="field-mock">Branch: <b>main</b> / (root) <span class="btn-hl" style="float:right">Save</span></div>
+    </div>
+  </div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-body"><p>Aguarde 1 minuto. Seu site estará em: <b>https://seu-usuario.github.io/nexvon/</b></p></div></div>
+
+  <div class="warn">⚠️ No GitHub Pages, certifique-se de que o arquivo <b>.nojekyll</b> foi enviado — sem ele, o GitHub pode bloquear arquivos que começam com underline.</div>
+  <div class="footer">NEXVON — GUIA VISUAL DE DEPLOY · PÁGINA 3</div>
+</div>
+
+<!-- 04 CPANEL -->
+<div class="page">
+  <div class="eyebrow">Capítulo 04 · Hospedagem tradicional</div>
+  <h1>cPanel / FTP (HostGator, Locaweb, etc.)</h1>
+
+  <div class="step"><div class="step-num">1</div><div class="step-body">
+    <h3>Baixe o FileZilla</h3>
+    <p>Programa gratuito de FTP: <b>https://filezilla-project.org</b>. Instale e abra.</p>
+  </div></div>
+
+  <div class="step"><div class="step-num">2</div><div class="step-body">
+    <h3>Conecte ao seu servidor</h3>
+    <p>No topo do FileZilla, preencha com os dados do seu provedor (encontrados no e-mail de boas-vindas da hospedagem):</p>
+    <div class="mockup">
+      <div class="field-mock">Servidor: <b>ftp.seusite.com</b> · Usuário: <b>seu_usuario</b> · Senha: <b>••••••</b> · Porta: <b>21</b></div>
+      <span class="btn-hl">Conexão rápida</span>
+    </div>
+  </div></div>
+
+  <div class="step"><div class="step-num">3</div><div class="step-body">
+    <h3>Envie os arquivos</h3>
+    <p>No painel direito (servidor), entre na pasta <b>public_html</b> (ou <b>www</b>). No painel esquerdo (seu computador), entre na pasta <b>nexvon-site</b>. Selecione <b>todos os arquivos</b> e arraste para a direita. Aguarde o upload.</p>
+    <div class="arrow">▼ arraste da esquerda para a direita ▼</div>
+  </div></div>
+
+  <div class="step"><div class="step-num">4</div><div class="step-body">
+    <h3>Acesse seu domínio</h3>
+    <p>Pronto! Acesse <b>https://seusite.com</b> — o <b>index.html</b> carrega automaticamente. O arquivo <b>.htaccess</b> incluso já ativa compressão e cache.</p>
+  </div></div>
+
+  <div class="tip">💡 Dica: certifique-se de que seu site tem <b>SSL (HTTPS)</b> ativo (Let's Encrypt gratuito no cPanel: <b>SSL/TLS Status → AutoSSL</b>). Sem HTTPS, o login social real não funciona.</div>
+  <div class="footer">NEXVON — GUIA VISUAL DE DEPLOY · PÁGINA 4</div>
+</div>
+
+<!-- 05 GOOGLE -->
+<div class="page">
+  <div class="eyebrow">Capítulo 05 · Login real</div>
+  <h1>Configurar Login do Google</h1>
+  <p class="sub">Permita que usuários entrem com o Google de verdade.</p>
+
+  <div class="step"><div class="step-num">1</div><div class="step-body">
+    <p>Acesse <b>https://console.cloud.google.com</b> e faça login com uma conta Google. Clique no menu de projetos no topo → <b>Novo Projeto</b>. Nomeie <b>NEXVON</b> → <b>Criar</b>.</p>
+  </div></div>
+
+  <div class="step"><div class="step-num">2</div><div class="step-body">
+    <p>No menu lateral: <b>APIs e Serviços → Credenciais</b>. Clique em <b>Criar credenciais → ID do cliente OAuth</b>.</p>
+    <div class="mockup">
+      <div class="field-mock">+ Criar credenciais ▾</div>
+      <span class="btn-hl">ID do cliente OAuth</span>
+    </div>
+  </div></div>
+
+  <div class="step"><div class="step-num">3</div><div class="step-body">
+    <p>Tipo de aplicativo: <b>Aplicativo da Web</b>. Nome: <b>NEXVON Login</b>.</p>
+    <p>Em <b>Origens JavaScript autorizadas</b>, clique em <b>+ Adicionar URI</b> e cole <b>a URL do seu site</b> (ex: <b>https://nexvon-fluencia.netlify.app</b> — sem barra no final).</p>
+    <div class="mockup">
+      <div class="field-mock">Origens JavaScript autorizadas:</div>
+      <div class="field-mock">URI 1: <b>https://nexvon-fluencia.netlify.app</b> <span style="color:#00ff9d">+ Adicionar URI</span></div>
+      <span class="btn-hl">Criar</span>
+    </div>
+  </div></div>
+
+  <div class="step"><div class="step-num">4</div><div class="step-body">
+    <p>Copie o <b>Client ID</b> gerado (formato: <b>123456789-abc.apps.googleusercontent.com</b>).</p>
+  </div></div>
+
+  <div class="step"><div class="step-num">5</div><div class="step-body">
+    <p>No seu site NEXVON (tela de login), clique em <b>"Configurar login real (Google/Facebook)"</b>, cole o Client ID no campo do Google e salve. Recarregue a página — o botão Google agora usa login real!</p>
+  </div></div>
+
+  <div class="warn">⚠️ A URL deve ser exatamente igual (incluindo https:// e sem barra final). Se mudar o domínio depois, volte aqui e adicione a nova URL.</div>
+  <div class="footer">NEXVON — GUIA VISUAL DE DEPLOY · PÁGINA 5</div>
+</div>
+
+<!-- 06 FACEBOOK -->
+<div class="page">
+  <div class="eyebrow">Capítulo 06 · Login real</div>
+  <h1>Configurar Login do Facebook</h1>
+
+  <div class="step"><div class="step-num">1</div><div class="step-body">
+    <p>Acesse <b>https://developers.facebook.com</b> e faça login. Clique em <b>Meus Apps → Criar App</b>. Tipo: <b>Consumidor</b>. Nome: <b>NEXVON</b> → <b>Criar App</b>.</p>
+  </div></div>
+
+  <div class="step"><div class="step-num">2</div><div class="step-body">
+    <p>No painel do app, role até <b>Facebook Login</b> e clique em <b>Configurar</b>. Escolha <b>Web</b>. Cole a URL do seu site → <b>Salvar</b>.</p>
+    <div class="mockup">
+      <div class="field-mock">URL do site: <b>https://nexvon-fluencia.netlify.app</b></div>
+      <span class="btn-hl">Salvar</span>
+    </div>
+  </div></div>
+
+  <div class="step"><div class="step-num">3</div><div class="step-body">
+    <p>Vá em <b>Configurações → Básico</b>. Copie o <b>App ID</b> (número, ex: <b>123456789012345</b>). Em <b>Domínios do App</b>, adicione seu domínio (ex: <b>nexvon-fluencia.netlify.app</b>) → <b>Salvar alterações</b>.</p>
+  </div></div>
+
+  <div class="step"><div class="step-num">4</div><div class="step-body">
+    <p>No seu site NEXVON, clique em <b>"Configurar login real (Google/Facebook)"</b>, cole o <b>App ID</b> no campo do Facebook e salve. Recarregue — login do Facebook ativo!</p>
+  </div></div>
+
+  <div class="tip">💡 Enquanto o app do Facebook está em <b>modo desenvolvimento</b>, só você (admin) consegue logar. Para liberar para todos, vá em <b>Revisão de Permissões e Recursos</b> e solicite <b>Advanced Access</b> para <b>email</b> e <b>public_profile</b> (geralmente aprovado em poucos dias).</div>
+  <div class="footer">NEXVON — GUIA VISUAL DE DEPLOY · PÁGINA 6</div>
+</div>
+
+<!-- 07 + 08 POS-DEPLOY + CHECKLIST -->
+<div class="page">
+  <div class="eyebrow">Capítulos 07 e 08 · Finalização</div>
+  <h1>Pós-deploy & Checklist Final</h1>
+
+  <h2>Segurança — troque a senha do admin</h2>
+  <div class="step"><div class="step-num">1</div><div class="step-body"><p>Faça login com <b>admin@nexvon.ai</b> / <b>admin2100</b>.</p></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-body"><p>Clique no botão de <b>Conta</b> (ícone de pessoa no topo) → <b>Alterar Senha</b>. Defina uma senha forte.</p></div></div>
+  <div class="warn">⚠️ A senha padrão <b>admin2100</b> está documentada — troque IMEDIATAMENTE após subir o site.</div>
+
+  <h2>Testes rápidos (2 minutos)</h2>
+  <div class="checklist">
+    <div>Abrir o site em celular e computador (responsivo)</div>
+    <div>Fazer um cadastro de teste (deve ficar pendente)</div>
+    <div>Logar como admin e liberar o usuário de teste</div>
+    <div>Testar o sino de notificações e o leitor de voz</div>
+    <div>Trocar o idioma no seletor (aguardar tradução)</div>
+    <div>Testar o botão "Acesso ao Sistema" (abre o Language Reactor)</div>
+    <div>Exportar um PDF de teste no painel admin</div>
+    <div>Testar login Google (se configurado)</div>
+  </div>
+
+  <h2>Checklist final de lançamento</h2>
+  <div class="checklist">
+    <div>Site online com HTTPS (cadeado verde)</div>
+    <div>Senha do admin alterada</div>
+    <div>Google Client ID configurado (opcional)</div>
+    <div>Facebook App ID configurado (opcional)</div>
+    <div>Domínio personalizado conectado (opcional)</div>
+    <div>Guia salvo em PDF para a equipe</div>
+  </div>
+
+  <div class="tip">🎉 Parabéns! Seu sistema NEXVON está no ar. Compartilhe o link com seus alunos/usuários. Para atualizações futuras, basta reenviar o novo <b>index.html</b> — todo o resto permanece igual.</div>
+
+  <div style="text-align:center;margin-top:30px;font-family:'Chakra Petch',monospace;color:#00e5ff;letter-spacing:4px;font-size:1.1rem">NEXVON · FLUÊNCIA IMERSIVA · SISTEMA v2100</div>
+  <div class="footer">NEXVON — GUIA VISUAL DE DEPLOY · PÁGINA 7</div>
+</div>
+
+</body>
+</html>
