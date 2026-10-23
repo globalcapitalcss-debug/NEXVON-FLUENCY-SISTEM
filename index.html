@@ -280,6 +280,21 @@ footer.page-foot .tech-line{font-family:'Chakra Petch',monospace;letter-spacing:
 .btn-export:hover{box-shadow:0 0 16px rgba(0,255,157,.4)}
 .notif-item.clickable{cursor:pointer;transition:.2s}
 .notif-item.clickable:hover{border-left-color:var(--cyan);background:rgba(0,229,255,.06)}
+.log-item{display:flex;gap:10px;padding:8px 10px;border-bottom:1px dashed rgba(138,151,184,.2);font-size:.82rem;align-items:flex-start}
+.log-time{flex-shrink:0;color:#8a97b8;font-family:monospace;font-size:.72rem;min-width:130px}
+.log-action{flex-shrink:0;padding:1px 8px;border-radius:10px;font-size:.68rem;font-family:'Chakra Petch',monospace;letter-spacing:.5px;text-transform:uppercase}
+.log-action.login{background:rgba(0,255,157,.15);color:#00ff9d}
+.log-action.nav{background:rgba(0,229,255,.15);color:#00e5ff}
+.log-action.study{background:rgba(168,85,247,.15);color:#a855f7}
+.log-action.auth{background:rgba(255,194,75,.15);color:#ffc24b}
+.log-action.admin{background:rgba(255,45,149,.15);color:#ff2d95}
+.log-detail{color:#c8d2e8;flex:1}
+.perm-check{display:flex;align-items:center;gap:8px;padding:6px 10px;margin:4px 0;background:rgba(0,0,0,.25);border-radius:8px;font-size:.85rem;cursor:pointer}
+.perm-check input{accent-color:#00e5ff;width:16px;height:16px;cursor:pointer}
+.role-badge{padding:2px 8px;border-radius:10px;font-size:.65rem;font-family:'Chakra Petch',monospace;letter-spacing:.5px;text-transform:uppercase;margin-left:6px}
+.role-badge.super{background:rgba(255,45,149,.2);color:#ff2d95;border:1px solid rgba(255,45,149,.4)}
+.role-badge.admin{background:rgba(168,85,247,.2);color:#a855f7;border:1px solid rgba(168,85,247,.4)}
+.stat-mini{font-size:.7rem;color:#8a97b8}
 @media(max-width:640px){.auth-card{padding:22px 16px}.panel,.fase{padding:16px}.chart-box{height:240px}.task-time{display:none}.social-row{flex-direction:column}.field-row{grid-template-columns:1fr}.toast{left:16px;right:16px;max-width:none}.ai-panel{left:12px;right:12px;width:auto}.ai-fab{left:12px;bottom:12px}}
 </style>
 </head>
@@ -1600,6 +1615,157 @@ function sendNotify(title,body){
   }
 }
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
+
+/* ===== GESTÃO COMPLETA: LOGS, RESET DE SENHA, SUB-ADMINS COM PERMISSÕES ===== */
+var PERMS=['users','logs','export','admins'];
+var PERM_LABELS={users:'Gerenciar usuários (liberar/bloquear/excluir)',logs:'Ver logs de atividade',export:'Exportar relatório PDF',admins:'Cadastrar novos administradores'};
+function logActivity(action,detail){
+  if(!currentUser)return;
+  var u=users[currentUser];if(!u)return;
+  if(!u.activity)u.activity=[];
+  u.activity.push({t:Date.now(),action:action,detail:detail||''});
+  if(u.activity.length>500)u.activity=u.activity.slice(-500);
+  if(!u.firstLogin)u.firstLogin=Date.now();
+  u.lastActive=Date.now();
+  saveUsers();
+}
+function can(perm){
+  if(!currentUser)return false;
+  var u=users[currentUser];if(!u)return false;
+  if(u.role==='super')return true;
+  if(u.role==='admin'&&u.perms&&u.perms[perm])return true;
+  return false;
+}
+function ensureAdminRole(){
+  var a=users['admin@nexvon.ai'];
+  if(a&&!a.role){a.role='super';a.perms={users:true,logs:true,export:true,admins:true};saveUsers()}
+}
+ensureAdminRole();
+/* Validação de e-mail no cadastro */
+var regEmailInput=document.getElementById('regEmail');
+if(regEmailInput){regEmailInput.setAttribute('type','email');regEmailInput.setAttribute('pattern','[^\\s@]+@[^\\s@]+\\.[^\\s@]+')}
+/* Logs de navegação */
+document.querySelectorAll('.tab-btn').forEach(function(b){
+  b.addEventListener('click',function(){logActivity('nav','Abriu: '+(b.textContent||'').trim())})
+});
+var _origEnter=enterSession;
+enterSession=function(email){
+  _origEnter(email);
+  logActivity('login','Login no sistema');
+  setTimeout(ensureAdminRole,100);
+};
+/* Logout com tempo de sessão */
+var _loginTime=Date.now();
+var logoutBtn=document.getElementById('logoutBtn')||document.querySelector('[id*=logout]');
+if(logoutBtn)logoutBtn.addEventListener('click',function(){
+  var mins=Math.round((Date.now()-_loginTime)/60000);
+  logActivity('auth','Saiu após '+mins+' min de sessão');
+});
+/* Estudo */
+document.querySelectorAll('.task-item, [id*=task]').forEach(function(el){
+  el.addEventListener('change',function(){logActivity('study','Marcou atividade de estudo')})
+});
+/* Logs de ação do admin */
+function adminLog(detail){if(currentUser&&users[currentUser]&&users[currentUser].role)logActivity('admin',detail)}
+/* Melhorar tabela admin com novos botões */
+function enhanceAdminTable(){
+  var rows=document.querySelectorAll('#adminTable tbody tr');
+  rows.forEach(function(tr){
+    var email=tr.dataset.email||(tr.querySelector('.user-email')?tr.querySelector('.user-email').textContent.trim():'');
+    if(!email||tr.querySelector('.btn-logs'))return;
+    var cell=tr.querySelector('td:last-child')||tr.insertCell(-1);
+    var isSocial=tr.textContent.indexOf('Google')>=0||tr.textContent.indexOf('Facebook')>=0;
+    var btns='';
+    if(can('logs'))btns+='<button class="btn-logs" data-email="'+email+'" style="background:rgba(0,229,255,.15);color:#00e5ff;border:1px solid rgba(0,229,255,.4);padding:3px 8px;border-radius:6px;font-size:.7rem;cursor:pointer;margin:2px">Logs</button>';
+    if(can('users')&&!isSocial)btns+='<button class="btn-resetpw" data-email="'+email+'" style="background:rgba(255,194,75,.15);color:#ffc24b;border:1px solid rgba(255,194,75,.4);padding:3px 8px;border-radius:6px;font-size:.7rem;cursor:pointer;margin:2px">Nova Senha</button>';
+    if(btns){var wrap=document.createElement('span');wrap.innerHTML=btns;cell.appendChild(wrap)}
+  });
+  /* Botão Novo Admin */
+  if(can('admins')&&!document.getElementById('newAdminBtn')){
+    var filterBar=document.querySelector('.admin-filters');
+    if(filterBar){
+      var nb=document.createElement('button');
+      nb.id='newAdminBtn';nb.className='btn-export';nb.style.marginLeft='8px';nb.style.background='linear-gradient(135deg,#ff2d95,#a855f7)';nb.style.color='#fff';
+      nb.textContent='+ Novo Admin';
+      nb.addEventListener('click',showNewAdminForm);
+      filterBar.appendChild(nb);
+    }
+  }
+}
+var _origRenderAdmin=renderAdmin;
+renderAdmin=function(){_origRenderAdmin();setTimeout(enhanceAdminTable,100)};
+/* Delegação de eventos dos novos botões */
+document.addEventListener('click',function(e){
+  var l=e.target.closest('.btn-logs');if(l){showUserLogs(l.dataset.email);return}
+  var r=e.target.closest('.btn-resetpw');if(r){resetUserPassword(r.dataset.email);return}
+});
+/* Ver logs do usuário */
+function showUserLogs(email){
+  var u=users[email];if(!u){openModal('<h3>Usuário não encontrado</h3>');return}
+  var act=(u.activity||[]).slice().reverse();
+  var totalMin=u.totalMinutes||0;
+  var html='<h3 style="color:#00e5ff;margin-bottom:14px">Logs de Atividade — '+email+'</h3>';
+  html+='<div style="display:flex;gap:16px;margin-bottom:14px;font-size:.85rem">';
+  html+='<div><b style="color:#a855f7">'+act.length+'</b><span class="stat-mini"> ações registradas</span></div>';
+  html+='<div><b style="color:#00ff9d">'+totalMin+'</b><span class="stat-mini"> min de estudo</span></div>';
+  if(u.lastActive)html+='<div><span class="stat-mini">Última ação: '+fmtDate(u.lastActive)+'</span></div>';
+  html+='</div>';
+  if(act.length===0){html+='<p style="color:#8a97b8">Nenhuma atividade registrada ainda.</p>'}
+  else{
+    html+='<div style="max-height:400px;overflow-y:auto;border:1px solid rgba(0,229,255,.2);border-radius:10px;padding:8px">';
+    act.forEach(function(a){
+      html+='<div class="log-item"><span class="log-time">'+fmtDate(a.t)+'</span><span class="log-action '+(a.action||'nav')+'">'+(a.action||'ação')+'</span><span class="log-detail">'+(a.detail||'')+'</span></div>';
+    });
+    html+='</div>';
+  }
+  openModal(html,true);adminLog('Visualizou logs de: '+email);
+}
+/* Resetar senha do usuário (só para contas não sociais) */
+function resetUserPassword(email){
+  var u=users[email];if(!u)return;
+  if(u.provider&&u.provider!=='email'){openModal('<h3 style="color:#ffc24b">Conta social</h3><p>Usuários que entram com Google/Facebook não têm senha. Eles devem redefinir no próprio Google/Facebook.</p>');return}
+  var nova='Nexvon@'+Math.floor(1000+Math.random()*9000);
+  u.password=hash(nova);
+  saveUsers();
+  openModal('<h3 style="color:#00ff9d">Senha redefinida!</h3><p>Usuário: <b>'+email+'</b></p><p>Nova senha temporária:</p><div style="background:rgba(0,255,157,.1);border:1px solid rgba(0,255,157,.4);border-radius:10px;padding:14px;text-align:center;font-family:monospace;font-size:1.3rem;color:#00ff9d;letter-spacing:2px;margin:10px 0">'+nova+'</div><p style="font-size:.8rem;color:#8a97b8">O usuário deve trocar esta senha no primeiro acesso.</p>',false);
+  adminLog('Redefiniu senha de: '+email);
+}
+/* Formulário de novo sub-admin */
+function showNewAdminForm(){
+  var checks=PERMS.map(function(p){return '<label class="perm-check"><input type="checkbox" class="perm-ck" value="'+p+'" checked> '+PERM_LABELS[p]+'</label>'}).join('');
+  var html='<h3 style="color:#ff2d95;margin-bottom:14px">Cadastrar Novo Administrador</h3>';
+  html+='<div class="field"><label>Nome completo</label><input type="text" id="naName" placeholder="Nome do admin"></div>';
+  html+='<div class="field"><label>E-mail</label><input type="email" id="naEmail" placeholder="email@exemplo.com"></div>';
+  html+='<div class="field"><label>Senha temporária</label><input type="text" id="naPass" value="Admin@'+Math.floor(1000+Math.random()*9000)+'"></div>';
+  html+='<p style="font-size:.8rem;color:#8a97b8;margin:10px 0 6px">Permissões deste administrador:</p>';
+  html+=checks;
+  html+='<button class="btn-export" id="naSubmit" style="margin-top:14px;width:100%;background:linear-gradient(135deg,#ff2d95,#a855f7);color:#fff">Criar Administrador</button>';
+  openModal(html,true);
+  document.getElementById('naSubmit').addEventListener('click',function(){
+    var name=document.getElementById('naName').value.trim();
+    var email=document.getElementById('naEmail').value.trim();
+    var pass=document.getElementById('naPass').value.trim();
+    if(!name||!email||!pass){alert('Preencha todos os campos.');return}
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){alert('E-mail inválido.');return}
+    if(users[email]){alert('Este e-mail já está cadastrado.');return}
+    var perms={};
+    document.querySelectorAll('.perm-ck:checked').forEach(function(c){perms[c.value]=true});
+    users[email]={name:name,email:email,password:hash(pass),birth:'',provider:'email',status:'active',role:'admin',perms:perms,createdAt:Date.now(),activity:[],logs:[]};
+    saveUsers();
+    closeModal();
+    renderAdmin();
+    adminLog('Criou novo admin: '+email);
+    alert('Administrador criado! Senha: '+pass);
+  });
+}
+/* Bloquear ações de admin sem permissão */
+document.addEventListener('click',function(e){
+  var t=e.target;
+  if(t.closest('#panel-admin')&&!can('users')){
+    var block=t.closest('.btn-liberar, .btn-bloquear, .btn-excluir, [id*=liberar], [id*=bloquear], [id*=excluir]');
+    if(block){e.preventDefault();e.stopPropagation();alert('Você não tem permissão para gerenciar usuários. Contate o super-admin.')}
+  }
+},true);
 
 /* ===== I18N / SELETOR DE IDIOMA (40 idiomas) ===== */
 var LANGS=[
