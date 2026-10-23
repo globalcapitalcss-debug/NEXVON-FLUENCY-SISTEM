@@ -622,9 +622,20 @@ footer.page-foot .tech-line{font-family:'Chakra Petch',monospace;letter-spacing:
 (function(){
 'use strict';
 var USERS_KEY='nexvon_users_v3', SESSION_KEY='nexvon_session_v1', REMEMBER_KEY='nexvon_remember_v1', NOTIF_KEY='nexvon_notifs_v1', REGDATA_KEY='nexvon_regdata_v1';
-/* Chaves de login real — preencha via botão "Configurar login real" na tela de acesso (salvo no navegador).
-   Requer domínio HTTPS registrado no Google Cloud Console e/ou Meta for Developers. */
-var CONFIG={GOOGLE_CLIENT_ID:localStorage.getItem('nexvon_gcid')||'',FB_APP_ID:localStorage.getItem('nexvon_fbid')||''};
+/* ============================================================
+   COLE SUAS CHAVES AQUI (uma única vez) — depois é só salvar!
+   Google: console.cloud.google.com → OAuth 2.0 Client ID
+   Facebook: developers.facebook.com → App ID (só números)
+   ============================================================ */
+var SITE_KEYS = {
+  GOOGLE_CLIENT_ID: '',  /* ← cole aqui (ex: 12345-abc.apps.googleusercontent.com) */
+  FB_APP_ID: ''          /* ← cole aqui (ex: 123456789012345) */
+};
+/* ============================================================ */
+var CONFIG={
+  GOOGLE_CLIENT_ID: SITE_KEYS.GOOGLE_CLIENT_ID || localStorage.getItem('nexvon_gcid') || '',
+  FB_APP_ID: SITE_KEYS.FB_APP_ID || localStorage.getItem('nexvon_fbid') || ''
+};
 var ADMIN_EMAIL='admin@nexvon.ai', ADMIN_PASS='admin2100';
 function loadUsers(){
   try{var u=JSON.parse(localStorage.getItem(USERS_KEY))||{}}catch(e){var u={}}
@@ -859,28 +870,47 @@ function initFacebookReal(){
   var s=document.createElement('script');s.src='https://connect.facebook.net/en_US/sdk.js';s.async=true;s.defer=true;
   document.head.appendChild(s);
 }
-document.getElementById('googleBtn').addEventListener('click',function(){
-  if(!CONFIG.GOOGLE_CLIENT_ID){window.location.href='setup.html';return}
-  initGoogleReal();
-  showAuthMsg('Abrindo login do Google...','info');
+/* Login Google — abre direto a escolha de conta (popup) */
+function googleLoginReal(){
+  showAuthMsg('Abrindo escolha de conta do Google...','info');
+  if(!window.google){var s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.async=true;document.head.appendChild(s)}
   var tries=0;
-  var tryPrompt=setInterval(function(){
-    if(window.google&&google.accounts){clearInterval(tryPrompt);google.accounts.id.prompt()}
-    else if(++tries>20){clearInterval(tryPrompt);showAuthMsg('Biblioteca do Google carregando. Tente novamente.','info')}
+  var iv=setInterval(function(){
+    if(window.google&&google.accounts&&google.accounts.oauth2){
+      clearInterval(iv);
+      var tc=google.accounts.oauth2.initTokenClient({
+        client_id:CONFIG.GOOGLE_CLIENT_ID,
+        scope:'email profile',
+        callback:function(resp){
+          if(resp&&resp.access_token){
+            fetch('https://www.googleapis.com/oauth2/v3/userinfo',{headers:{Authorization:'Bearer '+resp.access_token}})
+              .then(function(r){return r.json()})
+              .then(function(u){if(u&&u.email)handleSocialReal('Google',u.name||u.email,u.email);else showAuthMsg('Falha ao obter dados do Google.','err')})
+              .catch(function(){showAuthMsg('Falha na conexão com o Google.','err')});
+          } else showAuthMsg('Login com Google cancelado.','err');
+        }
+      });
+      tc.requestAccessToken();
+    } else if(++tries>30){clearInterval(iv);showAuthMsg('Erro ao carregar o Google. Tente novamente.','err')}
   },150);
+}
+document.getElementById('googleBtn').addEventListener('click',function(){
+  if(!CONFIG.GOOGLE_CLIENT_ID){showAuthMsg('Cole sua chave do Google no topo do arquivo index.html (SITE_KEYS).','err');return}
+  googleLoginReal();
 });
+/* Login Facebook — abre direto o diálogo do Facebook */
 document.getElementById('fbBtn').addEventListener('click',function(){
-  if(!CONFIG.FB_APP_ID){window.location.href='setup.html';return}
+  if(!CONFIG.FB_APP_ID){showAuthMsg('Cole sua chave do Facebook no topo do arquivo index.html (SITE_KEYS).','err');return}
   initFacebookReal();
   showAuthMsg('Abrindo login do Facebook...','info');
   var tries=0;
-  var tryFB=setInterval(function(){
-    if(window.FB){clearInterval(tryFB);
+  var iv=setInterval(function(){
+    if(window.FB){clearInterval(iv);
       FB.login(function(resp){
         if(resp&&resp.authResponse){FB.api('/me',{fields:'name,email'},function(me){handleSocialReal('Facebook',me.name,me.email)})}
         else showAuthMsg('Login com Facebook cancelado.','err');
       },{scope:'email'});
-    }else if(++tries>20){clearInterval(tryFB);showAuthMsg('SDK do Facebook carregando. Tente novamente.','info')}
+    } else if(++tries>30){clearInterval(iv);showAuthMsg('Erro ao carregar o Facebook. Tente novamente.','err')}
   },150);
 });
 /* abre o assistente de configuração interativo (setup.html) */
