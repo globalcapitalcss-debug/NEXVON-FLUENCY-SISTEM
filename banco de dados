@@ -1,0 +1,2229 @@
+# Netlify redirects — SPA fallback (opcional)
+/*    /index.html   200
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#00e5ff"/>
+      <stop offset="50%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#ff2d95"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#05060f"/>
+  <rect x="4" y="4" width="56" height="56" rx="12" fill="none" stroke="url(#g)" stroke-width="2.5"/>
+  <text x="32" y="42" font-family="monospace" font-size="30" font-weight="bold" fill="url(#g)" text-anchor="middle">N</text>
+</svg>
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Guia Visual de Deploy — NEXVON Fluência Imersiva</title>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Sora',sans-serif;background:#05060f;color:#e8f0ff;line-height:1.6;padding:0}
+.page{max-width:820px;margin:0 auto;padding:40px 48px;page-break-after:always;position:relative}
+.page:last-child{page-break-after:auto}
+h1,h2,h3,.tech{font-family:'Chakra Petch',monospace;letter-spacing:.5px}
+h1{font-size:2.2rem;background:linear-gradient(90deg,#00e5ff,#a855f7,#ff2d95);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+h2{font-size:1.4rem;color:#00e5ff;margin:28px 0 14px;border-left:4px solid #00e5ff;padding-left:12px}
+h3{font-size:1.05rem;color:#a855f7;margin:18px 0 8px}
+p{margin:8px 0;font-size:.92rem;color:#c8d2e8}
+.sub{color:#8a97b8;font-size:.85rem;margin-bottom:24px}
+.eyebrow{display:inline-block;font-size:.7rem;letter-spacing:3px;color:#00e5ff;text-transform:uppercase;border:1px solid rgba(0,229,255,.3);padding:4px 12px;border-radius:14px;margin-bottom:10px;font-family:'Chakra Petch',monospace}
+.step{display:flex;gap:16px;margin:18px 0;align-items:flex-start}
+.step-num{flex-shrink:0;width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#00e5ff,#a855f7);color:#04121a;font-family:'Chakra Petch',monospace;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:1rem}
+.step-body{flex:1}
+.step-body b{color:#00e5ff}
+.mockup{background:#0a0e1f;border:1px solid rgba(0,229,255,.25);border-radius:12px;padding:18px;margin:14px 0;position:relative;box-shadow:0 4px 24px rgba(0,0,0,.5)}
+.mockup .bar{height:22px;background:rgba(255,255,255,.06);border-radius:6px;margin-bottom:10px;display:flex;align-items:center;padding:0 10px;gap:6px}
+.mockup .dot{width:10px;height:10px;border-radius:50%}
+.mockup .url{flex:1;height:12px;background:rgba(255,255,255,.1);border-radius:6px;margin-left:8px}
+.mockup .btn-hl{display:inline-block;background:linear-gradient(135deg,#00e5ff,#4dd0ff);color:#04121a;padding:8px 16px;border-radius:8px;font-family:'Chakra Petch',monospace;font-weight:700;font-size:.8rem;position:relative;box-shadow:0 0 16px rgba(0,229,255,.5);animation:pulse 1.5s infinite}
+.mockup .btn-hl::after{content:'← CLIQUE AQUI';position:absolute;left:calc(100% + 12px);top:50%;transform:translateY(-50%);color:#ff2d95;font-size:.7rem;font-family:'Chakra Petch',monospace;white-space:nowrap;letter-spacing:1px}
+@keyframes pulse{0%,100%{box-shadow:0 0 16px rgba(0,229,255,.5)}50%{box-shadow:0 0 28px rgba(0,229,255,.9)}}
+.mockup .field-mock{background:rgba(0,0,0,.3);border:1px solid rgba(0,229,255,.3);border-radius:6px;padding:8px 12px;margin:6px 0;font-size:.8rem;color:#8a97b8;font-family:monospace}
+.mockup .field-mock b{color:#00ff9d}
+.arrow{text-align:center;color:#00e5ff;font-size:1.4rem;margin:6px 0;font-family:'Chakra Petch',monospace}
+.checklist{background:rgba(0,255,157,.06);border:1px solid rgba(0,255,157,.3);border-radius:12px;padding:16px 20px;margin:16px 0}
+.checklist div{margin:6px 0;font-size:.88rem}
+.checklist div::before{content:'☐ ';color:#00ff9d;font-weight:700}
+.warn{background:rgba(255,92,122,.08);border:1px solid rgba(255,92,122,.4);border-radius:10px;padding:12px 16px;margin:14px 0;font-size:.85rem;color:#ffb3c1}
+.tip{background:rgba(255,194,75,.08);border:1px solid rgba(255,194,75,.4);border-radius:10px;padding:12px 16px;margin:14px 0;font-size:.85rem;color:#ffd98a}
+.cover{display:flex;flex-direction:column;justify-content:center;min-height:90vh;text-align:center}
+.cover .logo{font-size:4rem;font-family:'Chakra Petch',monospace;font-weight:700;letter-spacing:8px;background:linear-gradient(90deg,#00e5ff,#a855f7,#ff2d95);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
+.cover .title{font-size:1.6rem;margin-bottom:8px}
+.cover .meta{color:#8a97b8;font-size:.9rem;margin-top:30px}
+.toc{background:rgba(0,0,0,.3);border:1px solid rgba(0,229,255,.2);border-radius:12px;padding:20px 24px;margin-top:20px}
+.toc div{padding:6px 0;border-bottom:1px dashed rgba(138,151,184,.2);font-size:.9rem}
+.toc div:last-child{border:none}
+.toc span{color:#00e5ff;font-family:'Chakra Petch',monospace;margin-right:10px}
+.footer{position:absolute;bottom:20px;left:48px;right:48px;text-align:center;font-size:.7rem;color:#5a6788;font-family:'Chakra Petch',monospace;letter-spacing:2px;border-top:1px solid rgba(0,229,255,.15);padding-top:10px}
+@media print{body{background:#05060f;-webkit-print-color-adjust:exact;print-color-adjust:exact}.page{padding:30px 40px}}
+</style>
+</head>
+<body>
+
+<!-- CAPA -->
+<div class="page cover">
+  <div class="eyebrow">Documento de Implantação · v2100</div>
+  <div class="logo">NEXVON</div>
+  <div class="title">Guia Visual de Deploy</div>
+  <p style="max-width:520px;margin:0 auto">Como colocar o sistema NEXVON Fluência Imersiva no ar em minutos, com login real do Google e Facebook.</p>
+  <div class="toc" style="text-align:left;max-width:520px;margin:30px auto">
+    <div><span>01</span>Deploy mais rápido: Netlify Drop</div>
+    <div><span>02</span>Deploy com Vercel</div>
+    <div><span>03</span>Deploy com GitHub Pages</div>
+    <div><span>04</span>Deploy com cPanel / FTP</div>
+    <div><span>05</span>Configurar Login real do Google</div>
+    <div><span>06</span>Configurar Login real do Facebook</div>
+    <div><span>07</span>Pós-deploy: segurança e testes</div>
+    <div><span>08</span>Checklist final</div>
+  </div>
+  <div class="meta">NEXVON · Fluência Imersiva · Sistema v2100 · 2026</div>
+  <div class="footer">NEXVON — GUIA VISUAL DE DEPLOY · PÁGINA 1</div>
+</div>
+
+<!-- 01 NETLIFY -->
+<div class="page">
+  <div class="eyebrow">Capítulo 01 · 5 minutos</div>
+  <h1>Deploy mais rápido: Netlify Drop</h1>
+  <p class="sub">Sem cadastro demorado, sem terminal. Arraste e solte.</p>
+
+  <div class="step"><div class="step-num">1</div><div class="step-body">
+    <h3>Descompacte o pacote</h3>
+    <p>Extraia o arquivo <b>nexvon-site.zip</b> para uma pasta no seu computador. Você verá os arquivos: <b>index.html</b>, <b>favicon.svg</b>, <b>README.md</b> e arquivos de configuração.</p>
+  </div></div>
+
+  <div class="step"><div class="step-num">2</div><div class="step-body">
+    <h3>Acesse o Netlify Drop</h3>
+    <p>Abra <b>https://app.netlify.com/drop</b> no navegador. (Crie uma conta gratuita se for solicitado — leva 30 segundos com Google.)</p>
+    <div class="mockup">
+      <div class="bar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span><div class="url">app.netlify.com/drop</div></div>
+      <div style="border:2px dashed rgba(0,229,255,.5);border-radius:12px;padding:40px;text-align:center;margin-top:10px">
+        <div style="font-size:2.5rem;margin-bottom:8px">📁</div>
+        <div style="font-family:'Chakra Petch',monospace;color:#00e5ff;font-weight:700">Arraste sua pasta aqui</div>
+        <div style="font-size:.78rem;color:#8a97b8;margin-top:6px">ou procure no computador</div>
+      </div>
+    </div>
+  </div></div>
+
+  <div class="step"><div class="step-num">3</div><div class="step-body">
+    <h3>Arraste a pasta</h3>
+    <p>Pegue a pasta <b>nexvon-site</b> (descompactada) e arraste para dentro da área pontilhada. O upload começa automaticamente.</p>
+    <div class="arrow">▼ aguarde o upload ▼</div>
+  </div></div>
+
+  <div class="step"><div class="step-num">4</div><div class="step-body">
+    <h3>Site no ar!</h3>
+    <p>Em ~30 segundos você recebe um link: <b>https://nome-aleatorio.netlify.app</b>. Clique e seu sistema NEXVON estará funcionando com HTTPS.</p>
+    <div class="mockup">
+      <div class="field-mock">✅ Deploy concluído! Seu site: <b>https://nexvon-fluencia.netlify.app</b></div>
+      <span class="btn-hl">Abrir site</span>
+    </div>
+  </div></div>
+
+  <div class="tip">💡 Dica: em <b>Site settings → Change site name</b>, personalize o endereço (ex: <b>nexvon-fluencia.netlify.app</b>). Para domínio próprio (ex: <b>fluencia.seusite.com</b>, vá em <b>Domain settings → Add custom domain</b>.</div>
+  <div class="footer">NEXVON — GUIA VISUAL DE DEPLOY · PÁGINA 2</div>
+</div>
+
+<!-- 02 + 03 VERCEL + GITHUB -->
+<div class="page">
+  <div class="eyebrow">Capítulos 02 e 03 · 10 minutos</div>
+  <h1>Vercel & GitHub Pages</h1>
+
+  <h2>Opção A — Vercel (via terminal)</h2>
+  <div class="step"><div class="step-num">1</div><div class="step-body"><p>Instale a ferramenta: abra o terminal e digite <b>npm i -g vercel</b> (requer Node.js instalado).</p></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-body"><p>Entre na pasta do projeto: <b>cd nexvon-site</b></p></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-body"><p>Digite <b>vercel</b> e responda às perguntas (Enter para tudo padrão). Em ~20 segundos: <b>https://seu-projeto.vercel.app</b></p></div></div>
+  <div class="mockup"><div class="field-mock">$ vercel<br>✅ Deployed → <b>https://nexvon.vercel.app</b></div></div>
+
+  <h2>Opção B — GitHub Pages (gratuito, sem terminal)</h2>
+  <div class="step"><div class="step-num">1</div><div class="step-body"><p>Crie uma conta no <b>github.com</b> e clique em <b>New repository</b>. Dê um nome (ex: <b>nexvon</b>) e marque <b>Public</b>.</p></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-body"><p>Na página do repositório, clique em <b>uploading an existing file</b> e arraste todos os arquivos da pasta <b>nexvon-site</b> (incluindo os arquivos que começam com ponto: <b>.htaccess</b>, <b>.nojekyll</b>). Clique em <b>Commit changes</b>.</p></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-body"><p>Vá em <b>Settings → Pages</b>. Em <b>Branch</b> selecione <b>main</b> e pasta <b>/ (root)</b>. Clique em <b>Save</b>.</p>
+    <div class="mockup">
+      <div class="field-mock">Source: Deploy from a branch</div>
+      <div class="field-mock">Branch: <b>main</b> / (root) <span class="btn-hl" style="float:right">Save</span></div>
+    </div>
+  </div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-body"><p>Aguarde 1 minuto. Seu site estará em: <b>https://seu-usuario.github.io/nexvon/</b></p></div></div>
+
+  <div class="warn">⚠️ No GitHub Pages, certifique-se de que o arquivo <b>.nojekyll</b> foi enviado — sem ele, o GitHub pode bloquear arquivos que começam com underline.</div>
+  <div class="footer">NEXVON — GUIA VISUAL DE DEPLOY · PÁGINA 3</div>
+</div>
+
+<!-- 04 CPANEL -->
+<div class="page">
+  <div class="eyebrow">Capítulo 04 · Hospedagem tradicional</div>
+  <h1>cPanel / FTP (HostGator, Locaweb, etc.)</h1>
+
+  <div class="step"><div class="step-num">1</div><div class="step-body">
+    <h3>Baixe o FileZilla</h3>
+    <p>Programa gratuito de FTP: <b>https://filezilla-project.org</b>. Instale e abra.</p>
+  </div></div>
+
+  <div class="step"><div class="step-num">2</div><div class="step-body">
+    <h3>Conecte ao seu servidor</h3>
+    <p>No topo do FileZilla, preencha com os dados do seu provedor (encontrados no e-mail de boas-vindas da hospedagem):</p>
+    <div class="mockup">
+      <div class="field-mock">Servidor: <b>ftp.seusite.com</b> · Usuário: <b>seu_usuario</b> · Senha: <b>••••••</b> · Porta: <b>21</b></div>
+      <span class="btn-hl">Conexão rápida</span>
+    </div>
+  </div></div>
+
+  <div class="step"><div class="step-num">3</div><div class="step-body">
+    <h3>Envie os arquivos</h3>
+    <p>No painel direito (servidor), entre na pasta <b>public_html</b> (ou <b>www</b>). No painel esquerdo (seu computador), entre na pasta <b>nexvon-site</b>. Selecione <b>todos os arquivos</b> e arraste para a direita. Aguarde o upload.</p>
+    <div class="arrow">▼ arraste da esquerda para a direita ▼</div>
+  </div></div>
+
+  <div class="step"><div class="step-num">4</div><div class="step-body">
+    <h3>Acesse seu domínio</h3>
+    <p>Pronto! Acesse <b>https://seusite.com</b> — o <b>index.html</b> carrega automaticamente. O arquivo <b>.htaccess</b> incluso já ativa compressão e cache.</p>
+  </div></div>
+
+  <div class="tip">💡 Dica: certifique-se de que seu site tem <b>SSL (HTTPS)</b> ativo (Let's Encrypt gratuito no cPanel: <b>SSL/TLS Status → AutoSSL</b>). Sem HTTPS, o login social real não funciona.</div>
+  <div class="footer">NEXVON — GUIA VISUAL DE DEPLOY · PÁGINA 4</div>
+</div>
+
+<!-- 05 GOOGLE -->
+<div class="page">
+  <div class="eyebrow">Capítulo 05 · Login real</div>
+  <h1>Configurar Login do Google</h1>
+  <p class="sub">Permita que usuários entrem com o Google de verdade.</p>
+
+  <div class="step"><div class="step-num">1</div><div class="step-body">
+    <p>Acesse <b>https://console.cloud.google.com</b> e faça login com uma conta Google. Clique no menu de projetos no topo → <b>Novo Projeto</b>. Nomeie <b>NEXVON</b> → <b>Criar</b>.</p>
+  </div></div>
+
+  <div class="step"><div class="step-num">2</div><div class="step-body">
+    <p>No menu lateral: <b>APIs e Serviços → Credenciais</b>. Clique em <b>Criar credenciais → ID do cliente OAuth</b>.</p>
+    <div class="mockup">
+      <div class="field-mock">+ Criar credenciais ▾</div>
+      <span class="btn-hl">ID do cliente OAuth</span>
+    </div>
+  </div></div>
+
+  <div class="step"><div class="step-num">3</div><div class="step-body">
+    <p>Tipo de aplicativo: <b>Aplicativo da Web</b>. Nome: <b>NEXVON Login</b>.</p>
+    <p>Em <b>Origens JavaScript autorizadas</b>, clique em <b>+ Adicionar URI</b> e cole <b>a URL do seu site</b> (ex: <b>https://nexvon-fluencia.netlify.app</b> — sem barra no final).</p>
+    <div class="mockup">
+      <div class="field-mock">Origens JavaScript autorizadas:</div>
+      <div class="field-mock">URI 1: <b>https://nexvon-fluencia.netlify.app</b> <span style="color:#00ff9d">+ Adicionar URI</span></div>
+      <span class="btn-hl">Criar</span>
+    </div>
+  </div></div>
+
+  <div class="step"><div class="step-num">4</div><div class="step-body">
+    <p>Copie o <b>Client ID</b> gerado (formato: <b>123456789-abc.apps.googleusercontent.com</b>).</p>
+  </div></div>
+
+  <div class="step"><div class="step-num">5</div><div class="step-body">
+    <p>No seu site NEXVON (tela de login), clique em <b>"Configurar login real (Google/Facebook)"</b>, cole o Client ID no campo do Google e salve. Recarregue a página — o botão Google agora usa login real!</p>
+  </div></div>
+
+  <div class="warn">⚠️ A URL deve ser exatamente igual (incluindo https:// e sem barra final). Se mudar o domínio depois, volte aqui e adicione a nova URL.</div>
+  <div class="footer">NEXVON — GUIA VISUAL DE DEPLOY · PÁGINA 5</div>
+</div>
+
+<!-- 06 FACEBOOK -->
+<div class="page">
+  <div class="eyebrow">Capítulo 06 · Login real</div>
+  <h1>Configurar Login do Facebook</h1>
+
+  <div class="step"><div class="step-num">1</div><div class="step-body">
+    <p>Acesse <b>https://developers.facebook.com</b> e faça login. Clique em <b>Meus Apps → Criar App</b>. Tipo: <b>Consumidor</b>. Nome: <b>NEXVON</b> → <b>Criar App</b>.</p>
+  </div></div>
+
+  <div class="step"><div class="step-num">2</div><div class="step-body">
+    <p>No painel do app, role até <b>Facebook Login</b> e clique em <b>Configurar</b>. Escolha <b>Web</b>. Cole a URL do seu site → <b>Salvar</b>.</p>
+    <div class="mockup">
+      <div class="field-mock">URL do site: <b>https://nexvon-fluencia.netlify.app</b></div>
+      <span class="btn-hl">Salvar</span>
+    </div>
+  </div></div>
+
+  <div class="step"><div class="step-num">3</div><div class="step-body">
+    <p>Vá em <b>Configurações → Básico</b>. Copie o <b>App ID</b> (número, ex: <b>123456789012345</b>). Em <b>Domínios do App</b>, adicione seu domínio (ex: <b>nexvon-fluencia.netlify.app</b>) → <b>Salvar alterações</b>.</p>
+  </div></div>
+
+  <div class="step"><div class="step-num">4</div><div class="step-body">
+    <p>No seu site NEXVON, clique em <b>"Configurar login real (Google/Facebook)"</b>, cole o <b>App ID</b> no campo do Facebook e salve. Recarregue — login do Facebook ativo!</p>
+  </div></div>
+
+  <div class="tip">💡 Enquanto o app do Facebook está em <b>modo desenvolvimento</b>, só você (admin) consegue logar. Para liberar para todos, vá em <b>Revisão de Permissões e Recursos</b> e solicite <b>Advanced Access</b> para <b>email</b> e <b>public_profile</b> (geralmente aprovado em poucos dias).</div>
+  <div class="footer">NEXVON — GUIA VISUAL DE DEPLOY · PÁGINA 6</div>
+</div>
+
+<!-- 07 + 08 POS-DEPLOY + CHECKLIST -->
+<div class="page">
+  <div class="eyebrow">Capítulos 07 e 08 · Finalização</div>
+  <h1>Pós-deploy & Checklist Final</h1>
+
+  <h2>Segurança — troque a senha do admin</h2>
+  <div class="step"><div class="step-num">1</div><div class="step-body"><p>Faça login com <b>admin@nexvon.ai</b> / <b>admin2100</b>.</p></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-body"><p>Clique no botão de <b>Conta</b> (ícone de pessoa no topo) → <b>Alterar Senha</b>. Defina uma senha forte.</p></div></div>
+  <div class="warn">⚠️ A senha padrão <b>admin2100</b> está documentada — troque IMEDIATAMENTE após subir o site.</div>
+
+  <h2>Testes rápidos (2 minutos)</h2>
+  <div class="checklist">
+    <div>Abrir o site em celular e computador (responsivo)</div>
+    <div>Fazer um cadastro de teste (deve ficar pendente)</div>
+    <div>Logar como admin e liberar o usuário de teste</div>
+    <div>Testar o sino de notificações e o leitor de voz</div>
+    <div>Trocar o idioma no seletor (aguardar tradução)</div>
+    <div>Testar o botão "Acesso ao Sistema" (abre o Language Reactor)</div>
+    <div>Exportar um PDF de teste no painel admin</div>
+    <div>Testar login Google (se configurado)</div>
+  </div>
+
+  <h2>Checklist final de lançamento</h2>
+  <div class="checklist">
+    <div>Site online com HTTPS (cadeado verde)</div>
+    <div>Senha do admin alterada</div>
+    <div>Google Client ID configurado (opcional)</div>
+    <div>Facebook App ID configurado (opcional)</div>
+    <div>Domínio personalizado conectado (opcional)</div>
+    <div>Guia salvo em PDF para a equipe</div>
+  </div>
+
+  <div class="tip">🎉 Parabéns! Seu sistema NEXVON está no ar. Compartilhe o link com seus alunos/usuários. Para atualizações futuras, basta reenviar o novo <b>index.html</b> — todo o resto permanece igual.</div>
+
+  <div style="text-align:center;margin-top:30px;font-family:'Chakra Petch',monospace;color:#00e5ff;letter-spacing:4px;font-size:1.1rem">NEXVON · FLUÊNCIA IMERSIVA · SISTEMA v2100</div>
+  <div class="footer">NEXVON — GUIA VISUAL DE DEPLOY · PÁGINA 7</div>
+</div>
+
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXVON — Fluência Imersiva | Sistema de Treinamento Linguístico 2100</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#05060f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.js"></script>
+<style>
+:root{
+  --bg:#05060f;--bg2:#0a0e1f;--card:rgba(16,22,44,.72);--card-solid:#10162c;
+  --text:#e8f0ff;--muted:#8a97b8;--cyan:#00e5ff;--violet:#a855f7;--magenta:#ff2d95;
+  --green:#00ff9d;--amber:#ffc24b;--red:#ff5c7a;--border:rgba(0,229,255,.18);
+  --glow-cyan:0 0 20px rgba(0,229,255,.35);--glow-violet:0 0 20px rgba(168,85,247,.35);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Sora',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;line-height:1.65}
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(0,229,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.05) 1px,transparent 1px);
+  background-size:48px 48px;mask-image:radial-gradient(ellipse at 50% 0%,black 30%,transparent 80%)}
+.bg-glow1,.bg-glow2{position:fixed;border-radius:50%;filter:blur(120px);z-index:0;pointer-events:none}
+.bg-glow1{width:500px;height:500px;background:var(--cyan);top:-150px;left:-100px;opacity:.12}
+.bg-glow2{width:600px;height:600px;background:var(--violet);bottom:-200px;right:-150px;opacity:.14}
+.wrap{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:0 20px}
+h1,h2,h3,.tech{font-family:'Chakra Petch',monospace;letter-spacing:.5px}
+.grad-text{background:linear-gradient(90deg,var(--cyan),var(--violet) 50%,var(--magenta));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.eyebrow{display:inline-block;font-family:'Chakra Petch',monospace;font-size:.72rem;letter-spacing:3px;color:var(--cyan);text-transform:uppercase;border:1px solid var(--border);padding:5px 14px;border-radius:20px;margin-bottom:14px;background:rgba(0,229,255,.06)}
+
+/* ===== AUTH SCREEN ===== */
+#authScreen{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at center,rgba(10,14,31,.92),rgba(5,6,15,.98));backdrop-filter:blur(8px);padding:20px;overflow-y:auto}
+.auth-card{width:100%;max-width:420px;background:var(--card);border:1px solid var(--border);border-radius:18px;padding:30px;backdrop-filter:blur(14px);box-shadow:0 0 60px rgba(0,229,255,.12),inset 0 1px 0 rgba(255,255,255,.06);position:relative;overflow:hidden;margin:20px 0}
+.auth-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),var(--violet),transparent)}
+.auth-logo{text-align:center;margin-bottom:20px}
+.auth-logo .mark{font-family:'Chakra Petch',monospace;font-size:3rem;font-weight:700;letter-spacing:8px;text-shadow:0 0 30px rgba(0,229,255,.5),0 0 60px rgba(168,85,247,.3)}
+.auth-logo .sub{color:var(--muted);font-size:.72rem;letter-spacing:4px;text-transform:uppercase;margin-top:4px}
+.auth-tabs{display:flex;gap:8px;margin-bottom:16px;background:rgba(0,0,0,.3);padding:5px;border-radius:10px}
+.auth-tab{flex:1;padding:10px;text-align:center;border-radius:7px;cursor:pointer;font-family:'Chakra Petch',monospace;font-size:.82rem;letter-spacing:1.5px;color:var(--muted);transition:.25s;border:1px solid transparent}
+.auth-tab.active{background:linear-gradient(135deg,rgba(0,229,255,.18),rgba(168,85,247,.18));color:var(--text);border-color:var(--border)}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:.72rem;color:var(--muted);margin-bottom:5px;letter-spacing:1px;text-transform:uppercase;font-family:'Chakra Petch',monospace}
+.field input,.field select{width:100%;padding:11px 13px;background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:9px;color:var(--text);font-family:'Sora',sans-serif;font-size:.9rem;outline:none;transition:.25s}
+.field input:focus,.field select:focus{border-color:var(--cyan);box-shadow:var(--glow-cyan)}
+.field select option{background:var(--bg2);color:var(--text)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn-primary{width:100%;padding:13px;margin-top:6px;border:none;border-radius:9px;cursor:pointer;font-family:'Chakra Petch',monospace;font-weight:600;font-size:.9rem;letter-spacing:2px;text-transform:uppercase;color:#04121a;background:linear-gradient(135deg,var(--cyan),#4dd0ff);box-shadow:0 0 24px rgba(0,229,255,.4);transition:.25s}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 36px rgba(0,229,255,.6)}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted);padding:10px 18px;border-radius:8px;cursor:pointer;font-family:'Chakra Petch',monospace;font-size:.8rem;letter-spacing:1.5px;transition:.25s;text-transform:uppercase}
+.btn-ghost:hover{color:var(--cyan);border-color:var(--cyan)}
+.auth-msg{margin-top:12px;font-size:.82rem;text-align:center;min-height:20px}
+.auth-msg.err{color:var(--red)}.auth-msg.ok{color:var(--green)}.auth-msg.info{color:var(--amber)}
+.auth-note{margin-top:12px;text-align:center;font-size:.68rem;color:var(--muted)}
+.remember-row{display:flex;align-items:center;gap:8px;margin:8px 0 4px;font-size:.78rem;color:var(--muted);cursor:pointer;user-select:none}
+.remember-row input{accent-color:var(--cyan);width:16px;height:16px;cursor:pointer}
+.forgot-link{display:block;text-align:right;font-size:.76rem;color:var(--cyan);cursor:pointer;margin-top:6px;text-decoration:underline;text-underline-offset:3px}
+.forgot-link:hover{color:#fff}
+.divider{display:flex;align-items:center;gap:12px;margin:16px 0 12px;color:var(--muted);font-size:.7rem;letter-spacing:2px;text-transform:uppercase;font-family:'Chakra Petch',monospace}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.social-row{display:flex;gap:10px}
+.social-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;border-radius:9px;border:1px solid var(--border);cursor:pointer;font-family:'Sora',sans-serif;font-size:.83rem;font-weight:600;transition:.25s;background:rgba(255,255,255,.04);color:var(--text)}
+.social-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.4)}
+.social-btn.google{background:#fff;color:#1f1f1f;border-color:#ddd}
+.social-btn.fb{background:#1877F2;color:#fff;border-color:#1877F2}
+
+/* ===== MODAL ===== */
+.modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(3,5,12,.85);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
+.modal-card{width:100%;max-width:440px;background:var(--card-solid);border:1px solid var(--border);border-radius:16px;padding:26px;position:relative;box-shadow:0 0 50px rgba(0,229,255,.15);margin:20px 0}
+.modal-card.wide{max-width:640px}
+.modal-card h3{font-size:1.05rem;margin-bottom:14px;color:var(--cyan)}
+.modal-close{position:absolute;top:12px;right:16px;background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer;line-height:1}
+.modal-close:hover{color:var(--red)}
+.temp-code{background:rgba(0,255,157,.08);border:1px solid rgba(0,255,157,.4);border-radius:8px;padding:12px;text-align:center;font-family:'Chakra Petch',monospace;font-size:1.4rem;letter-spacing:6px;color:var(--green);margin:12px 0}
+.modal-note{font-size:.74rem;color:var(--muted);margin-top:10px;line-height:1.5}
+
+/* ===== NOTIFICATION DROPDOWN (admin) ===== */
+.notif-wrap{position:relative}
+.notif-btn{position:relative;width:40px;height:40px;border-radius:9px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.25s}
+.notif-btn:hover{color:var(--amber);border-color:var(--amber)}
+.notif-badge{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:9px;background:var(--red);color:#fff;font-size:.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px;font-family:'Chakra Petch',monospace}
+@keyframes dilate{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+.notif-btn.pulse{animation:dilate 1.2s infinite;border-color:var(--amber);color:var(--amber);box-shadow:0 0 16px rgba(255,194,75,.4)}
+.notif-dropdown{position:absolute;top:48px;right:0;width:340px;max-height:400px;overflow-y:auto;background:var(--card-solid);border:1px solid var(--border);border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.6);z-index:60;padding:10px}
+.notif-item{padding:12px;border-radius:8px;margin-bottom:6px;background:rgba(0,0,0,.3);border-left:3px solid var(--amber);font-size:.8rem}
+.notif-item .n-title{font-weight:600;color:var(--amber);margin-bottom:3px}
+.notif-item .n-desc{color:var(--muted);font-size:.74rem}
+.notif-item .n-time{font-size:.68rem;color:#5a6788;margin-top:4px;font-family:'Chakra Petch',monospace}
+.notif-empty{padding:20px;text-align:center;color:var(--muted);font-size:.8rem}
+
+/* ===== HEADER ===== */
+header.topbar{position:sticky;top:0;z-index:50;backdrop-filter:blur(16px);background:rgba(5,6,15,.82);border-bottom:1px solid var(--border)}
+.topbar-inner{max-width:1180px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}
+.brand .logo-mark{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--cyan),var(--violet));font-family:'Chakra Petch',monospace;font-weight:700;color:#04121a;font-size:1.1rem;box-shadow:var(--glow-cyan)}
+.brand .name{font-family:'Chakra Petch',monospace;font-weight:700;font-size:1.25rem;letter-spacing:3px}
+.brand .tag{font-size:.65rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+.nav-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.btn-access{padding:11px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'Chakra Petch',monospace;font-weight:600;font-size:.82rem;letter-spacing:1.5px;text-transform:uppercase;color:#04121a;background:linear-gradient(135deg,var(--green),#4dffb8);box-shadow:0 0 20px rgba(0,255,157,.35);display:inline-flex;align-items:center;gap:8px;transition:.25s;text-decoration:none}
+.btn-access:hover{transform:translateY(-2px);box-shadow:0 0 32px rgba(0,255,157,.55)}
+.btn-icon{width:40px;height:40px;border-radius:9px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.25s;flex-shrink:0}
+.btn-icon:hover{color:var(--cyan);border-color:var(--cyan)}
+.btn-logout{padding:10px 16px;border-radius:9px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-family:'Chakra Petch',monospace;font-size:.78rem;letter-spacing:1.5px;text-transform:uppercase;transition:.25s}
+.btn-logout:hover{color:var(--red);border-color:var(--red)}
+.user-chip{display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--muted);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.user-chip .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);flex-shrink:0}
+.user-chip .dot.admin{background:var(--amber);box-shadow:0 0 8px var(--amber)}
+.admin-badge{background:linear-gradient(135deg,var(--amber),#ff8a3d);color:#1a0f00;padding:4px 10px;border-radius:6px;font-family:'Chakra Petch',monospace;font-size:.68rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+
+/* ===== TOAST (study reminder) ===== */
+.toast{position:fixed;bottom:24px;right:24px;z-index:300;max-width:360px;background:var(--card-solid);border:1px solid var(--cyan);border-radius:14px;padding:18px;box-shadow:0 0 40px rgba(0,229,255,.3);transform:translateX(120%);transition:transform .5s cubic-bezier(.4,0,.2,1)}
+.toast.show{transform:translateX(0)}
+.toast .t-title{font-family:'Chakra Petch',monospace;font-weight:700;color:var(--cyan);font-size:1rem;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.toast .t-msg{font-size:.82rem;color:var(--muted);margin-bottom:12px}
+.toast .t-actions{display:flex;gap:8px}
+.toast .t-btn{flex:1;padding:9px;border-radius:8px;border:none;cursor:pointer;font-family:'Chakra Petch',monospace;font-size:.75rem;letter-spacing:1px;text-transform:uppercase;font-weight:600;transition:.25s}
+.toast .t-btn.go{background:linear-gradient(135deg,var(--cyan),#4dd0ff);color:#04121a}
+.toast .t-btn.snooze{background:transparent;border:1px solid var(--border);color:var(--muted)}
+.toast .t-btn.close{flex:0 0 auto;padding:9px 12px;background:transparent;border:1px solid var(--border);color:var(--muted)}
+
+/* ===== TABS ===== */
+.tabs{display:flex;gap:8px;margin:28px 0 22px;flex-wrap:wrap}
+.tab-btn{padding:11px 22px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;font-family:'Chakra Petch',monospace;font-size:.82rem;letter-spacing:1.5px;text-transform:uppercase;transition:.25s;backdrop-filter:blur(10px)}
+.tab-btn.active{background:linear-gradient(135deg,rgba(0,229,255,.2),rgba(168,85,247,.2));color:var(--text);border-color:var(--cyan);box-shadow:var(--glow-cyan)}
+.tab-panel{display:none;animation:fadeIn .4s ease}
+.tab-panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ===== DASHBOARD ===== */
+.hero-dash{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px;backdrop-filter:blur(14px);margin-bottom:22px;position:relative;overflow:hidden}
+.hero-dash::after{content:'';position:absolute;top:-50%;right:-10%;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(168,85,247,.25),transparent 70%);pointer-events:none}
+.hero-dash h2{font-size:1.5rem;margin-bottom:6px}
+.hero-dash p{color:var(--muted);font-size:.9rem}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:22px 0}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;backdrop-filter:blur(10px);position:relative;overflow:hidden;transition:.3s}
+.stat-card:hover{transform:translateY(-3px);border-color:var(--cyan)}
+.stat-card .label{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;font-family:'Chakra Petch',monospace}
+.stat-card .value{font-family:'Chakra Petch',monospace;font-size:1.7rem;font-weight:700;margin-top:6px}
+.stat-card .value.cyan{color:var(--cyan)}.stat-card .value.violet{color:var(--violet)}
+.stat-card .value.green{color:var(--green)}.stat-card .value.amber{color:var(--amber)}
+.stat-card .sub{font-size:.7rem;color:var(--muted);margin-top:4px}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;backdrop-filter:blur(12px);margin-bottom:22px}
+.panel h3{font-size:1rem;margin-bottom:14px;display:flex;align-items:center;gap:10px;color:var(--cyan)}
+.panel h3 svg{flex-shrink:0}
+.config-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.config-grid .field{margin-bottom:0}
+.meta-display{margin-top:14px;padding:13px;border-radius:10px;background:rgba(0,229,255,.06);border:1px dashed var(--border);font-size:.83rem;color:var(--muted)}
+.meta-display b{color:var(--cyan);font-family:'Chakra Petch',monospace}
+
+/* ===== CHECKLIST ===== */
+.task-item{display:flex;align-items:center;gap:14px;padding:13px 15px;border-radius:12px;background:rgba(0,0,0,.25);border:1px solid var(--border);margin-bottom:9px;transition:.25s;cursor:pointer}
+.task-item:hover{border-color:var(--cyan);background:rgba(0,229,255,.05)}
+.task-item.done{opacity:.55;border-color:rgba(0,255,157,.3);background:rgba(0,255,157,.04)}
+.task-check{width:26px;height:26px;border-radius:7px;border:2px solid var(--muted);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:.25s}
+.task-item.done .task-check{background:var(--green);border-color:var(--green);box-shadow:0 0 12px rgba(0,255,157,.5)}
+.task-check svg{opacity:0;transition:.25s;color:#04121a}
+.task-item.done .task-check svg{opacity:1}
+.task-info{flex:1;min-width:0}
+.task-info .t-name{font-weight:600;font-size:.9rem}
+.task-item.done .t-name{text-decoration:line-through}
+.task-info .t-desc{font-size:.73rem;color:var(--muted);margin-top:2px}
+.task-time{font-family:'Chakra Petch',monospace;font-size:.76rem;color:var(--amber);background:rgba(255,194,75,.08);padding:5px 10px;border-radius:6px;white-space:nowrap}
+.progress-wrap{margin-top:16px}
+.progress-bar{height:10px;background:rgba(0,0,0,.4);border-radius:6px;overflow:hidden;border:1px solid var(--border)}
+.progress-fill{height:100%;width:0%;border-radius:6px;background:linear-gradient(90deg,var(--cyan),var(--violet),var(--magenta));box-shadow:0 0 12px rgba(0,229,255,.5);transition:width .6s cubic-bezier(.4,0,.2,1)}
+.progress-label{display:flex;justify-content:space-between;font-size:.76rem;color:var(--muted);margin-top:8px;font-family:'Chakra Petch',monospace}
+
+/* ===== CHART ===== */
+.chart-period{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.period-btn{padding:7px 14px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-family:'Chakra Petch',monospace;font-size:.73rem;letter-spacing:1.5px;text-transform:uppercase;transition:.25s}
+.period-btn.active{background:linear-gradient(135deg,rgba(0,229,255,.2),rgba(168,85,247,.2));color:var(--text);border-color:var(--cyan)}
+.chart-box{position:relative;height:300px}
+
+/* ===== ADMIN ===== */
+.admin-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:22px}
+.user-table-wrap{overflow-x:auto}
+table.user-table{width:100%;border-collapse:collapse;font-size:.82rem;min-width:860px}
+table.user-table th,table.user-table td{padding:11px 12px;text-align:left;border-bottom:1px solid var(--border)}
+table.user-table th{background:rgba(0,229,255,.1);color:var(--cyan);font-family:'Chakra Petch',monospace;font-size:.72rem;letter-spacing:1px;text-transform:uppercase;white-space:nowrap}
+table.user-table td .u-name{font-weight:600}
+table.user-table td .u-mail{font-size:.72rem;color:var(--muted)}
+.status-pill{padding:4px 10px;border-radius:20px;font-size:.68rem;font-family:'Chakra Petch',monospace;letter-spacing:1px;text-transform:uppercase;font-weight:600;white-space:nowrap;display:inline-block}
+.status-pill.active{background:rgba(0,255,157,.12);color:var(--green);border:1px solid rgba(0,255,157,.4)}
+.status-pill.blocked{background:rgba(255,92,122,.12);color:var(--red);border:1px solid rgba(255,92,122,.4)}
+.status-pill.pending{background:rgba(255,194,75,.12);color:var(--amber);border:1px solid rgba(255,194,75,.4);animation:pulse 1.5s infinite}
+.status-pill.admin{background:rgba(168,85,247,.15);color:var(--violet);border:1px solid rgba(168,85,247,.5)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+.btn-small{padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-family:'Chakra Petch',monospace;font-size:.68rem;letter-spacing:1px;text-transform:uppercase;transition:.25s;margin-right:5px;margin-bottom:4px;white-space:nowrap}
+.btn-small:hover{color:var(--text);border-color:var(--cyan)}
+.btn-small.approve{color:var(--green);border-color:rgba(0,255,157,.4)}
+.btn-small.approve:hover{background:rgba(0,255,157,.1);border-color:var(--green)}
+.btn-small.block{color:var(--red);border-color:rgba(255,92,122,.4)}
+.btn-small.block:hover{background:rgba(255,92,122,.1);border-color:var(--red)}
+.detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin:14px 0}
+.detail-grid .dg{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center}
+.detail-grid .dg .l{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-family:'Chakra Petch',monospace}
+.detail-grid .dg .v{font-family:'Chakra Petch',monospace;font-size:1.3rem;font-weight:700;color:var(--cyan);margin-top:4px}
+
+/* ===== METHOD ===== */
+.method-hero{text-align:center;padding:44px 20px 26px}
+.method-hero h1{font-size:clamp(1.9rem,6vw,3.2rem);line-height:1.1;margin-bottom:12px}
+.method-hero p{color:var(--muted);max-width:640px;margin:0 auto;font-size:.95rem}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.86rem}
+th,td{padding:11px 13px;text-align:left;border-bottom:1px solid var(--border)}
+th{background:rgba(0,229,255,.1);color:var(--cyan);font-family:'Chakra Petch',monospace;font-size:.76rem;letter-spacing:1px;text-transform:uppercase}
+tr:hover{background:rgba(0,229,255,.04)}
+.fase{background:var(--card);border-radius:16px;padding:24px;margin-bottom:20px;border:1px solid var(--border);backdrop-filter:blur(10px);position:relative;overflow:hidden}
+.fase::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.fase.f1::before{background:linear-gradient(90deg,var(--green),transparent)}
+.fase.f2::before{background:linear-gradient(90deg,var(--amber),transparent)}
+.fase.f3::before{background:linear-gradient(90deg,var(--magenta),transparent)}
+.fase h3{font-size:1.15rem;margin-bottom:8px}
+.fase .meta{color:var(--muted);font-size:.83rem;margin-bottom:14px;font-family:'Chakra Petch',monospace}
+.fase h4{color:var(--cyan);font-family:'Chakra Petch',monospace;font-size:.9rem;margin:16px 0 7px;letter-spacing:1px}
+.fase ul{margin-left:18px;margin-bottom:10px}
+.fase li{margin:6px 0;font-size:.88rem;color:#c8d2e8}
+.destaque{background:linear-gradient(135deg,rgba(0,229,255,.08),rgba(168,85,247,.08));border:1px solid var(--border);border-radius:12px;padding:16px;margin:16px 0;font-size:.9rem}
+.destaque b{color:var(--cyan)}
+footer.page-foot{text-align:center;padding:36px 20px;color:var(--muted);font-size:.78rem;border-top:1px solid var(--border);margin-top:36px}
+footer.page-foot .tech-line{font-family:'Chakra Petch',monospace;letter-spacing:3px;color:var(--cyan);margin-bottom:8px}
+.hidden{display:none!important}
+/* ===== READER BAR (text-to-speech) ===== */
+.reader-bar{position:sticky;top:70px;z-index:30;display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--card-solid);border:1px solid var(--border);border-radius:12px;padding:10px 14px;margin-bottom:18px;backdrop-filter:blur(14px);box-shadow:0 4px 20px rgba(0,0,0,.4)}
+.reader-btn{width:40px;height:40px;border-radius:9px;border:1px solid var(--border);background:rgba(0,229,255,.06);color:var(--cyan);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.25s;flex-shrink:0}
+.reader-btn:hover{background:rgba(0,229,255,.18);transform:translateY(-1px)}
+.reader-btn.play{background:linear-gradient(135deg,var(--cyan),#4dd0ff);color:#04121a;border:none;box-shadow:0 0 16px rgba(0,229,255,.4)}
+.reader-btn.muted{color:var(--red);border-color:rgba(255,92,122,.4)}
+.reader-info{flex:1;min-width:120px;font-size:.75rem;color:var(--muted);font-family:'Chakra Petch',monospace;letter-spacing:1px}
+.reader-info b{color:var(--cyan)}
+.reader-highlight{outline:2px solid var(--cyan);outline-offset:3px;border-radius:6px;background:rgba(0,229,255,.08)!important;transition:.3s}
+.reader-clickable{cursor:pointer;transition:.2s;border-radius:6px}
+.reader-clickable:hover{background:rgba(0,229,255,.07);box-shadow:inset 0 0 0 1px rgba(0,229,255,.25)}
+/* ===== AI ASSISTENT ===== */
+.ai-fab{position:fixed;bottom:24px;left:24px;z-index:300;width:56px;height:56px;border-radius:50%;border:none;cursor:pointer;background:linear-gradient(135deg,var(--violet),var(--magenta));color:#fff;box-shadow:0 0 30px rgba(168,85,247,.5);display:flex;align-items:center;justify-content:center;transition:.3s;animation:floaty 3s ease-in-out infinite}
+.ai-fab:hover{transform:scale(1.08)}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.ai-panel{position:fixed;bottom:92px;left:24px;z-index:300;width:360px;max-width:calc(100vw - 48px);height:480px;max-height:70vh;background:var(--card-solid);border:1px solid var(--violet);border-radius:16px;box-shadow:0 0 40px rgba(168,85,247,.3);display:flex;flex-direction:column;overflow:hidden;transform:translateY(20px);opacity:0;pointer-events:none;transition:.3s}
+.ai-panel.open{transform:translateY(0);opacity:1;pointer-events:auto}
+.ai-head{padding:14px 16px;background:linear-gradient(135deg,rgba(168,85,247,.2),rgba(255,45,149,.15));border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.ai-head .t{font-family:'Chakra Petch',monospace;font-weight:700;font-size:.9rem;letter-spacing:1px;display:flex;align-items:center;gap:8px}
+.ai-head .t .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
+.ai-body{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.ai-msg{max-width:85%;padding:10px 13px;border-radius:12px;font-size:.82rem;line-height:1.5;animation:fadeIn .3s ease}
+.ai-msg.user{align-self:flex-end;background:linear-gradient(135deg,rgba(0,229,255,.2),rgba(168,85,247,.2));border:1px solid var(--border);border-bottom-right-radius:3px}
+.ai-msg.bot{align-self:flex-left;background:rgba(0,0,0,.35);border:1px solid var(--border);border-bottom-left-radius:3px;color:#c8d2e8}
+.ai-input-row{display:flex;gap:8px;padding:10px;border-top:1px solid var(--border)}
+.lang-select{background:rgba(0,0,0,.35);border:1px solid var(--border);color:var(--cyan);border-radius:8px;padding:7px 10px;font-size:.72rem;font-family:'Chakra Petch',monospace;letter-spacing:1px;cursor:pointer;outline:none;transition:.25s;max-width:160px}
+.lang-select:hover{border-color:var(--cyan)}
+.lang-select option{background:var(--bg2);color:var(--text)}
+.ai-input-row input{flex:1;padding:10px 12px;background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:9px;color:var(--text);font-size:.85rem;outline:none}
+.ai-input-row input:focus{border-color:var(--violet)}
+.ai-input-row button{padding:0 16px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--violet),var(--magenta));color:#fff;cursor:pointer;font-family:'Chakra Petch',monospace;font-weight:600;font-size:.8rem;letter-spacing:1px}
+.ai-suggest{display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 10px}
+.ai-suggest span{font-size:.7rem;padding:5px 10px;border-radius:14px;border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:.2s}
+.ai-suggest span:hover{color:var(--violet);border-color:var(--violet)}
+.ai-msg.bot{cursor:pointer;position:relative;padding-right:40px}
+.ai-msg.bot.speaking{outline:2px solid var(--violet);outline-offset:2px;box-shadow:0 0 16px rgba(168,85,247,.4)}
+.ai-audio-btn{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:6px;border:1px solid var(--border);background:rgba(168,85,247,.12);color:var(--violet);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;padding:0}
+.ai-audio-btn:hover{background:rgba(168,85,247,.3);transform:scale(1.08)}
+.ai-audio-btn.muted{color:var(--red);border-color:rgba(255,92,122,.4)}
+.ai-mic-btn{width:42px;padding:0;display:flex;align-items:center;justify-content:center;background:rgba(168,85,247,.15);border:1px solid var(--violet);color:var(--violet);border-radius:9px;cursor:pointer;transition:.2s;flex-shrink:0}
+.ai-mic-btn:hover{background:rgba(168,85,247,.3)}
+.ai-mic-btn.listening{background:var(--red);border-color:var(--red);color:#fff;animation:dilate 1s infinite}
+.ai-input-row{display:flex;gap:8px;padding:10px;border-top:1px solid var(--border)}
+.lang-select{background:rgba(0,0,0,.35);border:1px solid var(--border);color:var(--cyan);border-radius:8px;padding:7px 10px;font-size:.72rem;font-family:'Chakra Petch',monospace;letter-spacing:1px;cursor:pointer;outline:none;transition:.25s;max-width:160px}
+.lang-select:hover{border-color:var(--cyan)}
+.lang-select option{background:var(--bg2);color:var(--text)}
+/* ===== ADMIN FILTERS ===== */
+.admin-filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+.admin-filters input,.admin-filters select{padding:9px 12px;background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:.82rem;outline:none;font-family:'Sora',sans-serif}
+.admin-filters input:focus,.admin-filters select:focus{border-color:var(--cyan)}
+.admin-filters input{flex:1;min-width:180px}
+.btn-export{padding:9px 16px;border-radius:8px;border:none;background:linear-gradient(135deg,var(--green),#4dffb8);color:#04121a;cursor:pointer;font-family:'Chakra Petch',monospace;font-weight:600;font-size:.75rem;letter-spacing:1px;text-transform:uppercase;display:inline-flex;align-items:center;gap:6px}
+.btn-export:hover{box-shadow:0 0 16px rgba(0,255,157,.4)}
+.notif-item.clickable{cursor:pointer;transition:.2s}
+.notif-item.clickable:hover{border-left-color:var(--cyan);background:rgba(0,229,255,.06)}
+@media(max-width:640px){.auth-card{padding:22px 16px}.panel,.fase{padding:16px}.chart-box{height:240px}.task-time{display:none}.social-row{flex-direction:column}.field-row{grid-template-columns:1fr}.toast{left:16px;right:16px;max-width:none}.ai-panel{left:12px;right:12px;width:auto}.ai-fab{left:12px;bottom:12px}}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-glow1"></div>
+<div class="bg-glow2"></div>
+
+<!-- ============ AUTH SCREEN ============ -->
+<div id="authScreen">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="mark grad-text">NEXVON</div>
+      <div class="sub">Sistema de Fluência Imersiva · 2100</div>
+    </div>
+    <select id="uiLangAuth" class="lang-select" title="Idioma / Language" style="margin-bottom:12px;width:100%"></select>
+    <div class="auth-tabs">
+      <div class="auth-tab active" data-tab="login">Acessar</div>
+      <div class="auth-tab" data-tab="register">Cadastrar</div>
+    </div>
+
+    <div id="loginForm">
+      <div class="field"><label>E-mail</label><input type="email" id="loginEmail" placeholder="voce@nexvon.ai"></div>
+      <div class="field"><label>Senha</label><input type="password" id="loginPass" placeholder="••••••••"></div>
+      <label class="remember-row"><input type="checkbox" id="rememberMe"> Salvar senha neste dispositivo</label>
+      <button class="btn-primary" id="loginBtn">Iniciar Sessão</button>
+      <span class="forgot-link" id="forgotLink">Esqueci minha senha</span>
+    </div>
+
+    <div id="registerForm" class="hidden">
+      <div class="field"><label>Nome Completo</label><input type="text" id="regName" placeholder="Seu nome completo"></div>
+      <div class="field-row">
+        <div class="field"><label>Data de Nascimento</label><input type="text" id="regBirth" inputmode="numeric" maxlength="10" placeholder="DD/MM/AAAA" autocomplete="bday"></div>
+        <div class="field"><label>E-mail</label><input type="email" id="regEmail" placeholder="voce@email.com"></div>
+      </div>
+      <div class="field"><label>Senha (mín. 4 caracteres)</label><input type="password" id="regPass" placeholder="••••••••"></div>
+      <div class="field"><label>Confirmar Senha</label><input type="password" id="regPass2" placeholder="••••••••"></div>
+      <label class="remember-row"><input type="checkbox" id="rememberReg"> Lembrar meus dados (nome, data e e-mail)</label>
+      <button class="btn-primary" id="registerBtn">Solicitar Acesso</button>
+      <div class="auth-note" style="margin-top:10px">Após o cadastro, aguarde a liberação do administrador.</div>
+    </div>
+
+    <div class="divider">ou acesse com</div>
+    <div class="social-row">
+      <button class="social-btn google" id="googleBtn">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Google
+      </button>
+      <button class="social-btn fb" id="fbBtn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        Facebook
+      </button>
+    </div>
+
+    <div class="auth-msg" id="authMsg"></div>
+  </div>
+</div>
+
+<!-- ============ TOAST (study reminder) ============ -->
+<div class="toast" id="studyToast">
+  <div class="t-title">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    Hora de ser Fluente!
+  </div>
+  <div class="t-msg" id="toastMsg">Está na hora do seu estudo diário de idiomas.</div>
+  <div class="t-actions">
+    <button class="t-btn go" id="toastGo">Iniciar Estudo</button>
+    <button class="t-btn snooze" id="toastSnooze">Adiar 10 min</button>
+    <button class="t-btn close" id="toastClose">✕</button>
+  </div>
+</div>
+
+<!-- ============ AI ASSISTENT ============ -->
+<button class="ai-fab" id="aiFab" title="Assistente NEXVON AI">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+</button>
+<div class="ai-panel" id="aiPanel">
+  <div class="ai-head">
+    <div class="t"><span class="dot"></span>Assistente NEXVON AI</div>
+    <button class="modal-close" id="aiClose" style="position:static;font-size:1.2rem">&times;</button>
+  </div>
+  <div class="ai-body" id="aiBody">
+    <div class="ai-msg bot">Olá! Sou o assistente do NEXVON. Tire qualquer dúvida sobre o Language Reactor, o método de fluência ou o sistema. Como posso ajudar?</div>
+  </div>
+  <div class="ai-suggest" id="aiSuggest">
+    <span data-q="O que é o Language Reactor?">O que é LR?</span>
+    <span data-guide="instalar">PDF: Instalar</span>
+    <span data-guide="phrasepump">PDF: PhrasePump</span>
+    <span data-guide="aria">PDF: Aria</span>
+    <span data-guide="anki">PDF: Anki</span>
+    <span data-guide="legendas">PDF: Legendas</span>
+    <span data-guide="velocidade">PDF: Velocidade</span>
+  </div>
+  <div class="ai-input-row">
+    <input type="text" id="aiInput" placeholder="Digite ou fale sua dúvida...">
+    <button class="ai-mic-btn" id="aiMic" title="Falar com o assistente">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+    </button>
+    <button id="aiSend">Enviar</button>
+  </div>
+</div>
+
+<!-- ============ MODAL ROOT ============ -->
+<div id="modalRoot"></div>
+
+<!-- ============ MAIN APP ============ -->
+<div id="app" class="hidden">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="logo-mark">N</div>
+        <div>
+          <div class="name grad-text">NEXVON</div>
+          <div class="tag">Fluência Imersiva · v2100</div>
+        </div>
+      </div>
+      <select id="uiLang" class="lang-select" title="Idioma / Language"></select>
+      <div class="nav-actions">
+        <span class="user-chip"><span class="dot" id="userDot"></span><span id="userEmailLabel"></span></span>
+        <span class="admin-badge hidden" id="adminBadge">Admin</span>
+        <div class="notif-wrap hidden" id="notifWrap">
+          <button class="notif-btn" id="notifBtn" title="Notificações">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span class="notif-badge hidden" id="notifBadge">0</span>
+          </button>
+          <div class="notif-dropdown hidden" id="notifDropdown"></div>
+        </div>
+        <a class="btn-access" href="https://share.google/uunx4Zcwo0VN38Htb" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Acesso ao Sistema
+        </a>
+        <button class="btn-icon" id="accountBtn" title="Conta e Segurança">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </button>
+        <button class="btn-logout" id="logoutBtn">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="tabs" id="userTabs">
+      <button class="tab-btn active" data-panel="dashboard">Central de Controle</button>
+      <button class="tab-btn" data-panel="method">Método Completo</button>
+    </div>
+    <div class="tabs hidden" id="adminTabs">
+      <button class="tab-btn active" data-panel="admin">Gestão de Acessos</button>
+      <button class="tab-btn" data-panel="method">Método Completo</button>
+    </div>
+
+    <!-- ===== USER DASHBOARD ===== -->
+    <div class="tab-panel active" id="panel-dashboard">
+      <div class="hero-dash">
+        <span class="eyebrow">Interface Neural · Online</span>
+        <h2>Bem-vindo de volta, <span class="grad-text" id="heroName">Operador</span></h2>
+        <p id="heroSub">Configure seu idioma alvo, tempo e horário diário para ativar o protocolo de fluência.</p>
+        <button class="btn-ghost" id="notifyBtn" style="margin-top:14px">Ativar Notificações no Aparelho</button>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="label">Sequência Atual</div><div class="value cyan" id="statStreak">0</div><div class="sub">dias consecutivos</div></div>
+        <div class="stat-card"><div class="label">Total Estudado</div><div class="value violet" id="statTotal">0</div><div class="sub">minutos acumulados</div></div>
+        <div class="stat-card"><div class="label">Hoje</div><div class="value green" id="statToday">0</div><div class="sub">minutos / meta <span id="statGoal">60</span></div></div>
+        <div class="stat-card"><div class="label">Nível Estimado</div><div class="value amber" id="statLevel">A1</div><div class="sub">baseado no progresso</div></div>
+      </div>
+      <div class="panel">
+        <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Configuração do Operador</h3>
+        <div class="config-grid">
+          <div class="field"><label>Idioma Alvo</label><select id="cfgLang">
+            <option value="Inglês">Inglês</option><option value="Espanhol">Espanhol</option><option value="Francês">Francês</option>
+            <option value="Alemão">Alemão</option><option value="Italiano">Italiano</option><option value="Japonês">Japonês</option>
+            <option value="Mandarim">Mandarim</option><option value="Coreano">Coreano</option><option value="Russo">Russo</option>
+            <option value="Árabe">Árabe</option><option value="Outro">Outro</option>
+          </select></div>
+          <div class="field"><label>Tempo Diário (min)</label><input type="number" id="cfgMinutes" min="15" max="300" step="5" value="60"></div>
+          <div class="field"><label>Horário de Estudo</label><input type="text" id="cfgTime" inputmode="numeric" maxlength="5" placeholder="HH:MM"></div>
+          <div class="field"><label>Avisar antes de (min)</label><input type="number" id="cfgRemind" min="0" max="120" step="5" value="10"></div>
+          <div class="field"><label>Plano de Meta</label><select id="cfgPlan">
+            <option value="90">90 Dias · Básico → Intermediário</option>
+            <option value="180">180 Dias · Intermediário → Avançado</option>
+            <option value="365" selected>365 Dias · Fluência Completa</option>
+          </select></div>
+        </div>
+        <button class="btn-ghost" id="saveCfgBtn" style="margin-top:14px">Salvar Configuração</button>
+        <div class="meta-display" id="cfgMeta">Defina idioma, tempo e horário para calcular a rota de fluência.</div>
+      </div>
+      <div class="panel">
+        <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Protocolo Diário — <span id="todayDate"></span></h3>
+        <div id="taskList"></div>
+        <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
+        <div class="progress-label"><span id="progText">0 de 6 atividades concluídas</span><span id="progPct">0%</span></div></div>
+      </div>
+      <div class="panel">
+        <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Evolução de Estudo</h3>
+        <div class="chart-period">
+          <button class="period-btn active" data-period="daily">Diário</button>
+          <button class="period-btn" data-period="weekly">Semanal</button>
+          <button class="period-btn" data-period="monthly">Mensal</button>
+        </div>
+        <div class="chart-box"><canvas id="evoChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- ===== ADMIN PANEL ===== -->
+    <div class="tab-panel" id="panel-admin">
+      <div class="hero-dash">
+        <span class="eyebrow" style="color:var(--amber);border-color:rgba(255,194,75,.4);background:rgba(255,194,75,.06)">Modo Administrador · Ativo</span>
+        <h2>Painel de <span class="grad-text">Gestão de Acessos</span></h2>
+        <p>Controle todos os operadores — aprove libertações pendentes, acompanhe evolução e frequência de estudos.</p>
+      </div>
+      <div class="admin-stats">
+        <div class="stat-card"><div class="label">Total de Contas</div><div class="value cyan" id="admTotal">0</div><div class="sub">usuários cadastrados</div></div>
+        <div class="stat-card"><div class="label">Pendentes</div><div class="value amber" id="admPending">0</div><div class="sub">aguardando liberação</div></div>
+        <div class="stat-card"><div class="label">Ativos</div><div class="value green" id="admActive">0</div><div class="sub">autorizados</div></div>
+        <div class="stat-card"><div class="label">Bloqueados</div><div class="value" style="color:var(--red)" id="admBlocked">0</div><div class="sub">acesso negado</div></div>
+        <div class="stat-card"><div class="label">Minutos Totais</div><div class="value violet" id="admMinutes">0</div><div class="sub">de todos os usuários</div></div>
+      </div>
+      <div class="panel">
+        <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Operadores do Sistema</h3>
+        <div class="admin-filters">
+          <input type="text" id="adminSearch" placeholder="Buscar por nome ou e-mail...">
+          <select id="adminFilter">
+            <option value="all">Todos os status</option>
+            <option value="pending">Pendentes</option>
+            <option value="active">Ativos</option>
+            <option value="blocked">Bloqueados</option>
+          </select>
+          <button class="btn-export" id="exportPdfBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Exportar PDF</button>
+        </div>
+        <div class="user-table-wrap"><table class="user-table" id="adminTable">
+          <thead><tr><th>Usuário</th><th>Nasc.</th><th>Provedor</th><th>Status</th><th>Min.</th><th>Streak</th><th>Dias Estud.</th><th>Último Acesso</th><th>Ações</th></tr></thead>
+          <tbody></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- ===== METHOD ===== -->
+    <div class="tab-panel" id="panel-method">
+      <div class="reader-bar">
+        <button class="reader-btn" id="readerPrev" title="Voltar parágrafo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <button class="reader-btn play" id="readerPlay" title="Ouvir método"><svg id="readerPlayIcon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg></button>
+        <button class="reader-btn" id="readerNext" title="Avançar parágrafo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+        <button class="reader-btn" id="readerMute" title="Mutar áudio"><svg id="readerVolIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
+        <div class="reader-info">Leitura em voz · <b id="readerCount">0 / 0</b></div>
+      </div>
+      <div class="method-hero">
+        <span class="eyebrow">Protocolo de Fluência · Language Reactor</span>
+        <h1 class="grad-text">MÉTODO FLUÊNCIA IMERSIVA</h1>
+        <p>O sistema tecnológico e cinematográfico para dominar qualquer idioma em 90, 180 ou 365 dias — potencializado por todas as ferramentas do Language Reactor.</p>
+      </div>
+      <div class="panel">
+        <h3>Visão Geral das Ferramentas do Language Reactor</h3>
+        <table>
+          <tr><th>Ferramenta</th><th>Função Principal</th></tr>
+          <tr><td>Legendas Bilíngues</td><td>Veja o idioma original + sua língua lado a lado</td></tr>
+          <tr><td>Controles Precisos</td><td>Velocidade, repetição, auto-pausa, atalhos de teclado</td></tr>
+          <tr><td>Dicionário + Lexa AI</td><td>Clique em qualquer palavra → tradução + exemplos com áudio + IA</td></tr>
+          <tr><td>What to Learn</td><td>Sugere as palavras essenciais para o seu nível</td></tr>
+          <tr><td>Destaque Inteligente</td><td>Palavras salvas aparecem destacadas em todo o conteúdo</td></tr>
+          <tr><td>PhrasePump!</td><td>Exercícios de escuta que reforçam palavras salvas</td></tr>
+          <tr><td>Exportar para Anki</td><td>Cria flashcards com imagens e áudio automaticamente</td></tr>
+          <tr><td>Aria</td><td>Parceiro de conversação com correções instantâneas</td></tr>
+          <tr><td>FSI / DLI</td><td>Programas estruturados de treinamento de idiomas</td></tr>
+          <tr><td>Livros & Páginas Web</td><td>Importe páginas e livros com leitura em voz alta</td></tr>
+        </table>
+      </div>
+      <div class="fase f1">
+        <h3 class="grad-text">FASE 1 — ALICERCE: Dias 1 a 90</h3>
+        <div class="meta">Meta: Compreensão auditiva básica + 2.000 palavras · Nível B1</div>
+        <h4>Semanas 1–4: Iniciação</h4>
+        <ul>
+          <li>Instale a extensão do Language Reactor (Chrome/Edge) e escolha os idiomas</li>
+          <li>Comece com conteúdo que você JÁ CONHECE — filmes/desenhos familiares</li>
+          <li>Ative: Legendas bilíngues + Auto-pausa + Velocidade 0.75x</li>
+        </ul>
+        <h4>Sessão Diária (45–60 min)</h4>
+        <ul>
+          <li>Passo 1 — Ouça a legenda SEM ler (tecla S = repetir)</li>
+          <li>Passo 2 — Leia no idioma alvo + tradução</li>
+          <li>Passo 3 — Clique em 1–3 palavras desconhecidas → salve com R</li>
+          <li>Passo 4 — Repita em voz alta (shadowing) antes de avançar (tecla D)</li>
+          <li>Passo 5 — 10 min no PhrasePump! para revisar palavras salvas</li>
+        </ul>
+        <h4>Semanas 5–12: Vocabulário · Semanas 13–90: Consolidação</h4>
+        <ul>
+          <li>Velocidade: 0.75x → 1.0x · Use "What to Learn" · Adicione YouTube</li>
+          <li>Reduza as legendas da sua língua · Aria 10 min/dia · Exporte para Anki</li>
+        </ul>
+      </div>
+      <div class="fase f2">
+        <h3 class="grad-text">FASE 2 — IMERSÃO PROFUNDA: Dias 91 a 180</h3>
+        <div class="meta">Meta: Pensar no idioma → conversação natural → 5.000+ palavras · Nível B2</div>
+        <h4>Semanas 13–24: Desafio Auditivo</h4>
+        <ul>
+          <li>Velocidade: 1.0x → 1.25x · Modo 1:1 (legendas alternadas) · Técnica do Blur</li>
+          <li>Importe páginas web com leitura em voz alta sobre temas que você gosta</li>
+        </ul>
+        <h4>Semanas 25–36: Conversão Ativa</h4>
+        <ul>
+          <li>Aria: 20–30 min/dia · Módulos FSI/DLI · Escreva 3 frases/dia</li>
+        </ul>
+      </div>
+      <div class="fase f3">
+        <h3 class="grad-text">FASE 3 — DOMÍNIO: Dias 181 a 365</h3>
+        <div class="meta">Meta: Fluência — pensar e reagir sem traduzir · Nível C1/C2</div>
+        <h4>Semanas 37–52: Imersão Total</h4>
+        <ul>
+          <li>Velocidade: 1.25x → 1.50x · Legendas: só alvo → nenhuma</li>
+          <li>Pensamento Direto: narrar em voz alta sem traduzir · Livros com áudio</li>
+        </ul>
+        <h4>Semanas 53–104: Refinamento</h4>
+        <ul>
+          <li>Conteúdo nativo: notícias, podcasts, entrevistas · Debates com Aria</li>
+          <li>Reassista favoritos a cada 30/60/90 dias</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Resumo das Metas</h3>
+        <table>
+          <tr><th>Período</th><th>Tempo/Dia</th><th>Legendas</th><th>Vocabulário</th><th>Nível Alvo</th></tr>
+          <tr><td>Dias 1–90</td><td>45–60 min</td><td>Bilíngues → só alvo</td><td>2.000</td><td>B1</td></tr>
+          <tr><td>Dias 91–180</td><td>60–90 min</td><td>Só alvo → sem legendas</td><td>3.500–5.000</td><td>B2</td></tr>
+          <tr><td>Dias 181–365</td><td>60+ min</td><td>Sem legendas</td><td>6.000+</td><td>C1/C2</td></tr>
+        </table>
+      </div>
+      <div class="destaque">
+        <b>4 Regras de Ouro:</b><br>
+        1. Aprenda com o que VOCÊ gosta. 2. Palavras em CONTEXTO superam listas isoladas.<br>
+        3. Consistência supera intensidade — 30 min/dia vencem 5h no fim de semana.<br>
+        4. O plano gratuito já leva você à fluência — o Pro é apenas um upgrade opcional.
+      </div>
+    </div>
+
+    <footer class="page-foot">
+      <div class="tech-line">NEXVON · FLUÊNCIA IMERSIVA · SISTEMA v2100</div>
+      <div>Powered by Language Reactor · Dados locais e privados</div>
+    </footer>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+var USERS_KEY='nexvon_users_v3', SESSION_KEY='nexvon_session_v1', REMEMBER_KEY='nexvon_remember_v1', NOTIF_KEY='nexvon_notifs_v1', REGDATA_KEY='nexvon_regdata_v1';
+/* Chaves de login real — preencha via botão "Configurar login real" na tela de acesso (salvo no navegador).
+   Requer domínio HTTPS registrado no Google Cloud Console e/ou Meta for Developers. */
+var CONFIG={GOOGLE_CLIENT_ID:localStorage.getItem('nexvon_gcid')||'',FB_APP_ID:localStorage.getItem('nexvon_fbid')||''};
+var ADMIN_EMAIL='admin@nexvon.ai', ADMIN_PASS='admin2100';
+function loadUsers(){
+  try{var u=JSON.parse(localStorage.getItem(USERS_KEY))||{}}catch(e){var u={}}
+  if(!u[ADMIN_EMAIL]){u[ADMIN_EMAIL]={pass:hash(ADMIN_PASS),provider:'local',isAdmin:true,status:'active',name:'Administrador',birth:'',profile:{lang:'Sistema',minutes:0,plan:'365',studyTime:'20:00'},logs:{},createdAt:Date.now()};saveUsers(u)}
+  return u;
+}
+function saveUsers(u){localStorage.setItem(USERS_KEY,JSON.stringify(u))}
+function loadNotifs(){try{return JSON.parse(localStorage.getItem(NOTIF_KEY))||[]}catch(e){return[]}}
+function saveNotifs(n){localStorage.setItem(NOTIF_KEY,JSON.stringify(n))}
+function hash(s){var h=0;for(var i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0}return h.toString(36)}
+function todayStr(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function genCode(){var c='';for(var i=0;i<6;i++)c+=Math.floor(Math.random()*10);return c}
+function fmtDate(ts){if(!ts)return'—';return new Date(ts).toLocaleDateString('pt-BR')}
+/* máscara DD/MM/AAAA + parse para ISO (YYYY-MM-DD) */
+function maskBirth(v){
+  v=v.replace(/\D/g,'').slice(0,8);
+  if(v.length>4)return v.slice(0,2)+'/'+v.slice(2,4)+'/'+v.slice(4);
+  if(v.length>2)return v.slice(0,2)+'/'+v.slice(2);
+  return v;
+}
+function parseBirth(v){
+  var m=(v||'').match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  if(!m)return null;
+  var dd=parseInt(m[1]),mm=parseInt(m[2]),yy=parseInt(m[3]);
+  if(dd<1||dd>31||mm<1||mm>12||yy<1900||yy>new Date().getFullYear())return null;
+  var d=new Date(yy,mm-1,dd);
+  if(d.getDate()!==dd||d.getMonth()!==mm-1||d.getFullYear()!==yy)return null;
+  return yy+'-'+String(mm).padStart(2,'0')+'-'+String(dd).padStart(2,'0');
+}
+function bindBirthMask(id){
+  var el=document.getElementById(id);if(!el)return;
+  el.addEventListener('input',function(){el.value=maskBirth(el.value)});
+  el.addEventListener('keydown',function(e){
+    if(e.key==='Enter'){e.preventDefault();var next=el.parentElement.parentElement.nextElementSibling;if(next){var inp=next.querySelector('input');if(inp)inp.focus()}}
+  });
+}
+/* máscara HH:MM + parse para minutos do dia */
+function maskTime(v){v=v.replace(/\D/g,'').slice(0,4);if(v.length>2)return v.slice(0,2)+':'+v.slice(2);return v}
+function parseTime(v){var m=(v||'').match(/^(\d{2}):(\d{2})$/);if(!m)return null;var h=parseInt(m[1]),mm=parseInt(m[2]);if(h>23||mm>59)return null;return h*60+mm}
+function fmtTime(min){var h=Math.floor(min/60),m=min%60;return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')}
+function bindTimeMask(id){var el=document.getElementById(id);if(!el)return;el.addEventListener('input',function(){el.value=maskTime(el.value)})}
+/* lembrar dados do cadastro (nome, nascimento, e-mail) */
+function loadRegData(){
+  try{var d=JSON.parse(localStorage.getItem(REGDATA_KEY)||'null');if(!d)return}catch(e){return}
+  if(d.name){var n=document.getElementById('regName');if(n)n.value=d.name}
+  if(d.birth){var b=document.getElementById('regBirth');if(b){var m=d.birth.match(/^(\d{4})-(\d{2})-(\d{2})$/);if(m)b.value=m[3]+'/'+m[2]+'/'+m[1]}}
+  if(d.email){var e=document.getElementById('regEmail');if(e)e.value=d.email}
+  var cb=document.getElementById('rememberReg');if(cb)cb.checked=true;
+}
+function saveRegData(name,birth,email){
+  localStorage.setItem(REGDATA_KEY,JSON.stringify({name:name,birth:birth,email:email}));
+}
+function fillSocialFields(){
+  try{var d=JSON.parse(localStorage.getItem(REGDATA_KEY)||'null');if(!d)return}catch(e){return}
+  var n=document.getElementById('socName');if(n&&d.name)n.value=d.name;
+  var b=document.getElementById('socBirth');if(b&&d.birth){var m=d.birth.match(/^(\d{4})-(\d{2})-(\d{2})$/);if(m)b.value=m[3]+'/'+m[2]+'/'+m[1]}
+  var e=document.getElementById('socEmail');if(e&&d.email)e.value=d.email;
+}
+
+var TASKS=[
+  {id:'imersao',name:'Imersão Cinematográfica',desc:'Filme/série no Language Reactor com legendas',min:20},
+  {id:'phrasepump',name:'PhrasePump / Revisão',desc:'Reforço de palavras salvas com frases novas',min:10},
+  {id:'shadowing',name:'Shadowing / Repetição',desc:'Repita em voz alta as frases do conteúdo',min:10},
+  {id:'aria',name:'Conversa com Aria',desc:'Diálogo com correções instantâneas',min:10},
+  {id:'anki',name:'Flashcards / Anki',desc:'Revisão espaçada das palavras exportadas',min:5},
+  {id:'leitura',name:'Leitura Imersiva',desc:'Livro ou página web com narração em voz alta',min:10}
+];
+
+var currentUser=null, users=loadUsers(), chartInstance=null, currentPeriod='daily';
+var snoozeUntil=0, toastShownToday=false;
+
+var modalRoot=document.getElementById('modalRoot');
+function openModal(html,wide){modalRoot.innerHTML='<div class="modal-overlay"><div class="modal-card'+(wide?' wide':'')+'">'+html+'</div></div>';}
+function closeModal(){modalRoot.innerHTML=''}
+modalRoot.addEventListener('click',function(e){if(e.target.classList.contains('modal-overlay')||e.target.classList.contains('modal-close'))closeModal()});
+
+var authScreen=document.getElementById('authScreen'), app=document.getElementById('app');
+var authMsg=document.getElementById('authMsg');
+function showAuthMsg(txt,cls){authMsg.textContent=txt;authMsg.className='auth-msg '+(cls||'err')}
+
+document.querySelectorAll('.auth-tab').forEach(function(t){
+  t.addEventListener('click',function(){
+    document.querySelectorAll('.auth-tab').forEach(function(x){x.classList.remove('active')});
+    t.classList.add('active');
+    var isLogin=t.dataset.tab==='login';
+    document.getElementById('loginForm').classList.toggle('hidden',!isLogin);
+    document.getElementById('registerForm').classList.toggle('hidden',isLogin);
+    if(!isLogin)loadRegData();
+    showAuthMsg('','');
+  });
+});
+
+try{var rem=JSON.parse(localStorage.getItem(REMEMBER_KEY)||'null');
+  if(rem){document.getElementById('loginEmail').value=rem.email;document.getElementById('loginPass').value=rem.pass;document.getElementById('rememberMe').checked=true}}catch(e){}
+bindBirthMask('regBirth');bindTimeMask('cfgTime');
+/* Enter move para o próximo campo; no último campo, dispara o cadastro */
+document.querySelectorAll('#registerForm input').forEach(function(inp,i,arr){
+  inp.addEventListener('keydown',function(e){
+    if(e.key==='Enter'){e.preventDefault();if(arr[i+1])arr[i+1].focus();else document.getElementById('registerBtn').click()}
+  });
+});
+
+/* register: name + birth, status pending, notifies admin */
+document.getElementById('registerBtn').addEventListener('click',function(){
+  var name=document.getElementById('regName').value.trim();
+  var birth=parseBirth(document.getElementById('regBirth').value);
+  var email=document.getElementById('regEmail').value.trim().toLowerCase();
+  var p1=document.getElementById('regPass').value, p2=document.getElementById('regPass2').value;
+  if(name.length<3)return showAuthMsg('Digite seu nome completo.');
+  if(!birth)return showAuthMsg('Data de nascimento inválida. Use DD/MM/AAAA.');
+  if(!email||!email.includes('@'))return showAuthMsg('Digite um e-mail válido.');
+  if(p1.length<4)return showAuthMsg('A senha deve ter ao menos 4 caracteres.');
+  if(p1!==p2)return showAuthMsg('As senhas não coincidem.');
+  if(users[email])return showAuthMsg('Este e-mail já está cadastrado. Acesse sua conta.');
+  users[email]={pass:hash(p1),provider:'local',status:'pending',name:name,birth:birth,profile:{lang:'Inglês',minutes:60,plan:'365',studyTime:'20:00'},logs:{},createdAt:Date.now()};
+  saveUsers(users);
+  if(document.getElementById('rememberReg').checked)saveRegData(name,birth,email);
+  var notifs=loadNotifs();
+  notifs.unshift({id:Date.now(),type:'new_user',email:email,name:name,time:Date.now(),read:false});
+  saveNotifs(notifs);
+  showAuthMsg('Cadastro realizado! Aguarde a liberação do administrador.','info');
+  setTimeout(function(){
+    document.querySelectorAll('.auth-tab').forEach(function(x){x.classList.remove('active')});
+    document.querySelector('.auth-tab[data-tab="login"]').classList.add('active');
+    document.getElementById('registerForm').classList.add('hidden');
+    document.getElementById('loginForm').classList.remove('hidden');
+    document.getElementById('loginEmail').value=email;
+  },1800);
+});
+
+function doLogin(email,pass){
+  var u=users[email];
+  if(!u)return showAuthMsg('E-mail não encontrado. Cadastre-se primeiro.');
+  if(u.status==='pending')return showAuthMsg('Conta pendente de liberação. Aguarde o administrador.','info');
+  if(u.status==='blocked')return showAuthMsg('Conta bloqueada pelo administrador. Contate o suporte.');
+  if(u.pass!==hash(pass))return showAuthMsg('Senha incorreta. Tente novamente.');
+  u.lastLogin=Date.now();saveUsers(users);
+  if(document.getElementById('rememberMe').checked){localStorage.setItem(REMEMBER_KEY,JSON.stringify({email:email,pass:pass}))}
+  else{localStorage.removeItem(REMEMBER_KEY)}
+  showAuthMsg('Acesso liberado. Conectando...','ok');
+  setTimeout(function(){enterSession(email)},500);
+}
+document.getElementById('loginBtn').addEventListener('click',function(){
+  var email=document.getElementById('loginEmail').value.trim().toLowerCase();
+  var pass=document.getElementById('loginPass').value;
+  if(!email||!pass)return showAuthMsg('Preencha e-mail e senha.');
+  doLogin(email,pass);
+});
+
+function socialLogin(provider){
+  openModal(
+    '<button class="modal-close">&times;</button>'+
+    '<h3>Entrar com '+provider+'</h3>'+
+    '<div class="field"><label>Nome Completo</label><input type="text" id="socName" placeholder="Seu nome completo"></div>'+
+    '<div class="field"><label>Data de Nascimento</label><input type="text" id="socBirth" inputmode="numeric" maxlength="10" placeholder="DD/MM/AAAA"></div>'+
+    '<div class="field"><label>Seu e-mail da conta '+provider+'</label><input type="email" id="socEmail" placeholder="voce@gmail.com"></div>'+
+    '<button class="btn-primary" id="socConfirm">Continuar com '+provider+'</button>'+
+    '<div class="modal-note">Simulação de OAuth: em ambiente com servidor, a autenticação real acontece via '+provider+'.</div>'
+  );
+  bindBirthMask('socBirth');
+  fillSocialFields();
+  document.getElementById('socConfirm').addEventListener('click',function(){
+    var name=document.getElementById('socName').value.trim();
+    var birth=parseBirth(document.getElementById('socBirth').value);
+    var email=document.getElementById('socEmail').value.trim().toLowerCase();
+    if(name.length<3||!birth||!email||!email.includes('@')){alert('Preencha nome, data de nascimento (DD/MM/AAAA) e e-mail válido.');return}
+    if(!users[email]){
+      users[email]={pass:hash('social'+email),provider:provider.toLowerCase(),status:'pending',name:name,birth:birth,profile:{lang:'Inglês',minutes:60,plan:'365',studyTime:'20:00'},logs:{},createdAt:Date.now()};
+      var notifs=loadNotifs();notifs.unshift({id:Date.now(),type:'new_user',email:email,name:name,time:Date.now(),read:false});saveNotifs(notifs);
+      saveUsers(users);saveRegData(name,birth,email);closeModal();
+      showAuthMsg('Cadastro realizado! Aguarde a liberação do administrador.','info');return;
+    }
+    if(users[email].status==='pending'){closeModal();showAuthMsg('Conta pendente de liberação. Aguarde o administrador.','info');return}
+    if(users[email].status==='blocked'){closeModal();showAuthMsg('Conta bloqueada pelo administrador.','err');return}
+    users[email].provider=provider.toLowerCase();users[email].lastLogin=Date.now();saveUsers(users);
+    closeModal();enterSession(email);
+  });
+}
+/* ===== LOGIN REAL (Google Identity Services + Facebook SDK) ===== */
+function updateSocialStatus(){
+  var el=document.getElementById('socialStatus');
+  if(!el)return;
+  var g=!!CONFIG.GOOGLE_CLIENT_ID, f=!!CONFIG.FB_APP_ID;
+  if(g||f){el.textContent='Login real ativo: '+(g?'Google ':'')+(g&&f?'· ':'')+(f?'Facebook':'');el.style.color='var(--green)'}
+  else{el.textContent='Modo simulação — configure suas chaves para login real';el.style.color='var(--amber)'}
+}
+function decodeJwtPayload(token){
+  try{
+    var p=token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
+    while(p.length%4)p+='=';
+    return JSON.parse(decodeURIComponent(escape(atob(p))));
+  }catch(e){return null}
+}
+function handleSocialReal(provider,name,email){
+  email=(email||'').toLowerCase();
+  if(!email||!email.includes('@')){showAuthMsg('O provedor não retornou um e-mail válido.','err');return}
+  var isNew=!users[email];
+  if(isNew){
+    users[email]={pass:hash('social'+email),provider:provider.toLowerCase(),status:'pending',name:name||email.split('@')[0],birth:'',profile:{lang:'Inglês',minutes:60,plan:'365',studyTime:'20:00',remindBefore:10},logs:{},createdAt:Date.now()};
+    var notifs=loadNotifs();notifs.unshift({id:Date.now(),type:'new_user',email:email,name:name||email,time:Date.now(),read:false});saveNotifs(notifs);
+    saveUsers(users);saveRegData(name||email.split('@')[0],'',email);
+    showAuthMsg('Cadastro realizado via '+provider+'! Aguarde a liberação do administrador.','info');
+    return;
+  }
+  if(users[email].status==='pending'){showAuthMsg('Conta pendente de liberação. Aguarde o administrador.','info');return}
+  if(users[email].status==='blocked'){showAuthMsg('Conta bloqueada pelo administrador.','err');return}
+  users[email].provider=provider.toLowerCase();users[email].lastLogin=Date.now();saveUsers(users);
+  showAuthMsg('Acesso liberado via '+provider+'. Conectando...','ok');
+  setTimeout(function(){enterSession(email)},500);
+}
+function initGoogleReal(){
+  if(!CONFIG.GOOGLE_CLIENT_ID||window.__gisLoaded)return;
+  window.__gisLoaded=true;
+  var s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.async=true;s.defer=true;
+  s.onload=function(){
+    if(!window.google||!google.accounts)return;
+    google.accounts.id.initialize({
+      client_id:CONFIG.GOOGLE_CLIENT_ID,
+      callback:function(resp){
+        var p=decodeJwtPayload(resp.credential);
+        if(p&&p.email)handleSocialReal('Google',p.name,p.email);
+        else showAuthMsg('Falha na autenticação do Google.','err');
+      }
+    });
+  };
+  document.head.appendChild(s);
+}
+function initFacebookReal(){
+  if(!CONFIG.FB_APP_ID||window.__fbLoaded)return;
+  window.__fbLoaded=true;
+  window.fbAsyncInit=function(){FB.init({appId:CONFIG.FB_APP_ID,cookie:true,xfbml:true,version:'v18.0'})};
+  var s=document.createElement('script');s.src='https://connect.facebook.net/en_US/sdk.js';s.async=true;s.defer=true;
+  document.head.appendChild(s);
+}
+document.getElementById('googleBtn').addEventListener('click',function(){
+  if(!CONFIG.GOOGLE_CLIENT_ID){window.location.href='setup.html';return}
+  initGoogleReal();
+  showAuthMsg('Abrindo login do Google...','info');
+  var tries=0;
+  var tryPrompt=setInterval(function(){
+    if(window.google&&google.accounts){clearInterval(tryPrompt);google.accounts.id.prompt()}
+    else if(++tries>20){clearInterval(tryPrompt);showAuthMsg('Biblioteca do Google carregando. Tente novamente.','info')}
+  },150);
+});
+document.getElementById('fbBtn').addEventListener('click',function(){
+  if(!CONFIG.FB_APP_ID){window.location.href='setup.html';return}
+  initFacebookReal();
+  showAuthMsg('Abrindo login do Facebook...','info');
+  var tries=0;
+  var tryFB=setInterval(function(){
+    if(window.FB){clearInterval(tryFB);
+      FB.login(function(resp){
+        if(resp&&resp.authResponse){FB.api('/me',{fields:'name,email'},function(me){handleSocialReal('Facebook',me.name,me.email)})}
+        else showAuthMsg('Login com Facebook cancelado.','err');
+      },{scope:'email'});
+    }else if(++tries>20){clearInterval(tryFB);showAuthMsg('SDK do Facebook carregando. Tente novamente.','info')}
+  },150);
+});
+/* abre o assistente de configuração interativo (setup.html) */
+var cfgLink=document.getElementById('cfgSocialLink');
+if(cfgLink)cfgLink.addEventListener('click',function(){window.location.href='setup.html';});
+updateSocialStatus();
+
+document.getElementById('forgotLink').addEventListener('click',function(){
+  openModal(
+    '<button class="modal-close">&times;</button>'+
+    '<h3>Recuperar Senha</h3>'+
+    '<div class="field"><label>E-mail cadastrado</label><input type="email" id="recEmail" placeholder="voce@nexvon.ai"></div>'+
+    '<button class="btn-primary" id="recSend">Enviar código de acesso</button>'+
+    '<div class="modal-note">Um código de acesso temporário será gerado. (Em ambiente com servidor, chegaria no seu e-mail.)</div>'
+  );
+  document.getElementById('recSend').addEventListener('click',function(){
+    var email=document.getElementById('recEmail').value.trim().toLowerCase();
+    var u=users[email];
+    if(!u||u.isAdmin){alert('E-mail não encontrado no sistema.');return}
+    var code=genCode();u.tempPass=hash(code);saveUsers(users);
+    openModal(
+      '<button class="modal-close">&times;</button>'+
+      '<h3>Código de Acesso Gerado</h3>'+
+      '<p style="font-size:.82rem;color:var(--muted)">Código temporário (simulando envio para <b style="color:var(--cyan)">'+email+'</b>):</p>'+
+      '<div class="temp-code">'+code+'</div>'+
+      '<div class="field"><label>Código recebido</label><input type="text" id="recCode" maxlength="6" placeholder="6 dígitos"></div>'+
+      '<div class="field"><label>Nova senha (mín. 4 caracteres)</label><input type="password" id="recNewPass" placeholder="••••••••"></div>'+
+      '<div class="field"><label>Confirmar nova senha</label><input type="password" id="recNewPass2" placeholder="••••••••"></div>'+
+      '<button class="btn-primary" id="recReset">Redefinir senha</button>'
+    );
+    document.getElementById('recReset').addEventListener('click',function(){
+      var c=document.getElementById('recCode').value.trim();
+      var np=document.getElementById('recNewPass').value, np2=document.getElementById('recNewPass2').value;
+      if(hash(c)!==u.tempPass){alert('Código incorreto.');return}
+      if(np.length<4){alert('Nova senha deve ter ao menos 4 caracteres.');return}
+      if(np!==np2){alert('As senhas não coincidem.');return}
+      u.pass=hash(np);delete u.tempPass;saveUsers(users);closeModal();
+      showAuthMsg('Senha redefinida! Faça login com a nova senha.','ok');
+    });
+  });
+});
+
+document.getElementById('logoutBtn').addEventListener('click',function(){
+  localStorage.removeItem(SESSION_KEY);currentUser=null;
+  app.classList.add('hidden');authScreen.classList.remove('hidden');
+  document.getElementById('loginPass').value='';
+  document.getElementById('adminBadge').classList.add('hidden');
+  document.getElementById('notifWrap').classList.add('hidden');
+  document.getElementById('userDot').classList.remove('admin');
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active')});
+  document.getElementById('panel-dashboard').classList.add('active');
+});
+
+document.getElementById('accountBtn').addEventListener('click',function(){
+  var u=users[currentUser];
+  var provLabel=(u.provider||'local').charAt(0).toUpperCase()+(u.provider||'local').slice(1);
+  openModal(
+    '<button class="modal-close">&times;</button>'+
+    '<h3>Conta e Segurança</h3>'+
+    '<div class="meta-display" style="margin:0 0 16px 0">Nome: <b>'+(u.name||'—')+'</b><br>E-mail: <b>'+currentUser+'</b><br>Provedor: <b>'+provLabel+'</b><br>Criada em: <b>'+fmtDate(u.createdAt)+'</b></div>'+
+    (u.isAdmin?'<div class="modal-note" style="color:var(--amber)">Conta de administrador — use o painel de Gestão de Acessos.</div>':
+    '<div class="field"><label>Senha antiga</label><input type="password" id="chgOld" placeholder="••••••••"></div>'+
+    '<div class="field"><label>Nova senha (mín. 4 caracteres)</label><input type="password" id="chgNew" placeholder="••••••••"></div>'+
+    '<div class="field"><label>Confirmar nova senha</label><input type="password" id="chgNew2" placeholder="••••••••"></div>'+
+    '<button class="btn-primary" id="chgBtn">Alterar Senha</button>')
+  );
+  var btn=document.getElementById('chgBtn');
+  if(btn)btn.addEventListener('click',function(){
+    var old=document.getElementById('chgOld').value, n=document.getElementById('chgNew').value, n2=document.getElementById('chgNew2').value;
+    if(hash(old)!==u.pass){alert('Senha antiga incorreta.');return}
+    if(n.length<4){alert('Nova senha deve ter ao menos 4 caracteres.');return}
+    if(n!==n2){alert('As senhas não coincidem.');return}
+    u.pass=hash(n);saveUsers(users);closeModal();showAuthMsg('Senha alterada com sucesso!','ok');
+  });
+});
+
+function enterSession(email){
+  currentUser=email;localStorage.setItem(SESSION_KEY,email);
+  authScreen.classList.add('hidden');app.classList.remove('hidden');
+  var u=users[email], isAdmin=!!u.isAdmin;
+  document.getElementById('userEmailLabel').textContent=u.name||email;
+  document.getElementById('heroName').textContent=(u.name||email.split('@')[0]).split(' ')[0];
+  document.getElementById('adminBadge').classList.toggle('hidden',!isAdmin);
+  document.getElementById('notifWrap').classList.remove('hidden');
+  document.getElementById('userDot').classList.toggle('admin',isAdmin);
+  document.getElementById('userTabs').classList.toggle('hidden',isAdmin);
+  document.getElementById('adminTabs').classList.toggle('hidden',!isAdmin);
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active')});
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});
+  if(isAdmin){document.querySelector('#adminTabs .tab-btn').classList.add('active');document.getElementById('panel-admin').classList.add('active');renderAdmin();renderNotifs()}
+  else{document.querySelector('#userTabs .tab-btn').classList.add('active');document.getElementById('panel-dashboard').classList.add('active');loadProfile();renderTasks();renderStats();renderChart();renderNotifs();checkStudyReminder(true)}
+  var d=new Date();
+  document.getElementById('todayDate').textContent=d.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'});
+}
+var saved=localStorage.getItem(SESSION_KEY);
+if(saved && users[saved] && users[saved].status!=='blocked' && users[saved].status!=='pending'){enterSession(saved)}
+
+function loadProfile(){
+  var p=users[currentUser].profile||{lang:'Inglês',minutes:60,plan:'365',studyTime:'20:00',remindBefore:10};
+  document.getElementById('cfgLang').value=p.lang;
+  document.getElementById('cfgMinutes').value=p.minutes;
+  document.getElementById('cfgTime').value=p.studyTime||'20:00';
+  document.getElementById('cfgRemind').value=p.remindBefore!=null?p.remindBefore:10;
+  document.getElementById('cfgPlan').value=p.plan;
+  updateCfgMeta();
+}
+function updateCfgMeta(){
+  var lang=document.getElementById('cfgLang').value;
+  var min=parseInt(document.getElementById('cfgMinutes').value)||60;
+  var plan=document.getElementById('cfgPlan').value;
+  var time=document.getElementById('cfgTime').value||'20:00';
+  var remind=parseInt(document.getElementById('cfgRemind').value);
+  if(isNaN(remind)||remind<0)remind=10;
+  var totalHoras=Math.round(min*parseInt(plan)/60);
+  document.getElementById('cfgMeta').innerHTML='Rota calculada: <b>'+lang+'</b> · <b>'+min+' min/dia</b> às <b>'+time+'</b> · Aviso com <b>'+remind+' min</b> de antecedência · Meta de <b>'+plan+' dias</b> ≈ <b>'+totalHoras+'h</b> de imersão.';
+  document.getElementById('statGoal').textContent=min;
+  document.getElementById('heroSub').textContent='Idioma alvo: '+lang+' · Meta diária: '+min+' min às '+time+' · Plano: '+plan+' dias.';
+}
+document.getElementById('saveCfgBtn').addEventListener('click',function(){
+  var lang=document.getElementById('cfgLang').value, min=parseInt(document.getElementById('cfgMinutes').value)||60;
+  var plan=document.getElementById('cfgPlan').value;
+  var timeMin=parseTime(document.getElementById('cfgTime').value);
+  if(timeMin===null){alert('Horário inválido. Use HH:MM (ex: 20:00).');return}
+  var remind=parseInt(document.getElementById('cfgRemind').value);
+  if(isNaN(remind)||remind<0||remind>120)remind=10;
+  var time=fmtTime(timeMin);
+  document.getElementById('cfgTime').value=time;
+  users[currentUser].profile={lang:lang,minutes:min,plan:plan,studyTime:time,remindBefore:remind};saveUsers(users);updateCfgMeta();renderStats();
+  toastShownToday=false;
+  var btn=document.getElementById('saveCfgBtn'), orig=btn.textContent;
+  btn.textContent='Configuração Salva';setTimeout(function(){btn.textContent=orig},1800);
+});
+['cfgLang','cfgMinutes','cfgTime','cfgPlan'].forEach(function(id){document.getElementById(id).addEventListener('change',updateCfgMeta)});
+var nb=document.getElementById('notifyBtn');if(nb)nb.addEventListener('click',requestNotifyPermission);
+
+function getTodayLog(){
+  var logs=users[currentUser].logs||{};var t=todayStr();
+  if(!logs[t])logs[t]={done:{},minutes:0};
+  users[currentUser].logs=logs;return logs[t];
+}
+function renderTasks(){
+  var log=getTodayLog();var list=document.getElementById('taskList');list.innerHTML='';
+  TASKS.forEach(function(task){
+    var done=!!log.done[task.id];
+    var el=document.createElement('div');
+    el.className='task-item'+(done?' done':'');
+    el.innerHTML='<div class="task-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="task-info"><div class="t-name"></div><div class="t-desc"></div></div><div class="task-time">'+task.min+' min</div>';
+    el.querySelector('.t-name').textContent=task.name;
+    el.querySelector('.t-desc').textContent=task.desc;
+    el.addEventListener('click',function(){
+      var l=getTodayLog();
+      if(l.done[task.id]){delete l.done[task.id];l.minutes=Math.max(0,l.minutes-task.min)}
+      else{l.done[task.id]=true;l.minutes+=task.min}
+      saveUsers(users);renderTasks();renderStats();renderChart();
+    });
+    list.appendChild(el);
+  });
+  var doneCount=Object.keys(log.done).length, pct=Math.round(doneCount/TASKS.length*100);
+  document.getElementById('progFill').style.width=pct+'%';
+  document.getElementById('progText').textContent=doneCount+' de '+TASKS.length+' atividades concluídas';
+  document.getElementById('progPct').textContent=pct+'%';
+}
+
+function calcUserStats(u){
+  var logs=u.logs||{};var total=0,streak=0,days=0;
+  Object.keys(logs).forEach(function(k){var m=logs[k].minutes||0;total+=m;if(m>0)days++});
+  var d=new Date();
+  while(true){
+    var s=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    if(logs[s]&&(logs[s].minutes||0)>0){streak++;d.setDate(d.getDate()-1)}else break;
+  }
+  var level='A1';
+  if(total>=6000)level='C2';else if(total>=3600)level='C1';else if(total>=1800)level='B2';else if(total>=900)level='B1';else if(total>=300)level='A2';
+  return {total:total,streak:streak,days:days,level:level};
+}
+function renderStats(){
+  var s=calcUserStats(users[currentUser]);
+  var today=getTodayLog().minutes||0;
+  var goal=parseInt(document.getElementById('cfgMinutes').value)||60;
+  document.getElementById('statStreak').textContent=s.streak;
+  document.getElementById('statTotal').textContent=s.total;
+  document.getElementById('statToday').textContent=today;
+  document.getElementById('statLevel').textContent=s.level;
+  document.getElementById('statGoal').textContent=goal;
+}
+
+function buildDataFor(logs,period){
+  var labels=[],values=[];var now=new Date();
+  if(period==='daily'){
+    for(var i=6;i>=0;i--){var d=new Date(now);d.setDate(d.getDate()-i);
+      var s=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+      labels.push(d.toLocaleDateString('pt-BR',{weekday:'short'}));values.push((logs[s]&&logs[s].minutes)||0);}
+  }else if(period==='weekly'){
+    for(var w=3;w>=0;w--){var wt=0;
+      for(var dd=6;dd>=0;dd--){var d2=new Date(now);d2.setDate(d2.getDate()-(w*7+dd));
+        var s2=d2.getFullYear()+'-'+String(d2.getMonth()+1).padStart(2,'0')+'-'+String(d2.getDate()).padStart(2,'0');
+        wt+=(logs[s2]&&logs[s2].minutes)||0;}
+      labels.push(w===0?'Esta Sem.':'Sem. -'+w);values.push(wt);}
+  }else{
+    for(var m=5;m>=0;m--){var d3=new Date(now.getFullYear(),now.getMonth()-m,1);var mt=0;
+      var dim=new Date(d3.getFullYear(),d3.getMonth()+1,0).getDate();
+      for(var dm=1;dm<=dim;dm++){var s3=d3.getFullYear()+'-'+String(d3.getMonth()+1).padStart(2,'0')+'-'+String(dm).padStart(2,'0');
+        mt+=(logs[s3]&&logs[s3].minutes)||0;}
+      labels.push(d3.toLocaleDateString('pt-BR',{month:'short'}));values.push(mt);}
+  }
+  return {labels:labels,values:values};
+}
+function renderChartInto(canvasId,logs,period){
+  if(typeof Chart==='undefined'){setTimeout(function(){renderChartInto(canvasId,logs,period)},400);return null}
+  var data=buildDataFor(logs,period);
+  var ctx=document.getElementById(canvasId).getContext('2d');
+  var grad=ctx.createLinearGradient(0,0,0,300);
+  grad.addColorStop(0,'rgba(0,229,255,.9)');grad.addColorStop(1,'rgba(168,85,247,.6)');
+  return new Chart(ctx,{
+    type:'bar',
+    data:{labels:data.labels,datasets:[{label:'Minutos estudados',data:data.values,backgroundColor:grad,borderRadius:8,borderSkipped:false,maxBarThickness:48}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:'#8a97b8',font:{family:'Sora'}}},
+        tooltip:{backgroundColor:'#10162c',borderColor:'rgba(0,229,255,.3)',borderWidth:1,titleColor:'#00e5ff',bodyColor:'#e8f0ff',padding:12}},
+      scales:{x:{grid:{display:false},ticks:{color:'#8a97b8',font:{family:'Chakra Petch'}}},
+        y:{grid:{color:'rgba(138,151,184,.12)'},ticks:{color:'#8a97b8',font:{family:'Chakra Petch'}},beginAtZero:true}}}
+  });
+}
+function renderChart(){
+  if(chartInstance)chartInstance.destroy();
+  chartInstance=renderChartInto('evoChart',users[currentUser].logs||{},currentPeriod);
+}
+document.querySelectorAll('.period-btn').forEach(function(b){
+  b.addEventListener('click',function(){
+    document.querySelectorAll('.period-btn').forEach(function(x){x.classList.remove('active')});
+    b.classList.add('active');currentPeriod=b.dataset.period;renderChart();
+  });
+});
+
+/* notifications (admin: new users; regular user: study reminders) */
+function getActiveNotifs(){
+  if(currentUser && users[currentUser] && users[currentUser].isAdmin)return loadNotifs();
+  return (users[currentUser]&&users[currentUser].notifs)||[];
+}
+function addUserNotif(msg){
+  if(!currentUser||!users[currentUser]||users[currentUser].isAdmin)return;
+  var u=users[currentUser];if(!u.notifs)u.notifs=[];
+  u.notifs.unshift({id:Date.now(),msg:msg,time:Date.now(),read:false});
+  if(u.notifs.length>20)u.notifs=u.notifs.slice(0,20);
+  saveUsers(users);renderNotifs();
+}
+function renderNotifs(){
+  if(!currentUser||!users[currentUser])return;
+  var isAdmin=!!users[currentUser].isAdmin;
+  var notifs=getActiveNotifs();
+  var unread=notifs.filter(function(n){return!n.read}).length;
+  var badge=document.getElementById('notifBadge');
+  badge.textContent=unread;badge.classList.toggle('hidden',unread===0);
+  document.getElementById('notifBtn').classList.toggle('pulse',unread>0);
+  var dd=document.getElementById('notifDropdown');
+  if(notifs.length===0){dd.innerHTML='<div class="notif-empty">Nenhuma notificação.</div>';return}
+  dd.innerHTML='';
+  notifs.slice(0,10).forEach(function(n){
+    var el=document.createElement('div');
+    el.className='notif-item clickable';
+    el.dataset.email=n.email||'';el.dataset.name=n.name||'';el.dataset.msg=n.msg||'';el.dataset.time=n.time||'';
+    if(isAdmin){
+      el.innerHTML='<div class="n-title">Novo usuário cadastrado</div><div class="n-desc">'+(n.name||n.email)+' ('+n.email+') solicita liberação de acesso.</div><div class="n-time">'+new Date(n.time).toLocaleString('pt-BR')+'</div>';
+    }else{
+      el.innerHTML='<div class="n-title">Hora de ser Fluente!</div><div class="n-desc">'+n.msg+'</div><div class="n-time">'+new Date(n.time).toLocaleString('pt-BR')+'</div>';
+    }
+    dd.appendChild(el);
+  });
+}
+document.getElementById('notifBtn').addEventListener('click',function(e){
+  e.stopPropagation();
+  var dd=document.getElementById('notifDropdown');
+  dd.classList.toggle('hidden');
+  if(!dd.classList.contains('hidden')){
+    if(users[currentUser]&&users[currentUser].isAdmin){
+      var notifs=loadNotifs();notifs.forEach(function(n){n.read=true});saveNotifs(notifs);
+    }else if(users[currentUser]){
+      if(!users[currentUser].notifs)users[currentUser].notifs=[];
+      users[currentUser].notifs.forEach(function(n){n.read=true});saveUsers(users);
+    }
+    renderNotifs();
+  }
+});
+document.addEventListener('click',function(e){
+  if(!e.target.closest('#notifWrap'))document.getElementById('notifDropdown').classList.add('hidden');
+});
+
+/* admin panel */
+function renderAdmin(){
+  var emails=Object.keys(users);
+  var q=(document.getElementById('adminSearch')?document.getElementById('adminSearch').value:'').toLowerCase();
+  var f=document.getElementById('adminFilter')?document.getElementById('adminFilter').value:'all';
+  emails=emails.filter(function(email){var u=users[email];
+    if(f!=='all'&&!u.isAdmin&&u.status!==f)return false;
+    if(q&&!(u.name||'').toLowerCase().includes(q)&&!email.toLowerCase().includes(q))return false;
+    return true});
+  var pending=0,active=0,blocked=0,totalMin=0;
+  var tbody=document.querySelector('#adminTable tbody');tbody.innerHTML='';
+  emails.forEach(function(email){
+    var u=users[email];
+    var s=calcUserStats(u);totalMin+=s.total;
+    if(u.isAdmin){active++}
+    else if(u.status==='pending')pending++;
+    else if(u.status==='blocked')blocked++;else active++;
+    var tr=document.createElement('tr');
+    var prov=(u.provider||'local').charAt(0).toUpperCase()+(u.provider||'local').slice(1);
+    var birth=u.birth?new Date(u.birth).toLocaleDateString('pt-BR'):'—';
+    var statusHtml=u.isAdmin?'<span class="status-pill admin">Admin</span>':
+      u.status==='pending'?'<span class="status-pill pending">Pendente</span>':
+      u.status==='blocked'?'<span class="status-pill blocked">Bloqueado</span>':'<span class="status-pill active">Ativo</span>';
+    var actions='';
+    if(u.isAdmin){actions='<span style="color:var(--muted);font-size:.72rem">—</span>'}
+    else{
+      if(u.status==='pending')actions+='<button class="btn-small approve" data-act="approve" data-email="'+email+'">Liberar</button>';
+      if(u.status==='active')actions+='<button class="btn-small block" data-act="block" data-email="'+email+'">Bloquear</button>';
+      if(u.status==='blocked')actions+='<button class="btn-small approve" data-act="unblock" data-email="'+email+'">Autorizar</button>';
+      actions+='<button class="btn-small" data-act="detail" data-email="'+email+'">Detalhes</button>';
+      actions+='<button class="btn-small block" data-act="delete" data-email="'+email+'">Excluir</button>';
+    }
+    tr.innerHTML='<td><div class="u-name">'+(u.name||'—')+'</div><div class="u-mail">'+email+'</div></td><td>'+birth+'</td><td>'+prov+'</td><td>'+statusHtml+'</td><td>'+s.total+'</td><td>'+s.streak+'</td><td>'+s.days+'</td><td>'+fmtDate(u.lastLogin)+'</td><td>'+actions+'</td>';
+    tbody.appendChild(tr);
+  });
+  document.getElementById('admTotal').textContent=emails.length;
+  document.getElementById('admPending').textContent=pending;
+  document.getElementById('admActive').textContent=active;
+  document.getElementById('admBlocked').textContent=blocked;
+  document.getElementById('admMinutes').textContent=totalMin;
+  tbody.querySelectorAll('button[data-act]').forEach(function(b){
+    b.addEventListener('click',function(){
+      var email=b.dataset.email, act=b.dataset.act, u=users[email];
+      if(act==='approve'||act==='unblock'){u.status='active';saveUsers(users);renderAdmin()}
+      else if(act==='block'){u.status='blocked';saveUsers(users);renderAdmin()}
+      else if(act==='delete'){if(confirm('Excluir permanentemente '+email+'?')){delete users[email];saveUsers(users);renderAdmin()}}
+      else if(act==='detail'){showUserDetail(email)}
+    });
+  });
+}
+function showUserDetail(email){
+  var u=users[email];var s=calcUserStats(u);
+  var prov=(u.provider||'local').charAt(0).toUpperCase()+(u.provider||'local').slice(1);
+  openModal(
+    '<button class="modal-close">&times;</button>'+
+    '<h3>Evolução — '+(u.name||email)+'</h3>'+
+    '<div class="meta-display" style="margin:0 0 10px 0">E-mail: <b>'+email+'</b> · Provedor: <b>'+prov+'</b> · Idioma: <b>'+(u.profile&&u.profile.lang||'—')+'</b> · Meta: <b>'+(u.profile&&u.profile.minutes||0)+' min/dia</b></div>'+
+    '<div class="detail-grid">'+
+      '<div class="dg"><div class="l">Total Min.</div><div class="v">'+s.total+'</div></div>'+
+      '<div class="dg"><div class="l">Streak</div><div class="v">'+s.streak+'</div></div>'+
+      '<div class="dg"><div class="l">Dias Estud.</div><div class="v">'+s.days+'</div></div>'+
+      '<div class="dg"><div class="l">Nível</div><div class="v">'+s.level+'</div></div>'+
+    '</div>'+
+    '<div style="font-size:.75rem;color:var(--muted);margin-bottom:6px;font-family:Chakra Petch;letter-spacing:1px">ÚLTIMOS 7 DIAS</div>'+
+    '<div class="chart-box" style="height:220px"><canvas id="detailChart"></canvas></div>',
+    true
+  );
+  setTimeout(function(){renderChartInto('detailChart',u.logs||{},'daily')},100);
+}
+
+/* study reminder toast */
+var toast=document.getElementById('studyToast');
+function showToast(){
+  var lang=(users[currentUser]&&users[currentUser].profile&&users[currentUser].profile.lang)||'seu idioma';
+  document.getElementById('toastMsg').textContent='Está na hora do seu estudo diário de '+lang+'. Vamos ser fluente?';
+  toast.classList.add('show');
+}
+function hideToast(){toast.classList.remove('show')}
+document.getElementById('toastClose').addEventListener('click',hideToast);
+document.getElementById('toastSnooze').addEventListener('click',function(){snoozeUntil=Date.now()+10*60*1000;hideToast()});
+document.getElementById('toastGo').addEventListener('click',function(){hideToast();document.querySelector('.tab-btn[data-panel="dashboard"]').click();window.scrollTo({top:0,behavior:'smooth'})});
+
+function checkStudyReminder(onLogin){
+  if(!currentUser||!users[currentUser]||users[currentUser].isAdmin)return;
+  var p=users[currentUser].profile||{};
+  var lang=p.lang||'seu idioma';
+  var timeMin=parseTime(p.studyTime||'20:00');if(timeMin===null)timeMin=20*60;
+  var remind=p.remindBefore!=null?p.remindBefore:10;
+  var targetMin=timeMin-remind;
+  var now=new Date();
+  var nowMin=now.getHours()*60+now.getMinutes();
+  var todayLog=getTodayLog();
+  var studiedToday=(todayLog.minutes||0)>=((p.minutes||60)*0.5);
+  if(studiedToday){toastShownToday=true;return}
+  if(Date.now()<snoozeUntil)return;
+  var msg='Está na hora do seu estudo diário de '+lang+'. Vamos ser fluente?';
+  if(nowMin>=targetMin && !toastShownToday){
+    addUserNotif(msg);showToast();sendNotify('Hora de ser Fluente!',msg);toastShownToday=true;
+  }else if(onLogin && nowMin>=targetMin-60 && nowMin<targetMin){
+    setTimeout(function(){var m='Faltam poucos minutos para o seu estudo de '+lang+'. Prepare-se!';addUserNotif(m);showToast();sendNotify('Lembrete NEXVON',m)},3000);
+    toastShownToday=true;
+  }
+}
+setInterval(checkStudyReminder,60000);
+
+document.querySelectorAll('.tab-btn').forEach(function(b){
+  b.addEventListener('click',function(){
+    document.querySelectorAll('.tab-btn').forEach(function(x){x.classList.remove('active')});
+    document.querySelectorAll('.tab-panel').forEach(function(x){x.classList.remove('active')});
+    b.classList.add('active');
+    document.getElementById('panel-'+b.dataset.panel).classList.add('active');
+    if(b.dataset.panel==='dashboard')setTimeout(renderChart,100);
+    if(b.dataset.panel==='method')buildReaderTexts();
+  });
+});
+
+/* ===== TEXT-TO-SPEECH READER ===== */
+var reader={idx:0,playing:false,muted:false,texts:[],els:[]};
+function buildReaderTexts(){
+  var sel=document.querySelectorAll('#panel-method .method-hero h1, #panel-method .method-hero p, #panel-method .panel h3, #panel-method .fase h3, #panel-method .fase .meta, #panel-method .fase h4, #panel-method .fase li, #panel-method .destaque, #panel-method table th, #panel-method table td');
+  reader.texts=[];reader.els=[];
+  sel.forEach(function(el,i){
+    var t=(el.textContent||'').trim();
+    if(t.length>1){
+      reader.texts.push(t);reader.els.push(el);
+      el.classList.add('reader-clickable');
+      el.title='Clique para ouvir este trecho';
+      el.addEventListener('click',function(e){
+        e.stopPropagation();
+        if(!('speechSynthesis' in window))return;
+        reader.playing=true;
+        document.getElementById('readerPlayIcon').innerHTML='<rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/>';
+        readerSpeak(reader.els.indexOf(el));
+      });
+    }
+  });
+  document.getElementById('readerCount').textContent='0 / '+reader.texts.length;
+}
+function readerSpeak(i){
+  if(i<0||i>=reader.texts.length){readerStop();return}
+  reader.idx=i;
+  document.getElementById('readerCount').textContent=(i+1)+' / '+reader.texts.length;
+  document.querySelectorAll('.reader-highlight').forEach(function(e){e.classList.remove('reader-highlight')});
+  if(reader.els[i]){reader.els[i].classList.add('reader-highlight');reader.els[i].scrollIntoView({behavior:'smooth',block:'center'})}
+  if(reader.muted)return;
+  try{
+    speechSynthesis.cancel();
+    var u=new SpeechSynthesisUtterance(reader.texts[i]);u.lang=langVoiceCode();u.rate=1;u.pitch=1;
+    u.onend=function(){if(reader.playing)readerSpeak(i+1)};
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+function readerStop(){reader.playing=false;try{speechSynthesis.cancel()}catch(e){}
+  document.querySelectorAll('.reader-highlight').forEach(function(e){e.classList.remove('reader-highlight')});
+  document.getElementById('readerPlayIcon').innerHTML='<polygon points="6 3 20 12 6 21 6 3"/>';
+  document.getElementById('readerCount').textContent='0 / '+reader.texts.length;
+}
+document.getElementById('readerPlay').addEventListener('click',function(){
+  if(!('speechSynthesis' in window)){alert('Seu navegador não suporta leitura em voz.');return}
+  if(reader.texts.length===0)buildReaderTexts();
+  if(reader.playing){reader.playing=false;try{speechSynthesis.cancel()}catch(e){}
+    document.getElementById('readerPlayIcon').innerHTML='<polygon points="6 3 20 12 6 21 6 3"/>';return}
+  reader.playing=true;
+  document.getElementById('readerPlayIcon').innerHTML='<rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/>';
+  readerSpeak(reader.idx);
+});
+document.getElementById('readerPrev').addEventListener('click',function(){
+  if(reader.texts.length===0)buildReaderTexts();
+  reader.playing=true;document.getElementById('readerPlayIcon').innerHTML='<rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/>';
+  readerSpeak(reader.idx-1);
+});
+document.getElementById('readerNext').addEventListener('click',function(){
+  if(reader.texts.length===0)buildReaderTexts();
+  reader.playing=true;document.getElementById('readerPlayIcon').innerHTML='<rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/>';
+  readerSpeak(reader.idx+1);
+});
+document.getElementById('readerMute').addEventListener('click',function(){
+  reader.muted=!reader.muted;
+  document.getElementById('readerMute').classList.toggle('muted',reader.muted);
+  if(reader.muted){try{speechSynthesis.cancel()}catch(e){}
+    document.getElementById('readerVolIcon').innerHTML='<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="23" y1="9" x2="17" y2="15" stroke="currentColor" stroke-width="2"/><line x1="17" y1="9" x2="23" y2="15" stroke="currentColor" stroke-width="2"/>'}
+  else{document.getElementById('readerVolIcon').innerHTML='<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'}
+});
+
+/* ===== AI ASSISTENT (knowledge base) ===== */
+var AI_KB=[
+  {k:['o que é','language reactor','o que faz','definição','como funciona'],a:'O Language Reactor é uma extensão de navegador (Chrome/Edge) que transforma Netflix, YouTube, filmes e séries em ferramenta de aprendizado. Oferece legendas bilíngues, dicionário com um clique, repetição de frases, PhrasePump, Aria e exportação para Anki.'},
+  {k:['instalar','instalação','como instalar','baixar','extensão','chrome','edge'],a:'Acesse a Chrome Web Store ou Edge Add-ons, procure por "Language Reactor" e instale. Depois abra Netflix ou YouTube e ative a extensão. Funciona melhor no computador.'},
+  {k:['phrasepump','phrase pump','revisão','exercício','treinar ouvido'],a:'O PhrasePump! cria exercícios de escuta com as palavras que você salvou, usando frases novas. Treina o ouvido e a memorização no contexto. Recomendo 10 minutos por dia.'},
+  {k:['aria','conversa','conversação','falar','praticar fala','diálogo'],a:'Aria é o parceiro de conversação de IA. Você conversa por texto/voz e recebe correções instantâneas de gramática, vocabulário e pronúncia. Use de 10 a 30 minutos por dia.'},
+  {k:['anki','flashcard','cartão','exportar','repetição espaçada'],a:'O Language Reactor exporta palavras salvas para o Anki com imagem e áudio automaticamente. O Anki usa repetição espaçada para memorização de longo prazo. Revise diariamente.'},
+  {k:['lexa','dicionário','significado','tradução','palavra','clicar'],a:'O Lexa AI é o dicionário inteligente: clique em qualquer palavra nas legendas e veja tradução, exemplos com áudio e explicação de IA. Palavras salvas aparecem destacadas em todo conteúdo futuro.'},
+  {k:['what to learn','quais palavras','essenciais','frequente','vocabulário'],a:'"What to Learn" analisa seu nível e sugere as palavras mais frequentes e úteis para estudar primeiro. Foque nessas nas fases iniciais do método.'},
+  {k:['fsi','dli','curso','estruturado','exercício de fala','módulo'],a:'FSI e DLI são programas estruturados de treinamento de idiomas do governo americano, integrados ao Language Reactor. Oferecem exercícios estruturados de fala — ótimos para a Fase 2.'},
+  {k:['pro','pago','gratuito','grátis','preço','assinatura','plano','vale a pena'],a:'O plano gratuito já leva você à fluência! O Pro é opcional e adiciona o Lexa AI avançado, Pro Mode com transcrição de fala e mais recursos. Não é obrigatório.'},
+  {k:['velocidade','reprodução','lento','0.75','controle','atalho','tecla'],a:'Use os controles de reprodução: comece em 0.75x na Fase 1, avance para 1.0x, depois 1.25x e até 1.5x. Teclas: S = repetir frase, D = próxima frase. Auto-pausa recomendada no início.'},
+  {k:['legenda','bilíngue','duas legendas','esconder','blur','sem legenda'],a:'Comece com legendas bilíngues. Na Fase 2 alterne: 1 dia bilíngue, 1 dia só idioma alvo. Use a técnica do Blur (esconda e revele só quando necessário). Na Fase 3, estude sem legendas.'},
+  {k:['livro','página web','importar','leitura','ler','texto','narração'],a:'Você pode importar páginas web e livros; o sistema faz leitura em voz alta enquanto você acompanha o texto. Ótimo para treinar compreensão auditiva com conteúdo que você gosta.'},
+  {k:['método','como estudar','rotina','por onde começar','90 dias','180','365','fluência','fase'],a:'O método NEXVON tem 3 fases: Fase 1 (dias 1-90) alicerce com conteúdo familiar em 0.75x; Fase 2 (91-180) imersão profunda com Aria e FSI; Fase 3 (181-365) domínio sem legendas. Consistência de 30-60 min/dia é a chave.'},
+  {k:['netflix','youtube','filme','série','conteúdo','assistir','qual conteúdo'],a:'Use Netflix, YouTube e filmes. Comece com conteúdo que você JÁ CONHECE. Se entender menos de 50%, escolha algo mais fácil. O melhor conteúdo é aquele que você gosta.'},
+  {k:['senha','recuperar','esqueci','login','entrar','conta','cadastro'],a:'Na tela de acesso clique em "Esqueci minha senha", informe o e-mail e use o código gerado. No cadastro, preencha nome, data de nascimento, e-mail e senha — a conta fica pendente até o admin liberar.'},
+  {k:['admin','administrador','bloquear','liberar','pendente','usuário','gestão','relatório'],a:'O administrador acessa com e-mail admin@nexvon.ai. No painel de Gestão de Acessos: liberar pendentes, bloquear, ver evolução detalhada de cada usuário, filtrar por busca/status e exportar relatório em PDF.'},
+  {k:['notificação','sino','lembrete','hora de estudar','aviso','horário'],a:'O sino no topo mostra lembretes de estudo e (para admin) novos cadastros. Configure o horário e a antecedência do aviso na Central de Controle. Clique em uma notificação para vê-la em detalhes.'}
+];
+/* ===== GUIAS PASSO A PASSO (gerar PDF) ===== */
+var GUIDES={
+  instalar:{t:'Como Instalar e Configurar o Language Reactor',s:['Acesse a Chrome Web Store (chrome.google.com/webstore) ou Edge Add-ons.','Na busca, digite "Language Reactor" e selecione a extensão oficial.','Clique em "Usar no Chrome" (ou "Obter" no Edge) e confirme a instalação.','Abra a Netflix ou YouTube no navegador.','Clique no ícone do Language Reactor (canto superior direito) para ativar.','No painel de configurações, defina: Idioma que você aprende (ex: Inglês) e Seu idioma (Português).','Ative "Mostrar duas legendas" e "Auto-pausa entre frases".','Pronto! Abra qualquer vídeo e comece a estudar.']},
+  phrasepump:{t:'Como Usar o PhrasePump! (Revisão de Vocabulário)',s:['Salve palavras desconhecidas durante os vídeos (atalho: tecla R).','Acesse o menu do Language Reactor → "PhrasePump!".','Escolha o conjunto de palavras salvas.','Ouça a frase completa com a palavra em contexto.','Tente repetir em voz alta antes de ver a tradução.','Marque como "Aprendida" quando dominar.','Recomendação: 10 minutos por dia, todos os dias.','O sistema repete as palavras no intervalo ideal de memória.']},
+  aria:{t:'Como Praticar Conversação com a Aria (IA)',s:['Acesse o menu do Language Reactor → "Aria".','Escolha um tópico de conversação (ex: viagens, trabalho, cotidiano).','Escolha o nível: iniciante, intermediário ou avançado.','Digite ou fale sua resposta no microfone.','A Aria responde e corrige gramática/vocabulário instantaneamente.','Use o botão de áudio para ouvir a pronúncia correta.','Tente repetir a frase corrigida em voz alta (shadowing).','Progressão: 10 min/dia na Fase 1 → 30 min/dia na Fase 2.']},
+  anki:{t:'Como Exportar Palavras para o Anki (Flashcards)',s:['Instale o Anki (apps.ankiweb.net) no computador e celular.','No Language Reactor, salve as palavras que quer estudar.','Acesse sua lista de palavras salvas.','Clique em "Exportar para Anki".','O arquivo .apkg será baixado automaticamente.','Abra o Anki → Arquivo → Importar → selecione o arquivo.','Cada flashcard terá: palavra, tradução, frase de contexto, áudio e imagem.','Estude diariamente (5-10 min) — o Anki usa repetição espaçada.']},
+  legendas:{t:'Como Configurar e Usar as Legendas Bilíngues',s:['Abra um vídeo na Netflix ou YouTube com o Language Reactor ativo.','No painel, ative "Legenda do idioma alvo" (ex: inglês) e "Sua língua" (português).','Clique em qualquer palavra da legenda para ver tradução + áudio (Lexa AI).','Salve palavras importantes com a tecla R.','Use o Modo 1:1 (uma legenda de cada vez) para forçar a leitura no idioma alvo.','Técnica do Blur: esconda a tradução e revele só quando necessário.','Progressão: bilíngues (Fase 1) → só idioma alvo (Fase 2) → sem legendas (Fase 3).','Atalhos: S = repetir frase, D = próxima frase, espaço = play/pause.']},
+  velocidade:{t:'Como Ajustar a Velocidade e Controles de Reprodução',s:['No player do Language Reactor, localize a barra de velocidade.','Fase 1 (iniciante): comece em 0.75x (mais lento).','Aumente gradualmente: 0.85x → 1.0x → 1.25x → 1.5x.','Ative o "Auto-pause" para pausar automaticamente entre frases.','Atalho S: repete a frase atual (essencial no início).','Atalho D: pula para a próxima frase.','Use "Loop de frase" para repetir uma frase difícil várias vezes.','Quando conseguir entender 80% em 1.0x, passe para 1.25x.']}
+};
+function openGuidePDF(key){
+  var g=GUIDES[key];if(!g){alert('Guia não encontrado.');return}
+  var steps=g.s.map(function(s,i){return '<tr><td style="width:50px;font-size:24px;font-weight:bold;color:#00e5ff;font-family:monospace">'+(i+1)+'</td><td style="padding:12px;font-size:15px;line-height:1.6">'+s+'</td></tr>'}).join('');
+  var w=window.open('','_blank');
+  if(!w){alert('Permita pop-ups para gerar o PDF.');return}
+  w.document.write('<html><head><meta charset="utf-8"><title>'+g.t+' — NEXVON</title><style>body{font-family:Arial,sans-serif;padding:40px;max-width:700px;margin:0 auto;color:#222}h1{color:#0a0e1f;border-bottom:4px solid #00e5ff;padding-bottom:12px;font-size:24px}table{width:100%;border-collapse:collapse;margin-top:20px}tr{border-bottom:1px solid #eee}tr:nth-child(even){background:#f8f9fc}.btn{display:inline-block;margin-top:24px;padding:12px 24px;background:#0a0e1f;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:bold;cursor:pointer}@media print{.btn{display:none}}</style></head><body><h1>'+g.t+'</h1><p style="color:#666">Guia passo a passo gerado pelo assistente NEXVON · Language Reactor</p><table>'+steps+'</table><button class="btn" onclick="window.print()">Imprimir / Salvar como PDF</button></body></html>');
+  w.document.close();
+}
+function detectLang(q){
+  q=q||'';
+  if(/[\u3040-\u30ff]/.test(q))return 'ja';
+  if(/[\uac00-\ud7af]/.test(q))return 'ko';
+  if(/[\u4e00-\u9fff]/.test(q))return 'zh';
+  if(/[\u0400-\u04ff]/.test(q))return 'ru';
+  if(/[\u0600-\u06ff]/.test(q))return 'ar';
+  var sc={en:0,es:0,fr:0,de:0,pt:0};
+  var dict={en:['the','what','how','is','are','you','to','of','in','for','and','language','reactor','install','use','does'],
+    es:['el','la','los','las','que','como','es','son','de','del','instalar','idioma','usar','para','por'],
+    fr:['le','la','les','que','comment','est','sont','de','installer','langue','utiliser','pour'],
+    de:['der','die','das','wie','ist','sind','von','installieren','sprache','benutzen','für'],
+    pt:['o','a','os','as','que','como','é','são','de','do','da','instalar','idioma','usar','para','por']};
+  q.toLowerCase().split(/\s+/).forEach(function(w){Object.keys(dict).forEach(function(k){if(dict[k].indexOf(w)>=0)sc[k]++})});
+  var best='pt',bs=0;Object.keys(sc).forEach(function(k){if(sc[k]>bs){bs=sc[k];best=k}});
+  return bs>0?best:(localStorage.getItem('nexvon_lang')||'pt');
+}
+var AI_FALLBACK={
+  pt:'Posso ajudar com: o que é o Language Reactor, instalação, PhrasePump, Aria, Anki, Lexa, What to Learn, FSI/DLI, plano gratuito vs Pro, velocidade, legendas, importar livros, o método de 90/180/365 dias, ou o sistema NEXVON. Tente uma dessas palavras-chave!',
+  en:'I can help with: what Language Reactor is, installation, PhrasePump, Aria, Anki, Lexa, What to Learn, FSI/DLI, free vs Pro plan, playback speed, subtitles, importing books, the 90/180/365 day method, or the NEXVON system. Try one of these keywords!',
+  es:'Puedo ayudarte con: qué es Language Reactor, instalación, PhrasePump, Aria, Anki, Lexa, What to Learn, FSI/DLI, plan gratuito vs Pro, velocidad, subtítulos, importar libros, el método de 90/180/365 días, o el sistema NEXVON. ¡Prueba una de estas palabras clave!'
+};
+function aiAnswer(q,lang){
+  lang=lang||detectLang(q);
+  q=(q||'').toLowerCase();var best=null,bestScore=0,bestIdx=-1;
+  AI_KB.forEach(function(item,i){var sc=0;item.k.forEach(function(kw){if(q.includes(kw))sc+=kw.length});if(sc>bestScore){bestScore=sc;best=item.a;bestIdx=i}});
+  var resp=bestScore>0?best:AI_FALLBACK.pt;
+  if(lang==='en')resp=(bestScore>0?'[English] ':'')+AI_FALLBACK.en+' (Detected: English. Detailed content available in Portuguese — select your language at the top.)';
+  else if(lang==='es')resp=(bestScore>0?'[Español] ':'')+AI_FALLBACK.es+' (Detectado: Español. Contenido detallado en portugués — selecciona tu idioma arriba.)';
+  else if(lang!=='pt')resp='[Language detected: '+lang.toUpperCase()+'] '+AI_FALLBACK.en;
+  return resp;
+}
+var aiBody=document.getElementById('aiBody');
+var aiMuted=false, aiUtter=null, aiSpeakingEl=null;
+var ICON_PLAY='<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>';
+var ICON_MUTE='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>';
+var ICON_VOL='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>';
+function aiStopSpeak(){try{speechSynthesis.cancel()}catch(e){}if(aiSpeakingEl){aiSpeakingEl.classList.remove('speaking');aiSpeakingEl=null}}
+function aiSpeak(text,el){
+  if(!('speechSynthesis' in window)||aiMuted)return;
+  aiStopSpeak();
+  aiSpeakingEl=el;if(el)el.classList.add('speaking');
+  try{
+    var u=new SpeechSynthesisUtterance(text);u.lang=langVoiceCode();u.rate=1.05;u.pitch=1;
+    u.onend=function(){if(el)el.classList.remove('speaking');aiSpeakingEl=null};
+    aiUtter=u;speechSynthesis.speak(u);
+  }catch(e){}
+}
+function aiAddMsg(text,who){
+  var d=document.createElement('div');d.className='ai-msg '+who;
+  var txt=document.createElement('div');txt.textContent=text;d.appendChild(txt);
+  if(who==='bot'){
+    d.title='Clique para ouvir esta resposta';
+    d.addEventListener('click',function(){aiSpeak(text,d)});
+    var btn=document.createElement('button');
+    btn.className='ai-audio-btn'+(aiMuted?' muted':'');
+    btn.title=aiMuted?'Áudio mutado — clique para ativar':'Ouvir / repetir resposta';
+    btn.innerHTML=aiMuted?ICON_MUTE:ICON_PLAY;
+    btn.addEventListener('click',function(e){
+      e.stopPropagation();
+      if(aiMuted){aiMuted=false;btn.classList.remove('muted');btn.innerHTML=ICON_PLAY;btn.title='Ouvir / repetir resposta';aiSpeak(text,d)}
+      else{aiMuted=true;aiStopSpeak();btn.classList.add('muted');btn.innerHTML=ICON_MUTE;btn.title='Áudio mutado'}
+      document.querySelectorAll('.ai-audio-btn').forEach(function(b){b.classList.toggle('muted',aiMuted);b.innerHTML=aiMuted?ICON_MUTE:ICON_PLAY});
+    });
+    d.appendChild(btn);
+    if(!aiMuted)setTimeout(function(){aiSpeak(text,d)},300);
+  }
+  aiBody.appendChild(d);aiBody.scrollTop=aiBody.scrollHeight;
+}
+function aiSend(){var inp=document.getElementById('aiInput');var q=inp.value.trim();if(!q)return;aiAddMsg(q,'user');inp.value='';setTimeout(function(){aiAddMsg(aiAnswer(q,detectLang(q)),'bot')},450)}
+function voiceLangFor(text){var l=detectLang(text);return VOICE_LANGS[l]||'en-US'}
+document.getElementById('aiSend').addEventListener('click',aiSend);
+document.getElementById('aiInput').addEventListener('keydown',function(e){if(e.key==='Enter')aiSend()});
+document.querySelectorAll('#aiSuggest span').forEach(function(s){s.addEventListener('click',function(){
+  if(s.dataset.guide){aiAddMsg('Gerar PDF: '+s.textContent,'user');openGuidePDF(s.dataset.guide);aiAddMsg('PDF do passo a passo aberto! Clique em "Imprimir / Salvar como PDF" na nova janela.','bot')}
+  else{document.getElementById('aiInput').value=s.dataset.q;aiSend()}
+})});
+document.getElementById('aiFab').addEventListener('click',function(){document.getElementById('aiPanel').classList.toggle('open')});
+document.getElementById('aiClose').addEventListener('click',function(){document.getElementById('aiPanel').classList.remove('open')});
+/* ===== ENTRADA POR VOZ (microfone) com permissão oficial ===== */
+var aiMicBtn=document.getElementById('aiMic'), aiRecog=null, aiListening=false, aiMicStream=null;
+var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+var VOICE_LANGS={pt:'pt-BR',en:'en-US',es:'es-ES',fr:'fr-FR',de:'de-DE',it:'it-IT',ja:'ja-JP',zh:'zh-CN',ko:'ko-KR',ru:'ru-RU'};
+function currentVoiceLang(){var l=(localStorage.getItem('nexvon_lang')||'pt');return VOICE_LANGS[l]||'pt-BR'}
+if(!SR||!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+  aiMicBtn.style.opacity='.4';aiMicBtn.title='Reconhecimento de voz não suportado — use Chrome/Edge em HTTPS';
+}else{
+  aiRecog=new SR();aiRecog.interimResults=false;aiRecog.maxAlternatives=1;aiRecog.continuous=false;
+  aiRecog.onresult=function(e){
+    var t=e.results[0][0].transcript;
+    var inp=document.getElementById('aiInput');inp.value=t;
+    aiAddMsg(t,'user');inp.value='';
+    setTimeout(function(){aiAddMsg(aiAnswer(t,detectLang(t)),'bot')},450);
+  };
+  aiRecog.onend=function(){
+    aiListening=false;aiMicBtn.classList.remove('listening');
+    document.getElementById('aiInput').placeholder='Digite ou fale sua dúvida...';
+    if(aiMicStream){aiMicStream.getTracks().forEach(function(tr){tr.stop()});aiMicStream=null}
+  };
+  aiRecog.onerror=function(e){
+    aiListening=false;aiMicBtn.classList.remove('listening');
+    var msg='Erro no microfone.';
+    if(e.error==='not-allowed')msg='Permissão do microfone negada. Ative nas configurações do navegador.';
+    else if(e.error==='not-found')msg='Nenhum microfone encontrado no dispositivo.';
+    else if(e.error==='network')msg='Erro de rede no reconhecimento de voz.';
+    aiAddMsg(msg,'bot');
+    if(aiMicStream){aiMicStream.getTracks().forEach(function(tr){tr.stop()});aiMicStream=null}
+  };
+  aiMicBtn.addEventListener('click',function(){
+    if(aiListening){try{aiRecog.stop()}catch(e){}return}
+    navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+      aiMicStream=stream;
+      aiRecog.lang=currentVoiceLang();
+      try{aiRecog.start();aiListening=true;aiMicBtn.classList.add('listening');
+        document.getElementById('aiInput').placeholder='Ouvindo... fale agora!';
+        document.getElementById('aiInput').value='';
+      }catch(e){stream.getTracks().forEach(function(tr){tr.stop()})}
+    }).catch(function(err){
+      var m='Não foi possível acessar o microfone. ';
+      if(err.name==='NotAllowedError')m+='Permissão negada — clique no cadeado da barra de endereço e permita o microfone.';
+      else if(err.name==='NotFoundError')m+='Nenhum microfone encontrado.';
+      else if(err.name==='NotReadableError')m+='Microfone em uso por outro aplicativo.';
+      else m+=err.message;
+      aiAddMsg(m,'bot');
+    });
+  });
+}
+
+/* ===== NOTIFICAÇÃO DETALHADA (clique no sino) ===== */
+document.getElementById('notifDropdown').addEventListener('click',function(e){
+  var item=e.target.closest('.notif-item.clickable');if(!item)return;
+  var isAdmin=currentUser&&users[currentUser]&&users[currentUser].isAdmin;
+  var email=item.dataset.email,name=item.dataset.name,msg=item.dataset.msg,time=item.dataset.time;
+  var body='';
+  if(isAdmin&&email){
+    var u=users[email]||{};var s=u.logs?calcUserStats(u):{total:0,streak:0,days:0,level:'A1'};
+    body='<h3>Novo Cadastro Pendente</h3>'+
+      '<div class="meta-display" style="margin:0 0 14px 0">Nome: <b>'+(name||'—')+'</b><br>E-mail: <b>'+email+'</b><br>Provedor: <b>'+(u.provider||'local')+'</b><br>Cadastrado em: <b>'+(time?new Date(parseInt(time)).toLocaleString('pt-BR'):'—')+'</b><br>Minutos estudados: <b>'+s.total+'</b> · Streak: <b>'+s.streak+'</b> · Dias: <b>'+s.days+'</b></div>'+
+      (u.status==='pending'?'<button class="btn-primary" id="notifApprove">Liberar Acesso Agora</button>':'<div class="modal-note">Status atual: <b>'+(u.status||'ativo')+'</b></div>');
+  }else{
+    body='<h3>Lembrete de Estudo</h3><div class="destaque" style="margin:0 0 14px 0;font-size:1rem">'+(msg||'Hora de ser fluente!')+'</div><div class="modal-note">Recebido em: '+(time?new Date(parseInt(time)).toLocaleString('pt-BR'):'—')+'</div>'+
+      ('speechSynthesis' in window?'<button class="btn-primary" id="notifSpeak" style="margin-top:14px">Ouvir em Voz Alta</button>':'');
+  }
+  openModal('<button class="modal-close">&times;</button>'+body);
+  var ap=document.getElementById('notifApprove');
+  if(ap)ap.addEventListener('click',function(){if(users[email]){users[email].status='active';saveUsers(users);renderAdmin();renderNotifs();closeModal();showAuthMsg('Acesso de '+email+' liberado!','ok')}});
+  var sp=document.getElementById('notifSpeak');
+  if(sp)sp.addEventListener('click',function(){try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(msg||'Hora de ser fluente!');u.lang='pt-BR';speechSynthesis.speak(u)}catch(e){}});
+});
+
+/* ===== ADMIN: FILTROS + EXPORTAR PDF ===== */
+var adminSearchEl=document.getElementById('adminSearch'),adminFilterEl=document.getElementById('adminFilter');
+if(adminSearchEl)adminSearchEl.addEventListener('input',renderAdmin);
+if(adminFilterEl)adminFilterEl.addEventListener('change',renderAdmin);
+var exportBtn=document.getElementById('exportPdfBtn');
+if(exportBtn)exportBtn.addEventListener('click',function(){
+  var rows='';
+  Object.keys(users).forEach(function(email){
+    var u=users[email];var s=calcUserStats(u);
+    rows+='<tr><td>'+(u.name||'—')+'<br><small style="color:#666">'+email+'</small></td><td>'+(u.birth?new Date(u.birth).toLocaleDateString('pt-BR'):'—')+'</td><td>'+(u.provider||'local')+'</td><td>'+(u.isAdmin?'Admin':(u.status||'ativo'))+'</td><td>'+s.total+'</td><td>'+s.streak+'</td><td>'+s.days+'</td><td>'+s.level+'</td><td>'+fmtDate(u.lastLogin)+'</td></tr>';
+  });
+  var w=window.open('','_blank');
+  if(!w){alert('Permita pop-ups para exportar o relatório.');return}
+  w.document.write('<html><head><meta charset="utf-8"><title>Relatório NEXVON</title><style>body{font-family:Arial,sans-serif;padding:30px;color:#222}h1{color:#0a0e1f;border-bottom:3px solid #00e5ff;padding-bottom:10px}table{width:100%;border-collapse:collapse;margin-top:20px}th,td{border:1px solid #ccc;padding:10px;text-align:left;font-size:13px}th{background:#0a0e1f;color:#fff}tr:nth-child(even){background:#f5f7fa}small{color:#666}@media print{.noprint{display:none}}</style></head><body><h1>Relatório de Usuários — NEXVON Fluência Imersiva</h1><p>Gerado em: '+new Date().toLocaleString('pt-BR')+' · Total de contas: '+Object.keys(users).length+'</p><button class="noprint" onclick="window.print()" style="padding:10px 20px;background:#0a0e1f;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:bold">Imprimir / Salvar como PDF</button><table><thead><tr><th>Usuário</th><th>Nascimento</th><th>Provedor</th><th>Status</th><th>Minutos</th><th>Streak</th><th>Dias Estud.</th><th>Nível</th><th>Último Acesso</th></tr></thead><tbody>'+rows+'</tbody></table></body></html>');
+  w.document.close();
+});
+/* ===== NOTIFICAÇÕES NATIVAS DO APARELHO (PWA) ===== */
+function requestNotifyPermission(){
+  if(!('Notification' in window)){alert('Este navegador não suporta notificações nativas. Use Chrome/Edge.');return}
+  if(Notification.permission==='granted'){alert('Notificações já estão ativadas!');return}
+  Notification.requestPermission().then(function(p){
+    if(p==='granted'){try{new Notification('NEXVON',{body:'Notificações ativadas! Você receberá lembretes de estudo no seu aparelho.',icon:'favicon.svg'})}catch(e){}}
+    else alert('Permissão negada. Para ativar, clique no cadeado da barra de endereço → Permissões → Notificações.');
+  });
+}
+function sendNotify(title,body){
+  if('Notification' in window && Notification.permission==='granted'){
+    try{new Notification(title,{body:body,icon:'favicon.svg',tag:'nexvon-study'})}catch(e){}
+  }
+}
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
+
+/* ===== I18N / SELETOR DE IDIOMA (40 idiomas) ===== */
+var LANGS=[
+  {c:'pt',n:'Português'},{c:'en',n:'English'},{c:'es',n:'Español'},{c:'fr',n:'Français'},
+  {c:'de',n:'Deutsch'},{c:'it',n:'Italiano'},{c:'ja',n:'日本語'},{c:'zh',n:'中文'},
+  {c:'ko',n:'한국어'},{c:'ru',n:'Русский'},{c:'ar',n:'العربية'},{c:'nl',n:'Nederlands'},
+  {c:'sv',n:'Svenska'},{c:'pl',n:'Polski'},{c:'tr',n:'Türkçe'},{c:'vi',n:'Tiếng Việt'},
+  {c:'th',n:'ไทย'},{c:'id',n:'Bahasa Indonesia'},{c:'ms',n:'Bahasa Melayu'},{c:'hi',n:'हिन्दी'},
+  {c:'bn',n:'বাংলা'},{c:'ta',n:'தமிழ்'},{c:'te',n:'తెలుగు'},{c:'ur',n:'اردو'},
+  {c:'fa',n:'فارسی'},{c:'he',n:'עברית'},{c:'el',n:'Ελληνικά'},{c:'uk',n:'Українська'},
+  {c:'cs',n:'Čeština'},{c:'hu',n:'Magyar'},{c:'ro',n:'Română'},{c:'bg',n:'Български'},
+  {c:'sr',n:'Српски'},{c:'hr',n:'Hrvatski'},{c:'sk',n:'Slovenčina'},{c:'sl',n:'Slovenščina'},
+  {c:'fi',n:'Suomi'},{c:'no',n:'Norsk'},{c:'da',n:'Dansk'},{c:'sw',n:'Kiswahili'}
+];
+var I18N={
+  pt:{login:'Acessar',register:'Cadastrar',email:'E-mail',pass:'Senha',loginBtn:'Iniciar Sessão',forgot:'Esqueci minha senha',regName:'Nome Completo',birth:'Data de Nascimento',regBtn:'Solicitar Acesso',remember:'Salvar senha neste dispositivo',rememberReg:'Lembrar meus dados (nome, data e e-mail)',or:'ou acesse com',cfgSocial:'Configurar login real (Google/Facebook)',access:'Acesso ao Sistema',logout:'Sair',dashboard:'Central de Controle',method:'Método Completo',admin:'Gestão de Acessos',search:'Buscar por nome ou e-mail...',allStatus:'Todos os status',exportPdf:'Exportar PDF',aiTitle:'Assistente NEXVON AI',aiPlaceholder:'Digite ou fale sua dúvida...',aiSend:'Enviar',aiHello:'Olá! Sou o assistente do NEXVON. Tire qualquer dúvida sobre o Language Reactor, o método de fluência ou o sistema. Como posso ajudar?'},
+  en:{login:'Sign In',register:'Sign Up',email:'Email',pass:'Password',loginBtn:'Start Session',forgot:'Forgot password',regName:'Full Name',birth:'Date of Birth',regBtn:'Request Access',remember:'Save password on this device',rememberReg:'Remember my details (name, date, email)',or:'or continue with',cfgSocial:'Configure real login (Google/Facebook)',access:'Access System',logout:'Logout',dashboard:'Control Center',method:'Full Method',admin:'Access Management',search:'Search by name or email...',allStatus:'All statuses',exportPdf:'Export PDF',aiTitle:'NEXVON AI Assistant',aiPlaceholder:'Type or speak your question...',aiSend:'Send',aiHello:'Hi! I am the NEXVON assistant. Ask anything about Language Reactor, the fluency method or the system. How can I help?'},
+  es:{login:'Acceder',register:'Registrar',email:'Correo',pass:'Contraseña',loginBtn:'Iniciar Sesión',forgot:'Olvidé mi contraseña',regName:'Nombre Completo',birth:'Fecha de Nacimiento',regBtn:'Solicitar Acceso',remember:'Guardar contraseña en este dispositivo',rememberReg:'Recordar mis datos (nombre, fecha, correo)',or:'o accede con',cfgSocial:'Configurar login real (Google/Facebook)',access:'Acceso al Sistema',logout:'Salir',dashboard:'Central de Control',method:'Método Completo',admin:'Gestión de Accesos',search:'Buscar por nombre o correo...',allStatus:'Todos los estados',exportPdf:'Exportar PDF',aiTitle:'Asistente NEXVON IA',aiPlaceholder:'Escribe o habla tu duda...',aiSend:'Enviar',aiHello:'¡Hola! Soy el asistente de NEXVON. Pregunta sobre Language Reactor, el método de fluencia o el sistema. ¿Cómo puedo ayudarte?'}
+};
+function t(key){var l=localStorage.getItem('nexvon_lang')||'pt';var d=I18N[l]||I18N.en||I18N.pt;return d[key]||I18N.pt[key]||key}
+function fillLangSelects(){
+  var opts=LANGS.map(function(l){return '<option value="'+l.c+'">'+l.n+'</option>'}).join('');
+  ['uiLangAuth','uiLang'].forEach(function(id){var el=document.getElementById(id);if(el){el.innerHTML=opts;el.value=localStorage.getItem('nexvon_lang')||'pt'}});
+}
+function applyLang(){
+  var set=function(id,key){var el=document.getElementById(id);if(el)el.textContent=t(key)};
+  var setPh=function(id,key){var el=document.getElementById(id);if(el)el.placeholder=t(key)};
+  document.querySelectorAll('.auth-tab').forEach(function(tb){tb.textContent=tb.dataset.tab==='login'?t('login'):t('register')});
+  set('loginBtn','loginBtn');set('forgotLink','forgot');set('registerBtn','regBtn');
+  set('cfgSocialLink','cfgSocial');set('logoutBtn','logout');
+  var ut=document.querySelectorAll('#userTabs .tab-btn');if(ut[0])ut[0].textContent=t('dashboard');if(ut[1])ut[1].textContent=t('method');
+  var at=document.querySelectorAll('#adminTabs .tab-btn');if(at[0])at[0].textContent=t('admin');if(at[1])at[1].textContent=t('method');
+  setPh('adminSearch','search');set('exportPdfBtn','exportPdf');
+  setPh('aiInput','aiPlaceholder');set('aiSend','aiSend');
+  var hello=document.querySelector('#aiBody .ai-msg.bot');if(hello)hello.textContent=t('aiHello');
+  var lbl=document.querySelectorAll('.field label');
+  if(lbl.length){lbl[0]&&(lbl[0].textContent=t('email'));lbl[1]&&(lbl[1].textContent=t('pass'))}
+  document.title='NEXVON — '+t('method')+' | v2100';
+}
+function bindLangSelects(){
+  ['uiLangAuth','uiLang'].forEach(function(id){
+    var el=document.getElementById(id);if(!el)return;
+    el.addEventListener('change',function(){
+      localStorage.setItem('nexvon_lang',el.value);
+      var other=id==='uiLangAuth'?'uiLang':'uiLangAuth';
+      var o=document.getElementById(other);if(o)o.value=el.value;
+      applyLang();
+    });
+  });
+}
+/* ===== TRADUÇÃO AUTOMÁTICA COMPLETA (Google Translate API gratuita) ===== */
+var TL_CACHE={};
+function currentLang(){return localStorage.getItem('nexvon_lang')||'pt'}
+function langVoiceCode(){var l=currentLang();return VOICE_LANGS[l]||(l.length===2?l+'-'+l.toUpperCase():'pt-BR')}
+function translateText(text,lang){
+  return new Promise(function(resolve){
+    if(lang==='pt'||!text||!text.trim()||text.trim().length<2){resolve(text);return}
+    var key=lang+'::'+text.slice(0,60);
+    if(TL_CACHE[key]){resolve(TL_CACHE[key]);return}
+    fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=pt&tl='+lang+'&dt=t&q='+encodeURIComponent(text.slice(0,1800)))
+      .then(function(r){return r.json()})
+      .then(function(d){var out=(d&&d[0])?d[0].map(function(s){return s[0]||''}).join(''):text;TL_CACHE[key]=out;resolve(out)})
+      .catch(function(){resolve(text)});
+  });
+}
+var ORIG_METHOD=null;
+function applyFullTranslation(lang){
+  if(reader.els.length===0)buildReaderTexts();
+  if(lang==='pt'){
+    if(ORIG_METHOD){ORIG_METHOD.forEach(function(item){item.el.textContent=item.orig})}
+    buildReaderTexts();return;
+  }
+  if(!ORIG_METHOD){ORIG_METHOD=reader.els.map(function(el){return {el:el,orig:el.textContent}})}
+  var status=document.createElement('div');
+  status.style.cssText='position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:999;background:#10162c;border:1px solid #00e5ff;padding:10px 22px;border-radius:10px;font-family:Chakra Petch,monospace;font-size:.8rem;color:#00e5ff;box-shadow:0 0 20px rgba(0,229,255,.4)';
+  status.textContent='Traduzindo método... 0%';
+  document.body.appendChild(status);
+  var i=0,total=ORIG_METHOD.length;
+  function next(){
+    if(i>=total){status.textContent='Tradução concluída!';setTimeout(function(){status.remove()},1200);buildReaderTexts();return}
+    var item=ORIG_METHOD[i++];
+    translateText(item.orig,lang).then(function(t){
+      item.el.textContent=t||item.orig;
+      status.textContent='Traduzindo método... '+Math.round(i/total*100)+'%';
+      setTimeout(next,80);
+    });
+  }
+  next();
+}
+var origApplyLang=applyLang;
+applyLang=function(){origApplyLang();applyFullTranslation(currentLang())};
+fillLangSelects();bindLangSelects();applyLang();
+buildReaderTexts();
+})();
+</script>
+</body>
+</html>
+
+{
+  "name": "NEXVON — Fluência Imersiva",
+  "short_name": "NEXVON",
+  "description": "Sistema de aprendizado de idiomas baseado no Language Reactor",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#05060f",
+  "theme_color": "#05060f",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
+
+[build]
+  publish = "."
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=300"
+
+# NEXVON — Fluência Imersiva v2100
+
+Sistema completo de aprendizado de idiomas baseado no Language Reactor.
+Arquivo único HTML standalone — sem backend, sem instalação.
+
+## ⚡ Configuração Rápida (2 minutos)
+Após subir o site, acesse: **`https://SEU-SITE/setup.html`**
+O assistente detecta seu domínio, te leva direto para criar as chaves do Google/Facebook e salva tudo automaticamente.
+
+## 🚀 Deploy no GitHub Pages (recomendado)
+1. Crie um repositório público no GitHub
+2. Faça upload de TODOS os arquivos desta pasta
+3. Settings → Pages → Branch: `main` → Save
+4. Acesse `https://SEU-USUARIO.github.io/SEU-REPO/`
+5. Vá em `/setup.html` para configurar login real em 2 min
+
+## 🔑 Login real Google/Facebook
+- As chaves exigem sua conta pessoal (não podem ser geradas automaticamente)
+- Use o **setup.html** — assistente guiado com links diretos e cópia automática
+- Google: console.cloud.google.com (OAuth Client ID)
+- Facebook: developers.facebook.com (App ID)
+- Adicione seu domínio nas origens autorizadas
+
+## 📱 PWA + Notificações
+- manifest.json + sw.js inclusos → instale no celular (ícone na tela inicial)
+- Botão "Ativar Notificações" no dashboard → lembretes mesmo com app fechado
+
+## 📁 Arquivos
+- `index.html` — Sistema completo
+- `setup.html` — Assistente de configuração (login real)
+- `manifest.json` + `sw.js` — PWA / notificações
+- `favicon.svg` — Ícone
+- `guia-deploy.html` — Guia visual (salve como PDF: Ctrl+P)
+- `.github/workflows/deploy.yml` — Deploy automático
+- `netlify.toml` / `vercel.json` / `.htaccess` / `_redirects` / `.nojekyll`
+
+## 🔐 Admin
+- E-mail: `admin@nexvon.ai` · Senha: `admin2100` (troque no primeiro acesso!)
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assistente de Configuração — NEXVON</title>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Sora',sans-serif;background:#05060f;color:#e8f0ff;line-height:1.6;min-height:100vh}
+.bg-grid{position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.04) 1px,transparent 1px);background-size:48px 48px;pointer-events:none}
+.wrap{max-width:760px;margin:0 auto;padding:40px 20px;position:relative;z-index:2}
+h1{font-family:'Chakra Petch',monospace;font-size:1.8rem;background:linear-gradient(90deg,#00e5ff,#a855f7,#ff2d95);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.sub{color:#8a97b8;font-size:.9rem;margin-bottom:24px}
+.card{background:rgba(16,22,44,.8);border:1px solid rgba(0,229,255,.25);border-radius:14px;padding:24px;margin-bottom:18px;backdrop-filter:blur(10px)}
+.card h2{font-family:'Chakra Petch',monospace;font-size:1.1rem;color:#00e5ff;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.step{display:flex;gap:12px;margin:14px 0;align-items:flex-start}
+.step-num{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#00e5ff,#a855f7);color:#04121a;font-family:'Chakra Petch',monospace;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:.85rem}
+.step p{font-size:.88rem;color:#c8d2e8;flex:1}
+.step b{color:#00e5ff}
+.btn{display:inline-block;padding:11px 22px;border-radius:9px;border:none;cursor:pointer;font-family:'Chakra Petch',monospace;font-weight:600;font-size:.82rem;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;transition:.25s;margin:6px 6px 6px 0}
+.btn-primary{background:linear-gradient(135deg,#00e5ff,#4dd0ff);color:#04121a;box-shadow:0 0 20px rgba(0,229,255,.4)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 30px rgba(0,229,255,.6)}
+.btn-violet{background:linear-gradient(135deg,#a855f7,#ff2d95);color:#fff;box-shadow:0 0 20px rgba(168,85,247,.4)}
+.btn-green{background:linear-gradient(135deg,#00ff9d,#4dffb8);color:#04121a}
+.btn-ghost{background:transparent;border:1px solid rgba(0,229,255,.3);color:#8a97b8}
+.field{margin:12px 0}
+.field label{display:block;font-size:.72rem;color:#8a97b8;margin-bottom:5px;letter-spacing:1px;text-transform:uppercase;font-family:'Chakra Petch',monospace}
+.field input{width:100%;padding:11px 13px;background:rgba(0,0,0,.35);border:1px solid rgba(0,229,255,.3);border-radius:9px;color:#e8f0ff;font-family:monospace;font-size:.85rem;outline:none}
+.field input:focus{border-color:#00e5ff;box-shadow:0 0 12px rgba(0,229,255,.3)}
+.url-box{background:rgba(0,255,157,.08);border:1px solid rgba(0,255,157,.4);border-radius:9px;padding:12px;margin:10px 0;font-family:monospace;font-size:.8rem;color:#00ff9d;word-break:break-all;position:relative}
+.copy-btn{position:absolute;top:8px;right:8px;padding:4px 10px;background:rgba(0,255,157,.2);border:1px solid rgba(0,255,157,.5);border-radius:6px;color:#00ff9d;font-size:.7rem;cursor:pointer;font-family:'Chakra Petch',monospace}
+.status{padding:12px 16px;border-radius:9px;margin:12px 0;font-size:.85rem;display:none}
+.status.ok{display:block;background:rgba(0,255,157,.1);border:1px solid rgba(0,255,157,.4);color:#00ff9d}
+.status.err{display:block;background:rgba(255,92,122,.1);border:1px solid rgba(255,92,122,.4);color:#ff5c7a}
+.progress{height:6px;background:rgba(0,0,0,.4);border-radius:3px;overflow:hidden;margin:16px 0}
+.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#00e5ff,#a855f7,#ff2d95);transition:width .5s;border-radius:3px}
+.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:.68rem;font-family:'Chakra Petch',monospace;letter-spacing:1px;text-transform:uppercase;margin-left:8px}
+.badge.done{background:rgba(0,255,157,.15);color:#00ff9d;border:1px solid rgba(0,255,157,.4)}
+.badge.todo{background:rgba(255,194,75,.15);color:#ffc24b;border:1px solid rgba(255,194,75,.4)}
+.tip{background:rgba(255,194,75,.08);border:1px solid rgba(255,194,75,.4);border-radius:9px;padding:12px;margin:12px 0;font-size:.82rem;color:#ffd98a}
+.warn{background:rgba(255,92,122,.08);border:1px solid rgba(255,92,122,.4);border-radius:9px;padding:12px;margin:12px 0;font-size:.82rem;color:#ffb3c1}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="wrap">
+  <h1>⚡ ASSISTENTE DE CONFIGURAÇÃO</h1>
+  <p class="sub">Configure o login real do Google e Facebook em ~5 minutos. Suas chaves são salvas automaticamente neste navegador.</p>
+
+  <div class="progress"><div class="progress-fill" id="progFill"></div></div>
+  <p style="font-size:.78rem;color:#8a97b8;font-family:'Chakra Petch',monospace;margin-bottom:20px" id="progText">Progresso: 0 / 2 concluído</p>
+
+  <!-- DOMÍNIO DETECTADO -->
+  <div class="card">
+    <h2>🌐 Seu domínio (detectado automaticamente)</h2>
+    <p style="font-size:.88rem;color:#c8d2e8;margin-bottom:10px">Este é o endereço do seu site. Você vai precisar dele nos passos abaixo:</p>
+    <div class="url-box" id="domainBox">
+      <span id="domainText">carregando...</span>
+      <button class="copy-btn" onclick="copyDomain()">Copiar</button>
+    </div>
+    <div class="tip">💡 Se estiver testando localmente (arquivo aberto direto), o login real não funciona — precisa ser pelo link do GitHub Pages.</div>
+  </div>
+
+  <!-- GOOGLE -->
+  <div class="card">
+    <h2>🔵 Login do Google <span class="badge todo" id="gBadge">Pendente</span></h2>
+    <div class="step"><div class="step-num">1</div><p>Abra o <b>Google Cloud Console</b> (faça login com sua conta Google):</p></div>
+    <a class="btn btn-primary" href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener">Abrir Google Cloud →</a>
+    <div class="step"><div class="step-num">2</div><p>Crie um projeto (nome: <b>NEXVON</b>) → vá em <b>Credenciais</b> → <b>+ Criar credenciais</b> → <b>ID do cliente OAuth</b> → tipo <b>Aplicativo da Web</b>.</p></div>
+    <div class="step"><div class="step-num">3</div><p>Em <b>Origens JavaScript autorizadas</b>, clique em <b>+ Adicionar URI</b> e cole o domínio acima (sem barra no final).</p></div>
+    <div class="step"><div class="step-num">4</div><p>Copie o <b>Client ID</b> gerado e cole abaixo:</p></div>
+    <div class="field"><label>Google Client ID</label><input type="text" id="gcid" placeholder="123456789-abcdef.apps.googleusercontent.com"></div>
+    <button class="btn btn-green" onclick="saveGoogle()">💾 Salvar chave do Google</button>
+    <div class="status" id="gStatus"></div>
+  </div>
+
+  <!-- FACEBOOK -->
+  <div class="card">
+    <h2>🔵 Login do Facebook <span class="badge todo" id="fBadge">Pendente</span></h2>
+    <div class="step"><div class="step-num">1</div><p>Abra o <b>Meta for Developers</b> (faça login com sua conta do Facebook):</p></div>
+    <a class="btn btn-violet" href="https://developers.facebook.com/apps/" target="_blank" rel="noopener">Abrir Meta Developers →</a>
+    <div class="step"><div class="step-num">2</div><p>Clique em <b>Create App</b> → tipo <b>Outro/Nenhum</b> → nome: <b>NEXVON</b> → criar.</p></div>
+    <div class="step"><div class="step-num">3</div><p>Adicione o produto <b>Facebook Login</b> → em <b>Configurações</b> adicione seu domínio em <b>Domínios do App</b>.</p></div>
+    <div class="step"><div class="step-num">4</div><p>Em <b>Configurações → Básico</b>, copie o <b>App ID</b> (só números) e cole abaixo:</p></div>
+    <div class="field"><label>Facebook App ID</label><input type="text" id="fbid" placeholder="1234567890123456"></div>
+    <button class="btn btn-green" onclick="saveFacebook()">💾 Salvar chave do Facebook</button>
+    <div class="status" id="fStatus"></div>
+  </div>
+
+  <!-- FINAL -->
+  <div class="card" style="text-align:center">
+    <h2 style="justify-content:center">✅ Concluir Configuração</h2>
+    <p style="font-size:.88rem;color:#c8d2e8;margin-bottom:14px">Após salvar as chaves, vá para o sistema:</p>
+    <a class="btn btn-primary" href="index.html">🚀 Ir para o NEXVON</a>
+    <div class="warn" style="text-align:left;margin-top:16px">⚠️ As chaves ficam salvas apenas neste navegador. Se acessar de outro dispositivo, refaça a configuração (ou compartilhe este link de setup com sua equipe).</div>
+  </div>
+</div>
+
+<script>
+var domain=location.origin && location.origin.indexOf('file')!==0 ? location.origin : 'https://SEU-USUARIO.github.io/SEU-REPO';
+document.getElementById('domainText').textContent=domain;
+function copyDomain(){navigator.clipboard.writeText(domain).then(function(){alert('Domínio copiado!')})}
+function loadKeys(){
+  var g=localStorage.getItem('nexvon_gcid'), f=localStorage.getItem('nexvon_fbid');
+  if(g){document.getElementById('gcid').value=g;document.getElementById('gBadge').textContent='Concluído';document.getElementById('gBadge').className='badge done'}
+  if(f){document.getElementById('fbid').value=f;document.getElementById('fBadge').textContent='Concluído';document.getElementById('fBadge').className='badge done'}
+  updateProgress();
+}
+function updateProgress(){
+  var g=localStorage.getItem('nexvon_gcid'), f=localStorage.getItem('nexvon_fbid');
+  var done=(g?1:0)+(f?1:0);
+  document.getElementById('progFill').style.width=(done/2*100)+'%';
+  document.getElementById('progText').textContent='Progresso: '+done+' / 2 concluído';
+}
+function saveGoogle(){
+  var v=document.getElementById('gcid').value.trim();
+  if(!v||v.indexOf('.googleusercontent.com')<0){var s=document.getElementById('gStatus');s.className='status err';s.textContent='Client ID inválido. Deve terminar com .googleusercontent.com';return}
+  localStorage.setItem('nexvon_gcid',v);
+  document.getElementById('gBadge').textContent='Concluído';document.getElementById('gBadge').className='badge done';
+  var s=document.getElementById('gStatus');s.className='status ok';s.textContent='✅ Chave do Google salva!';
+  updateProgress();
+}
+function saveFacebook(){
+  var v=document.getElementById('fbid').value.trim();
+  if(!v||!/^\d+$/.test(v)){var s=document.getElementById('fStatus');s.className='status err';s.textContent='App ID inválido. Deve conter apenas números.';return}
+  localStorage.setItem('nexvon_fbid',v);
+  document.getElementById('fBadge').textContent='Concluído';document.getElementById('fBadge').className='badge done';
+  var s=document.getElementById('fStatus');s.className='status ok';s.textContent='✅ Chave do Facebook salva!';
+  updateProgress();
+}
+loadKeys();
+</script>
+</body>
+</html>
+
+// NEXVON Service Worker — PWA (instalação no celular + notificações)
+const CACHE_NAME = 'nexvon-v2100';
+self.addEventListener('install', (event) => {
+  self.skipWaiting();
+});
+self.addEventListener('activate', (event) => {
+  event.waitUntil(self.clients.claim());
+});
+// Estratégia: network first, fallback to cache (mantém conteúdo atualizado)
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    fetch(event.request)
+      .then((response) => {
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+        return response;
+      })
+      .catch(() => caches.match(event.request))
+  );
+});
+// Mostrar notificação quando o app envia mensagem
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'notify') {
+    self.registration.showNotification(event.data.title, {
+      body: event.data.body,
+      icon: 'favicon.svg',
+      badge: 'favicon.svg',
+      tag: 'nexvon-study',
+      vibrate: [200, 100, 200]
+    });
+  }
+});
+
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    }
+  ]
+}
