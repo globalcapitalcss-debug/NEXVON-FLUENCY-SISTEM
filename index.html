@@ -4,10 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NEXVON — Fluência Imersiva | Sistema de Treinamento Linguístico 2100</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#05060f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" href="favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.js"></script>
 <style>
 :root{
@@ -35,7 +40,7 @@ h1,h2,h3,.tech{font-family:'Chakra Petch',monospace;letter-spacing:.5px}
 .auth-card{width:100%;max-width:420px;background:var(--card);border:1px solid var(--border);border-radius:18px;padding:30px;backdrop-filter:blur(14px);box-shadow:0 0 60px rgba(0,229,255,.12),inset 0 1px 0 rgba(255,255,255,.06);position:relative;overflow:hidden;margin:20px 0}
 .auth-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),var(--violet),transparent)}
 .auth-logo{text-align:center;margin-bottom:20px}
-.auth-logo .mark{font-family:'Chakra Petch',monospace;font-size:2.2rem;font-weight:700;letter-spacing:6px}
+.auth-logo .mark{font-family:'Chakra Petch',monospace;font-size:3rem;font-weight:700;letter-spacing:8px;text-shadow:0 0 30px rgba(0,229,255,.5),0 0 60px rgba(168,85,247,.3)}
 .auth-logo .sub{color:var(--muted);font-size:.72rem;letter-spacing:4px;text-transform:uppercase;margin-top:4px}
 .auth-tabs{display:flex;gap:8px;margin-bottom:16px;background:rgba(0,0,0,.3);padding:5px;border-radius:10px}
 .auth-tab{flex:1;padding:10px;text-align:center;border-radius:7px;cursor:pointer;font-family:'Chakra Petch',monospace;font-size:.82rem;letter-spacing:1.5px;color:var(--muted);transition:.25s;border:1px solid transparent}
@@ -330,9 +335,6 @@ footer.page-foot .tech-line{font-family:'Chakra Petch',monospace;letter-spacing:
     </div>
 
     <div class="auth-msg" id="authMsg"></div>
-    <div class="auth-note">Dados armazenados localmente · Privacidade total</div>
-    <div class="auth-note" style="margin-top:8px"><span class="forgot-link" id="cfgSocialLink" style="display:inline;text-align:center">Configurar login real (Google/Facebook)</span></div>
-    <div class="auth-note" id="socialStatus" style="margin-top:6px;color:var(--amber)"></div>
   </div>
 </div>
 
@@ -363,11 +365,13 @@ footer.page-foot .tech-line{font-family:'Chakra Petch',monospace;letter-spacing:
     <div class="ai-msg bot">Olá! Sou o assistente do NEXVON. Tire qualquer dúvida sobre o Language Reactor, o método de fluência ou o sistema. Como posso ajudar?</div>
   </div>
   <div class="ai-suggest" id="aiSuggest">
-    <span data-q="O que é o Language Reactor?">O que é o Language Reactor?</span>
-    <span data-q="Como instalar?">Como instalar?</span>
-    <span data-q="O que é o PhrasePump?">PhrasePump?</span>
-    <span data-q="Como funciona o Aria?">Aria?</span>
-    <span data-q="Plano gratuito vs Pro">Gratuito vs Pro?</span>
+    <span data-q="O que é o Language Reactor?">O que é LR?</span>
+    <span data-guide="instalar">PDF: Instalar</span>
+    <span data-guide="phrasepump">PDF: PhrasePump</span>
+    <span data-guide="aria">PDF: Aria</span>
+    <span data-guide="anki">PDF: Anki</span>
+    <span data-guide="legendas">PDF: Legendas</span>
+    <span data-guide="velocidade">PDF: Velocidade</span>
   </div>
   <div class="ai-input-row">
     <input type="text" id="aiInput" placeholder="Digite ou fale sua dúvida...">
@@ -431,6 +435,7 @@ footer.page-foot .tech-line{font-family:'Chakra Petch',monospace;letter-spacing:
         <span class="eyebrow">Interface Neural · Online</span>
         <h2>Bem-vindo de volta, <span class="grad-text" id="heroName">Operador</span></h2>
         <p id="heroSub">Configure seu idioma alvo, tempo e horário diário para ativar o protocolo de fluência.</p>
+        <button class="btn-ghost" id="notifyBtn" style="margin-top:14px">Ativar Notificações no Aparelho</button>
       </div>
       <div class="stats-grid">
         <div class="stat-card"><div class="label">Sequência Atual</div><div class="value cyan" id="statStreak">0</div><div class="sub">dias consecutivos</div></div>
@@ -801,6 +806,7 @@ function socialLogin(provider){
 /* ===== LOGIN REAL (Google Identity Services + Facebook SDK) ===== */
 function updateSocialStatus(){
   var el=document.getElementById('socialStatus');
+  if(!el)return;
   var g=!!CONFIG.GOOGLE_CLIENT_ID, f=!!CONFIG.FB_APP_ID;
   if(g||f){el.textContent='Login real ativo: '+(g?'Google ':'')+(g&&f?'· ':'')+(f?'Facebook':'');el.style.color='var(--green)'}
   else{el.textContent='Modo simulação — configure suas chaves para login real';el.style.color='var(--amber)'}
@@ -854,45 +860,32 @@ function initFacebookReal(){
   document.head.appendChild(s);
 }
 document.getElementById('googleBtn').addEventListener('click',function(){
-  if(CONFIG.GOOGLE_CLIENT_ID){
-    initGoogleReal();
-    showAuthMsg('Abrindo autenticação do Google...','info');
-    setTimeout(function(){if(window.google&&google.accounts)google.accounts.id.prompt();else showAuthMsg('Biblioteca do Google carregando. Tente novamente.','info')},800);
-  }else socialLogin('Google');
+  if(!CONFIG.GOOGLE_CLIENT_ID){window.location.href='setup.html';return}
+  initGoogleReal();
+  showAuthMsg('Abrindo login do Google...','info');
+  var tries=0;
+  var tryPrompt=setInterval(function(){
+    if(window.google&&google.accounts){clearInterval(tryPrompt);google.accounts.id.prompt()}
+    else if(++tries>20){clearInterval(tryPrompt);showAuthMsg('Biblioteca do Google carregando. Tente novamente.','info')}
+  },150);
 });
 document.getElementById('fbBtn').addEventListener('click',function(){
-  if(CONFIG.FB_APP_ID){
-    initFacebookReal();
-    showAuthMsg('Abrindo autenticação do Facebook...','info');
-    setTimeout(function(){
-      if(window.FB){FB.login(function(resp){
+  if(!CONFIG.FB_APP_ID){window.location.href='setup.html';return}
+  initFacebookReal();
+  showAuthMsg('Abrindo login do Facebook...','info');
+  var tries=0;
+  var tryFB=setInterval(function(){
+    if(window.FB){clearInterval(tryFB);
+      FB.login(function(resp){
         if(resp&&resp.authResponse){FB.api('/me',{fields:'name,email'},function(me){handleSocialReal('Facebook',me.name,me.email)})}
         else showAuthMsg('Login com Facebook cancelado.','err');
-      },{scope:'email'})}
-      else showAuthMsg('SDK do Facebook carregando. Tente novamente.','info');
-    },800);
-  }else socialLogin('Facebook');
+      },{scope:'email'});
+    }else if(++tries>20){clearInterval(tryFB);showAuthMsg('SDK do Facebook carregando. Tente novamente.','info')}
+  },150);
 });
-/* modal de configuração das chaves */
-document.getElementById('cfgSocialLink').addEventListener('click',function(){
-  openModal(
-    '<button class="modal-close">&times;</button>'+
-    '<h3>Configurar Login Real</h3>'+
-    '<div class="modal-note" style="margin-bottom:14px">Login real exige domínio <b>HTTPS</b> registrado. Obtenha suas chaves em:<br>· Google: <b>console.cloud.google.com</b> (OAuth Client ID)<br>· Facebook: <b>developers.facebook.com</b> (App ID)</div>'+
-    '<div class="field"><label>Google Client ID</label><input type="text" id="cfgGcid" placeholder="xxxx.apps.googleusercontent.com" value="'+(CONFIG.GOOGLE_CLIENT_ID||'')+'"></div>'+
-    '<div class="field"><label>Facebook App ID</label><input type="text" id="cfgFbid" placeholder="1234567890" value="'+(CONFIG.FB_APP_ID||'')+'"></div>'+
-    '<button class="btn-primary" id="cfgSocialSave">Salvar Chaves</button>'+
-    '<div class="modal-note">As chaves ficam salvas apenas neste navegador. Após salvar, recarregue a página.</div>'
-  );
-  document.getElementById('cfgSocialSave').addEventListener('click',function(){
-    var g=document.getElementById('cfgGcid').value.trim(), f=document.getElementById('cfgFbid').value.trim();
-    if(g)localStorage.setItem('nexvon_gcid',g);else localStorage.removeItem('nexvon_gcid');
-    if(f)localStorage.setItem('nexvon_fbid',f);else localStorage.removeItem('nexvon_fbid');
-    CONFIG.GOOGLE_CLIENT_ID=g;CONFIG.FB_APP_ID=f;
-    closeModal();updateSocialStatus();
-    showAuthMsg('Chaves salvas! Recarregue a página para ativar o login real.','ok');
-  });
-});
+/* abre o assistente de configuração interativo (setup.html) */
+var cfgLink=document.getElementById('cfgSocialLink');
+if(cfgLink)cfgLink.addEventListener('click',function(){window.location.href='setup.html';});
 updateSocialStatus();
 
 document.getElementById('forgotLink').addEventListener('click',function(){
@@ -1021,6 +1014,7 @@ document.getElementById('saveCfgBtn').addEventListener('click',function(){
   btn.textContent='Configuração Salva';setTimeout(function(){btn.textContent=orig},1800);
 });
 ['cfgLang','cfgMinutes','cfgTime','cfgPlan'].forEach(function(id){document.getElementById(id).addEventListener('change',updateCfgMeta)});
+var nb=document.getElementById('notifyBtn');if(nb)nb.addEventListener('click',requestNotifyPermission);
 
 function getTodayLog(){
   var logs=users[currentUser].logs||{};var t=todayStr();
@@ -1271,9 +1265,9 @@ function checkStudyReminder(onLogin){
   if(Date.now()<snoozeUntil)return;
   var msg='Está na hora do seu estudo diário de '+lang+'. Vamos ser fluente?';
   if(nowMin>=targetMin && !toastShownToday){
-    addUserNotif(msg);showToast();toastShownToday=true;
+    addUserNotif(msg);showToast();sendNotify('Hora de ser Fluente!',msg);toastShownToday=true;
   }else if(onLogin && nowMin>=targetMin-60 && nowMin<targetMin){
-    setTimeout(function(){addUserNotif('Faltam poucos minutos para o seu estudo de '+lang+'. Prepare-se!');showToast()},3000);
+    setTimeout(function(){var m='Faltam poucos minutos para o seu estudo de '+lang+'. Prepare-se!';addUserNotif(m);showToast();sendNotify('Lembrete NEXVON',m)},3000);
     toastShownToday=true;
   }
 }
@@ -1378,6 +1372,23 @@ var AI_KB=[
   {k:['admin','administrador','bloquear','liberar','pendente','usuário','gestão','relatório'],a:'O administrador acessa com e-mail admin@nexvon.ai. No painel de Gestão de Acessos: liberar pendentes, bloquear, ver evolução detalhada de cada usuário, filtrar por busca/status e exportar relatório em PDF.'},
   {k:['notificação','sino','lembrete','hora de estudar','aviso','horário'],a:'O sino no topo mostra lembretes de estudo e (para admin) novos cadastros. Configure o horário e a antecedência do aviso na Central de Controle. Clique em uma notificação para vê-la em detalhes.'}
 ];
+/* ===== GUIAS PASSO A PASSO (gerar PDF) ===== */
+var GUIDES={
+  instalar:{t:'Como Instalar e Configurar o Language Reactor',s:['Acesse a Chrome Web Store (chrome.google.com/webstore) ou Edge Add-ons.','Na busca, digite "Language Reactor" e selecione a extensão oficial.','Clique em "Usar no Chrome" (ou "Obter" no Edge) e confirme a instalação.','Abra a Netflix ou YouTube no navegador.','Clique no ícone do Language Reactor (canto superior direito) para ativar.','No painel de configurações, defina: Idioma que você aprende (ex: Inglês) e Seu idioma (Português).','Ative "Mostrar duas legendas" e "Auto-pausa entre frases".','Pronto! Abra qualquer vídeo e comece a estudar.']},
+  phrasepump:{t:'Como Usar o PhrasePump! (Revisão de Vocabulário)',s:['Salve palavras desconhecidas durante os vídeos (atalho: tecla R).','Acesse o menu do Language Reactor → "PhrasePump!".','Escolha o conjunto de palavras salvas.','Ouça a frase completa com a palavra em contexto.','Tente repetir em voz alta antes de ver a tradução.','Marque como "Aprendida" quando dominar.','Recomendação: 10 minutos por dia, todos os dias.','O sistema repete as palavras no intervalo ideal de memória.']},
+  aria:{t:'Como Praticar Conversação com a Aria (IA)',s:['Acesse o menu do Language Reactor → "Aria".','Escolha um tópico de conversação (ex: viagens, trabalho, cotidiano).','Escolha o nível: iniciante, intermediário ou avançado.','Digite ou fale sua resposta no microfone.','A Aria responde e corrige gramática/vocabulário instantaneamente.','Use o botão de áudio para ouvir a pronúncia correta.','Tente repetir a frase corrigida em voz alta (shadowing).','Progressão: 10 min/dia na Fase 1 → 30 min/dia na Fase 2.']},
+  anki:{t:'Como Exportar Palavras para o Anki (Flashcards)',s:['Instale o Anki (apps.ankiweb.net) no computador e celular.','No Language Reactor, salve as palavras que quer estudar.','Acesse sua lista de palavras salvas.','Clique em "Exportar para Anki".','O arquivo .apkg será baixado automaticamente.','Abra o Anki → Arquivo → Importar → selecione o arquivo.','Cada flashcard terá: palavra, tradução, frase de contexto, áudio e imagem.','Estude diariamente (5-10 min) — o Anki usa repetição espaçada.']},
+  legendas:{t:'Como Configurar e Usar as Legendas Bilíngues',s:['Abra um vídeo na Netflix ou YouTube com o Language Reactor ativo.','No painel, ative "Legenda do idioma alvo" (ex: inglês) e "Sua língua" (português).','Clique em qualquer palavra da legenda para ver tradução + áudio (Lexa AI).','Salve palavras importantes com a tecla R.','Use o Modo 1:1 (uma legenda de cada vez) para forçar a leitura no idioma alvo.','Técnica do Blur: esconda a tradução e revele só quando necessário.','Progressão: bilíngues (Fase 1) → só idioma alvo (Fase 2) → sem legendas (Fase 3).','Atalhos: S = repetir frase, D = próxima frase, espaço = play/pause.']},
+  velocidade:{t:'Como Ajustar a Velocidade e Controles de Reprodução',s:['No player do Language Reactor, localize a barra de velocidade.','Fase 1 (iniciante): comece em 0.75x (mais lento).','Aumente gradualmente: 0.85x → 1.0x → 1.25x → 1.5x.','Ative o "Auto-pause" para pausar automaticamente entre frases.','Atalho S: repete a frase atual (essencial no início).','Atalho D: pula para a próxima frase.','Use "Loop de frase" para repetir uma frase difícil várias vezes.','Quando conseguir entender 80% em 1.0x, passe para 1.25x.']}
+};
+function openGuidePDF(key){
+  var g=GUIDES[key];if(!g){alert('Guia não encontrado.');return}
+  var steps=g.s.map(function(s,i){return '<tr><td style="width:50px;font-size:24px;font-weight:bold;color:#00e5ff;font-family:monospace">'+(i+1)+'</td><td style="padding:12px;font-size:15px;line-height:1.6">'+s+'</td></tr>'}).join('');
+  var w=window.open('','_blank');
+  if(!w){alert('Permita pop-ups para gerar o PDF.');return}
+  w.document.write('<html><head><meta charset="utf-8"><title>'+g.t+' — NEXVON</title><style>body{font-family:Arial,sans-serif;padding:40px;max-width:700px;margin:0 auto;color:#222}h1{color:#0a0e1f;border-bottom:4px solid #00e5ff;padding-bottom:12px;font-size:24px}table{width:100%;border-collapse:collapse;margin-top:20px}tr{border-bottom:1px solid #eee}tr:nth-child(even){background:#f8f9fc}.btn{display:inline-block;margin-top:24px;padding:12px 24px;background:#0a0e1f;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:bold;cursor:pointer}@media print{.btn{display:none}}</style></head><body><h1>'+g.t+'</h1><p style="color:#666">Guia passo a passo gerado pelo assistente NEXVON · Language Reactor</p><table>'+steps+'</table><button class="btn" onclick="window.print()">Imprimir / Salvar como PDF</button></body></html>');
+  w.document.close();
+}
 function detectLang(q){
   q=q||'';
   if(/[\u3040-\u30ff]/.test(q))return 'ja';
@@ -1451,7 +1462,10 @@ function aiSend(){var inp=document.getElementById('aiInput');var q=inp.value.tri
 function voiceLangFor(text){var l=detectLang(text);return VOICE_LANGS[l]||'en-US'}
 document.getElementById('aiSend').addEventListener('click',aiSend);
 document.getElementById('aiInput').addEventListener('keydown',function(e){if(e.key==='Enter')aiSend()});
-document.querySelectorAll('#aiSuggest span').forEach(function(s){s.addEventListener('click',function(){document.getElementById('aiInput').value=s.dataset.q;aiSend()})});
+document.querySelectorAll('#aiSuggest span').forEach(function(s){s.addEventListener('click',function(){
+  if(s.dataset.guide){aiAddMsg('Gerar PDF: '+s.textContent,'user');openGuidePDF(s.dataset.guide);aiAddMsg('PDF do passo a passo aberto! Clique em "Imprimir / Salvar como PDF" na nova janela.','bot')}
+  else{document.getElementById('aiInput').value=s.dataset.q;aiSend()}
+})});
 document.getElementById('aiFab').addEventListener('click',function(){document.getElementById('aiPanel').classList.toggle('open')});
 document.getElementById('aiClose').addEventListener('click',function(){document.getElementById('aiPanel').classList.remove('open')});
 /* ===== ENTRADA POR VOZ (microfone) com permissão oficial ===== */
@@ -1541,6 +1555,22 @@ if(exportBtn)exportBtn.addEventListener('click',function(){
   w.document.write('<html><head><meta charset="utf-8"><title>Relatório NEXVON</title><style>body{font-family:Arial,sans-serif;padding:30px;color:#222}h1{color:#0a0e1f;border-bottom:3px solid #00e5ff;padding-bottom:10px}table{width:100%;border-collapse:collapse;margin-top:20px}th,td{border:1px solid #ccc;padding:10px;text-align:left;font-size:13px}th{background:#0a0e1f;color:#fff}tr:nth-child(even){background:#f5f7fa}small{color:#666}@media print{.noprint{display:none}}</style></head><body><h1>Relatório de Usuários — NEXVON Fluência Imersiva</h1><p>Gerado em: '+new Date().toLocaleString('pt-BR')+' · Total de contas: '+Object.keys(users).length+'</p><button class="noprint" onclick="window.print()" style="padding:10px 20px;background:#0a0e1f;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:bold">Imprimir / Salvar como PDF</button><table><thead><tr><th>Usuário</th><th>Nascimento</th><th>Provedor</th><th>Status</th><th>Minutos</th><th>Streak</th><th>Dias Estud.</th><th>Nível</th><th>Último Acesso</th></tr></thead><tbody>'+rows+'</tbody></table></body></html>');
   w.document.close();
 });
+/* ===== NOTIFICAÇÕES NATIVAS DO APARELHO (PWA) ===== */
+function requestNotifyPermission(){
+  if(!('Notification' in window)){alert('Este navegador não suporta notificações nativas. Use Chrome/Edge.');return}
+  if(Notification.permission==='granted'){alert('Notificações já estão ativadas!');return}
+  Notification.requestPermission().then(function(p){
+    if(p==='granted'){try{new Notification('NEXVON',{body:'Notificações ativadas! Você receberá lembretes de estudo no seu aparelho.',icon:'favicon.svg'})}catch(e){}}
+    else alert('Permissão negada. Para ativar, clique no cadeado da barra de endereço → Permissões → Notificações.');
+  });
+}
+function sendNotify(title,body){
+  if('Notification' in window && Notification.permission==='granted'){
+    try{new Notification(title,{body:body,icon:'favicon.svg',tag:'nexvon-study'})}catch(e){}
+  }
+}
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
+
 /* ===== I18N / SELETOR DE IDIOMA (40 idiomas) ===== */
 var LANGS=[
   {c:'pt',n:'Português'},{c:'en',n:'English'},{c:'es',n:'Español'},{c:'fr',n:'Français'},
