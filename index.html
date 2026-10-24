@@ -334,7 +334,7 @@ footer.page-foot .tech-line{font-family:'Chakra Petch',monospace;letter-spacing:
       <div class="field"><label>Confirmar Senha</label><input type="password" id="regPass2" placeholder="••••••••"></div>
       <label class="remember-row"><input type="checkbox" id="rememberReg"> Lembrar meus dados (nome, data e e-mail)</label>
       <button class="btn-primary" id="registerBtn">Solicitar Acesso</button>
-      <div class="auth-note" style="margin-top:10px">Após o cadastro, aguarde a liberação do administrador.</div>
+      <div class="auth-note" style="margin-top:10px">Após o cadastro, você já pode fazer login imediatamente.</div>
     </div>
 
 
@@ -754,13 +754,13 @@ document.getElementById('registerBtn').addEventListener('click',function(){
   if(p1.length<4)return showAuthMsg('A senha deve ter ao menos 4 caracteres.');
   if(p1!==p2)return showAuthMsg('As senhas não coincidem.');
   if(users[email])return showAuthMsg('Este e-mail já está cadastrado. Acesse sua conta.');
-  users[email]={pass:hash(p1),provider:'local',status:'pending',name:name,birth:birth,profile:{lang:'Inglês',minutes:60,plan:'365',studyTime:'20:00'},logs:{},createdAt:Date.now()};
+  users[email]={pass:hash(p1),provider:'local',status:'active',name:name,birth:birth,profile:{lang:'Inglês',minutes:60,plan:'365',studyTime:'20:00'},logs:{},createdAt:Date.now()};
   saveUsers(users);
   if(document.getElementById('rememberReg').checked)saveRegData(name,birth,email);
   var notifs=loadNotifs();
   notifs.unshift({id:Date.now(),type:'new_user',email:email,name:name,time:Date.now(),read:false});
   saveNotifs(notifs);
-  showAuthMsg('Cadastro realizado! Aguarde a liberação do administrador.','info');
+  showAuthMsg('Cadastro realizado! Você já pode fazer login imediatamente.','ok');
   setTimeout(function(){
     document.querySelectorAll('.auth-tab').forEach(function(x){x.classList.remove('active')});
     document.querySelector('.auth-tab[data-tab="login"]').classList.add('active');
@@ -773,7 +773,7 @@ document.getElementById('registerBtn').addEventListener('click',function(){
 function doLogin(email,pass){
   var u=users[email];
   if(!u)return showAuthMsg('E-mail não encontrado. Cadastre-se primeiro.');
-  if(u.status==='pending')return showAuthMsg('Conta pendente de liberação. Aguarde o administrador.','info');
+  /* login imediato: pending não bloqueia mais */
   if(u.status==='blocked')return showAuthMsg('Conta bloqueada pelo administrador. Contate o suporte.');
   if(u.pass!==hash(pass))return showAuthMsg('Senha incorreta. Tente novamente.');
   u.lastLogin=Date.now();saveUsers(users);
@@ -807,10 +807,10 @@ function socialLogin(provider){
     var email=document.getElementById('socEmail').value.trim().toLowerCase();
     if(name.length<3||!birth||!email||!email.includes('@')){alert('Preencha nome, data de nascimento (DD/MM/AAAA) e e-mail válido.');return}
     if(!users[email]){
-      users[email]={pass:hash('social'+email),provider:provider.toLowerCase(),status:'pending',name:name,birth:birth,profile:{lang:'Inglês',minutes:60,plan:'365',studyTime:'20:00'},logs:{},createdAt:Date.now()};
+      users[email]={pass:hash('social'+email),provider:provider.toLowerCase(),status:'active',name:name,birth:birth,profile:{lang:'Inglês',minutes:60,plan:'365',studyTime:'20:00'},logs:{},createdAt:Date.now()};
       var notifs=loadNotifs();notifs.unshift({id:Date.now(),type:'new_user',email:email,name:name,time:Date.now(),read:false});saveNotifs(notifs);
       saveUsers(users);saveRegData(name,birth,email);closeModal();
-      showAuthMsg('Cadastro realizado! Aguarde a liberação do administrador.','info');return;
+      showAuthMsg('Cadastro realizado! Você já pode fazer login imediatamente.','ok');return;
     }
     if(users[email].status==='pending'){closeModal();showAuthMsg('Conta pendente de liberação. Aguarde o administrador.','info');return}
     if(users[email].status==='blocked'){closeModal();showAuthMsg('Conta bloqueada pelo administrador.','err');return}
@@ -838,7 +838,7 @@ function handleSocialReal(provider,name,email){
   if(!email||!email.includes('@')){showAuthMsg('O provedor não retornou um e-mail válido.','err');return}
   var isNew=!users[email];
   if(isNew){
-    users[email]={pass:hash('social'+email),provider:provider.toLowerCase(),status:'pending',name:name||email.split('@')[0],birth:'',profile:{lang:'Inglês',minutes:60,plan:'365',studyTime:'20:00',remindBefore:10},logs:{},createdAt:Date.now()};
+    users[email]={pass:hash('social'+email),provider:provider.toLowerCase(),status:'active',name:name||email.split('@')[0],birth:'',profile:{lang:'Inglês',minutes:60,plan:'365',studyTime:'20:00',remindBefore:10},logs:{},createdAt:Date.now()};
     var notifs=loadNotifs();notifs.unshift({id:Date.now(),type:'new_user',email:email,name:name||email,time:Date.now(),read:false});saveNotifs(notifs);
     saveUsers(users);saveRegData(name||email.split('@')[0],'',email);
     showAuthMsg('Cadastro realizado via '+provider+'! Aguarde a liberação do administrador.','info');
@@ -1010,7 +1010,7 @@ function enterSession(email){
   document.getElementById('todayDate').textContent=d.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'});
 }
 var saved=localStorage.getItem(SESSION_KEY);
-if(saved && users[saved] && users[saved].status!=='blocked' && users[saved].status!=='pending'){enterSession(saved)}
+if(saved && users[saved] && users[saved].status!=='blocked'){enterSession(saved)}
 
 function loadProfile(){
   var p=users[currentUser].profile||{lang:'Inglês',minutes:60,plan:'365',studyTime:'20:00',remindBefore:10};
@@ -1808,6 +1808,189 @@ enterSession=function(email){
       });
     },700);
   }
+};
+
+/* ===== BOTÃO DE OLHO (mostrar/ocultar senha) em todos os campos ===== */
+function addEyeToggles(){
+  document.querySelectorAll('input[type=password]').forEach(function(inp){
+    if(inp.dataset.eye)return;inp.dataset.eye='1';
+    inp.style.paddingRight='40px';
+    var wrap=inp.parentElement;
+    if(getComputedStyle(wrap).position==='static')wrap.style.position='relative';
+    var btn=document.createElement('button');
+    btn.type='button';btn.setAttribute('aria-label','Mostrar senha');
+    btn.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8a97b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+    btn.style.cssText='position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;z-index:5';
+    btn.addEventListener('click',function(e){e.preventDefault();
+      var svg=btn.querySelector('svg');
+      if(inp.type==='password'){inp.type='text';svg.setAttribute('stroke','#00e5ff')}
+      else{inp.type='password';svg.setAttribute('stroke','#8a97b8')}
+    });
+    wrap.appendChild(btn);
+  });
+}
+setInterval(addEyeToggles,800);
+
+/* ===== VER CONTA COMPLETA DO USUÁRIO (igual ao que ele vê) ===== */
+function showUserFullAccount(email){
+  var u=users[email];if(!u){openModal('<h3>Usuário não encontrado</h3>');return}
+  var stats=(typeof calcUserStats==='function')?calcUserStats(u):{total:0,streak:0,days:0,level:'A1'};
+  var html='<h3 style="color:#00e5ff;margin-bottom:14px">Conta Completa — '+(u.name||email)+'</h3>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;margin-bottom:14px;font-size:.85rem">';
+  html+='<div><b style="color:#a855f7">Nome:</b> '+(u.name||'—')+'</div>';
+  html+='<div><b style="color:#a855f7">E-mail:</b> '+email+'</div>';
+  html+='<div><b style="color:#a855f7">Nascimento:</b> '+(u.birth||'—')+'</div>';
+  html+='<div><b style="color:#a855f7">Provedor:</b> '+(u.provider||'email')+'</div>';
+  html+='<div><b style="color:#a855f7">Status:</b> '+(u.status||'active')+'</div>';
+  html+='<div><b style="color:#a855f7">Criado em:</b> '+(u.createdAt?fmtDate(u.createdAt):'—')+'</div>';
+  html+='<div><b style="color:#00ff9d">Minutos totais:</b> '+(stats.total||0)+'</div>';
+  html+='<div><b style="color:#00ff9d">Streak:</b> '+(stats.streak||0)+' dias</div>';
+  html+='<div><b style="color:#00ff9d">Dias estudados:</b> '+(stats.days||0)+'</div>';
+  html+='<div><b style="color:#00ff9d">Nível:</b> '+(stats.level||'A1')+'</div>';
+  html+='</div>';
+  if(u.cfg){html+='<h4 style="color:#a855f7;margin:10px 0 6px;font-family:Chakra Petch">Configurações do usuário</h4><div style="font-size:.82rem;color:#c8d2e8;margin-bottom:10px">Idioma alvo: <b>'+(u.cfg.lang||'—')+'</b> · Meta diária: <b>'+(u.cfg.minutes||'—')+' min</b> · Horário: <b>'+(u.cfg.time||'—')+'</b> · Plano: <b>'+(u.cfg.plan||'—')+' dias</b></div>'}
+  if(u.mustChangePassword){html+='<div style="background:rgba(255,194,75,.1);border:1px solid rgba(255,194,75,.4);border-radius:8px;padding:8px 12px;font-size:.8rem;color:#ffc24b;margin-bottom:10px">Usuário com senha temporária — deve trocar no próximo login.</div>'}
+  var act=(u.activity||[]).slice(-20).reverse();
+  html+='<h4 style="color:#a855f7;margin:10px 0 6px;font-family:Chakra Petch">Atividade recente (últimas 20)</h4>';
+  if(act.length===0)html+='<p style="color:#8a97b8;font-size:.82rem">Nenhuma atividade registrada.</p>';
+  else{html+='<div style="max-height:220px;overflow-y:auto;border:1px solid rgba(0,229,255,.2);border-radius:8px;padding:6px">';act.forEach(function(a){html+='<div class="log-item"><span class="log-time">'+fmtDate(a.t)+'</span><span class="log-action '+(a.action||'nav')+'">'+(a.action||'ação')+'</span><span class="log-detail">'+(a.detail||'')+'</span></div>'});html+='</div>'}
+  openModal(html,true);
+  if(typeof adminLog==='function')adminLog('Visualizou conta completa de: '+email);
+}
+/* ===== MONITOR DE TODOS OS LOGINS DO SISTEMA ===== */
+function showLoginMonitor(){
+  var logins=[];
+  Object.keys(users).forEach(function(em){var u=users[em];(u.activity||[]).forEach(function(a){if(a.action==='login'||a.action==='auth')logins.push({email:em,name:u.name,t:a.t,detail:a.detail})})});
+  logins.sort(function(a,b){return b.t-a.t});
+  var html='<h3 style="color:#ff2d95;margin-bottom:14px">Monitor de Logins do Sistema</h3>';
+  html+='<p style="font-size:.85rem;color:#8a97b8;margin-bottom:10px">Total de <b style="color:#ff2d95">'+logins.length+'</b> eventos de entrada/saída registrados.</p>';
+  if(logins.length===0)html+='<p style="color:#8a97b8">Nenhum login registrado ainda.</p>';
+  else{html+='<div style="max-height:420px;overflow-y:auto;border:1px solid rgba(255,45,149,.25);border-radius:10px;padding:6px">';logins.slice(0,150).forEach(function(l){html+='<div class="log-item"><span class="log-time">'+fmtDate(l.t)+'</span><span class="log-action login">'+(l.name||l.email)+'</span><span class="log-detail">'+(l.detail||'')+'</span></div>'});html+='</div>'}
+  openModal(html,true);
+  if(typeof adminLog==='function')adminLog('Abriu monitor de logins');
+}
+/* Delegação: botão Ver Conta */
+document.addEventListener('click',function(e){
+  var vc=e.target.closest('.btn-verconta');if(vc){showUserFullAccount(vc.dataset.email);return}
+  var lm=e.target.closest('#loginMonitorBtn');if(lm){showLoginMonitor();return}
+});
+/* Adicionar botões Ver Conta + Monitor de Logins */
+var _origEnhance2=enhanceAdminTable;
+enhanceAdminTable=function(){_origEnhance2();
+  document.querySelectorAll('#adminTable tbody tr').forEach(function(tr){
+    if(tr.querySelector('.btn-verconta'))return;
+    var email=tr.dataset.email||(tr.querySelector('.user-email')?tr.querySelector('.user-email').textContent.trim():'');
+    if(!email)return;
+    var cell=tr.querySelector('td:last-child');
+    if(cell&&typeof can==='function'&&can('logs')){
+      var b=document.createElement('button');b.className='btn-verconta';b.dataset.email=email;
+      b.style.cssText='background:rgba(168,85,247,.15);color:#a855f7;border:1px solid rgba(168,85,247,.4);padding:3px 8px;border-radius:6px;font-size:.7rem;cursor:pointer;margin:2px';
+      b.textContent='Ver Conta';cell.appendChild(b);
+    }
+  });
+  if(typeof can==='function'&&can('logs')&&!document.getElementById('loginMonitorBtn')){
+    var fb=document.querySelector('.admin-filters');
+    if(fb){var lm=document.createElement('button');lm.id='loginMonitorBtn';lm.className='btn-export';lm.style.marginLeft='8px';lm.style.background='linear-gradient(135deg,#ff2d95,#ff5c7a)';lm.style.color='#fff';lm.textContent='Monitor de Logins';lm.addEventListener('click',showLoginMonitor);fb.appendChild(lm)}
+  }
+};
+/* ===== SUPER ADMIN no cadastro de novo admin (100% permissões) ===== */
+var _origShowNewAdmin=showNewAdminForm;
+showNewAdminForm=function(){
+  _origShowNewAdmin();
+  var permsBox=document.querySelector('.perm-check')?.parentElement;
+  if(permsBox){
+    var superChk=document.createElement('label');
+    superChk.className='perm-check';superChk.style.cssText='background:rgba(255,45,149,.1);border:1px solid rgba(255,45,149,.4)';
+    superChk.innerHTML='<input type="checkbox" id="naSuper" style="accent-color:#ff2d95"> <b style="color:#ff2d95">Super Admin (100% de permissões — vê e altera TUDO)</b>';
+    permsBox.insertBefore(superChk,permsBox.firstChild);
+    document.getElementById('naSuper').addEventListener('change',function(){
+      document.querySelectorAll('.perm-ck').forEach(function(c){c.disabled=this.checked;c.checked=this.checked}.bind(this));
+    });
+  }
+  var submitBtn=document.getElementById('naSubmit');
+  if(submitBtn){
+    submitBtn.replaceWith(submitBtn.cloneNode(true));
+    document.getElementById('naSubmit').addEventListener('click',function(){
+      var name=document.getElementById('naName').value.trim();
+      var email=document.getElementById('naEmail').value.trim();
+      var pass=document.getElementById('naPass').value.trim();
+      var isSuper=document.getElementById('naSuper')?.checked;
+      if(!name||!email||!pass){alert('Preencha todos os campos.');return}
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){alert('E-mail inválido.');return}
+      if(users[email]){alert('Este e-mail já está cadastrado.');return}
+      var perms={};
+      if(isSuper){perms={users:true,logs:true,export:true,admins:true}}
+      else{document.querySelectorAll('.perm-ck:checked').forEach(function(c){perms[c.value]=true})}
+      users[email]={name:name,email:email,password:hash(pass),birth:'',provider:'email',status:'active',role:isSuper?'super':'admin',perms:perms,mustChangePassword:true,createdAt:Date.now(),activity:[],logs:[]};
+      saveUsers();closeModal();renderAdmin();
+      if(typeof adminLog==='function')adminLog('Criou admin '+(isSuper?'(SUPER) ':'')+': '+email);
+      alert('Administrador criado!'+(isSuper?' (SUPER ADMIN — acesso total)':'')+'\nE-mail: '+email+'\nSenha temporária: '+pass+'\nDeve trocar no primeiro acesso.');
+    });
+  }
+};
+
+/* ===== CORREÇÃO: esconder assistente IA antes do login ===== */
+setInterval(function(){
+  var fab=document.getElementById('aiFab');
+  if(fab)fab.style.display=currentUser?'flex':'none';
+  var panel=document.getElementById('aiPanel');
+  if(panel&&!currentUser)panel.classList.remove('open');
+},400);
+
+/* ===== EDITAR USUÁRIO (ver e alterar dados cadastrais) ===== */
+function editUser(email){
+  var u=users[email];if(!u){openModal('<h3>Usuário não encontrado</h3>');return}
+  var html='<h3 style="color:#00e5ff;margin-bottom:14px">Editar Usuário — '+(u.name||email)+'</h3>';
+  html+='<div class="field"><label>Nome completo</label><input type="text" id="edName" value="'+(u.name||'').replace(/"/g,'&quot;')+'"></div>';
+  html+='<div class="field"><label>E-mail</label><input type="email" id="edEmail" value="'+email.replace(/"/g,'&quot;')+'"></div>';
+  html+='<div class="field"><label>Data de nascimento</label><input type="text" id="edBirth" value="'+(u.birth||'')+'" placeholder="DD/MM/AAAA" maxlength="10" inputmode="numeric"></div>';
+  html+='<div class="field"><label>Status</label><select id="edStatus" style="width:100%;padding:10px;background:rgba(0,0,0,.35);border:1px solid rgba(0,229,255,.3);border-radius:9px;color:#e8f0ff"><option value="active">Ativo</option><option value="pending">Pendente</option><option value="blocked">Bloqueado</option></select></div>';
+  html+='<div class="field"><label>Nova senha (deixe em branco para manter)</label><input type="text" id="edPass" placeholder="Mín. 6 caracteres"></div>';
+  if(u.role){html+='<div class="field"><label>Cargo</label><select id="edRole" style="width:100%;padding:10px;background:rgba(0,0,0,.35);border:1px solid rgba(0,229,255,.3);border-radius:9px;color:#e8f0ff"><option value="admin">Admin</option><option value="super">Super Admin</option><option value="">Usuário comum</option></select></div>'}
+  html+='<button class="btn-export" id="edSave" style="width:100%;margin-top:12px;background:linear-gradient(135deg,#00e5ff,#a855f7);color:#fff">Salvar Alterações</button>';
+  openModal(html,true);
+  document.getElementById('edStatus').value=u.status||'active';
+  if(u.role)document.getElementById('edRole').value=u.role;
+  var bi=document.getElementById('edBirth');if(bi&&typeof bindBirthMask==='function')bindBirthMask(bi);
+  document.getElementById('edSave').addEventListener('click',function(){
+    var name=document.getElementById('edName').value.trim();
+    var newEmail=document.getElementById('edEmail').value.trim();
+    var birth=document.getElementById('edBirth').value.trim();
+    var status=document.getElementById('edStatus').value;
+    var newPass=document.getElementById('edPass').value.trim();
+    var roleEl=document.getElementById('edRole');var role=roleEl?roleEl.value:u.role;
+    if(!name||!newEmail){alert('Nome e e-mail são obrigatórios.');return}
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)){alert('E-mail inválido.');return}
+    if(newPass&&newPass.length<6){alert('Senha muito curta (mín. 6).');return}
+    if(newEmail!==email&&users[newEmail]){alert('Este novo e-mail já está cadastrado.');return}
+    if(newEmail!==email){users[newEmail]=u;delete users[email];u.email=newEmail}
+    u.name=name;u.birth=birth;u.status=status;
+    if(role)u.role=role;else delete u.role;
+    if(role==='super')u.perms={users:true,logs:true,export:true,admins:true};
+    if(newPass){u.password=hash(newPass);u.mustChangePassword=false}
+    saveUsers();closeModal();renderAdmin();
+    if(typeof adminLog==='function')adminLog('Editou usuário: '+email+' → '+newEmail);
+    alert('Dados salvos com sucesso!'+(newPass?'\nSenha redefinida para: '+newPass:''));
+  });
+}
+/* Delegação: botão Editar */
+document.addEventListener('click',function(e){
+  var ed=e.target.closest('.btn-editar');if(ed){editUser(ed.dataset.email);return}
+});
+/* Adicionar botão Editar na tabela admin */
+var _origEnhance3=enhanceAdminTable;
+enhanceAdminTable=function(){_origEnhance3();
+  document.querySelectorAll('#adminTable tbody tr').forEach(function(tr){
+    if(tr.querySelector('.btn-editar'))return;
+    var email=tr.dataset.email||(tr.querySelector('.user-email')?tr.querySelector('.user-email').textContent.trim():'');
+    if(!email)return;
+    var cell=tr.querySelector('td:last-child');
+    if(cell&&typeof can==='function'&&can('users')){
+      var b=document.createElement('button');b.className='btn-editar';b.dataset.email=email;
+      b.style.cssText='background:rgba(0,255,157,.15);color:#00ff9d;border:1px solid rgba(0,255,157,.4);padding:3px 8px;border-radius:6px;font-size:.7rem;cursor:pointer;margin:2px';
+      b.textContent='Editar';cell.appendChild(b);
+    }
+  });
 };
 
 /* ===== I18N / SELETOR DE IDIOMA (40 idiomas) ===== */
