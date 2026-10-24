@@ -280,21 +280,6 @@ footer.page-foot .tech-line{font-family:'Chakra Petch',monospace;letter-spacing:
 .btn-export:hover{box-shadow:0 0 16px rgba(0,255,157,.4)}
 .notif-item.clickable{cursor:pointer;transition:.2s}
 .notif-item.clickable:hover{border-left-color:var(--cyan);background:rgba(0,229,255,.06)}
-.log-item{display:flex;gap:10px;padding:8px 10px;border-bottom:1px dashed rgba(138,151,184,.2);font-size:.82rem;align-items:flex-start}
-.log-time{flex-shrink:0;color:#8a97b8;font-family:monospace;font-size:.72rem;min-width:130px}
-.log-action{flex-shrink:0;padding:1px 8px;border-radius:10px;font-size:.68rem;font-family:'Chakra Petch',monospace;letter-spacing:.5px;text-transform:uppercase}
-.log-action.login{background:rgba(0,255,157,.15);color:#00ff9d}
-.log-action.nav{background:rgba(0,229,255,.15);color:#00e5ff}
-.log-action.study{background:rgba(168,85,247,.15);color:#a855f7}
-.log-action.auth{background:rgba(255,194,75,.15);color:#ffc24b}
-.log-action.admin{background:rgba(255,45,149,.15);color:#ff2d95}
-.log-detail{color:#c8d2e8;flex:1}
-.perm-check{display:flex;align-items:center;gap:8px;padding:6px 10px;margin:4px 0;background:rgba(0,0,0,.25);border-radius:8px;font-size:.85rem;cursor:pointer}
-.perm-check input{accent-color:#00e5ff;width:16px;height:16px;cursor:pointer}
-.role-badge{padding:2px 8px;border-radius:10px;font-size:.65rem;font-family:'Chakra Petch',monospace;letter-spacing:.5px;text-transform:uppercase;margin-left:6px}
-.role-badge.super{background:rgba(255,45,149,.2);color:#ff2d95;border:1px solid rgba(255,45,149,.4)}
-.role-badge.admin{background:rgba(168,85,247,.2);color:#a855f7;border:1px solid rgba(168,85,247,.4)}
-.stat-mini{font-size:.7rem;color:#8a97b8}
 @media(max-width:640px){.auth-card{padding:22px 16px}.panel,.fase{padding:16px}.chart-box{height:240px}.task-time{display:none}.social-row{flex-direction:column}.field-row{grid-template-columns:1fr}.toast{left:16px;right:16px;max-width:none}.ai-panel{left:12px;right:12px;width:auto}.ai-fab{left:12px;bottom:12px}}
 </style>
 </head>
@@ -334,9 +319,20 @@ footer.page-foot .tech-line{font-family:'Chakra Petch',monospace;letter-spacing:
       <div class="field"><label>Confirmar Senha</label><input type="password" id="regPass2" placeholder="••••••••"></div>
       <label class="remember-row"><input type="checkbox" id="rememberReg"> Lembrar meus dados (nome, data e e-mail)</label>
       <button class="btn-primary" id="registerBtn">Solicitar Acesso</button>
-      <div class="auth-note" style="margin-top:10px">Após o cadastro, você já pode fazer login imediatamente.</div>
+      <div class="auth-note" style="margin-top:10px">Após o cadastro, aguarde a liberação do administrador.</div>
     </div>
 
+    <div class="divider">ou acesse com</div>
+    <div class="social-row">
+      <button class="social-btn google" id="googleBtn">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Google
+      </button>
+      <button class="social-btn fb" id="fbBtn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        Facebook
+      </button>
+    </div>
 
     <div class="auth-msg" id="authMsg"></div>
   </div>
@@ -626,20 +622,9 @@ footer.page-foot .tech-line{font-family:'Chakra Petch',monospace;letter-spacing:
 (function(){
 'use strict';
 var USERS_KEY='nexvon_users_v3', SESSION_KEY='nexvon_session_v1', REMEMBER_KEY='nexvon_remember_v1', NOTIF_KEY='nexvon_notifs_v1', REGDATA_KEY='nexvon_regdata_v1';
-/* ============================================================
-   COLE SUAS CHAVES AQUI (uma única vez) — depois é só salvar!
-   Google: console.cloud.google.com → OAuth 2.0 Client ID
-   Facebook: developers.facebook.com → App ID (só números)
-   ============================================================ */
-var SITE_KEYS = {
-  GOOGLE_CLIENT_ID: '',  /* ← cole aqui (ex: 12345-abc.apps.googleusercontent.com) */
-  FB_APP_ID: ''          /* ← cole aqui (ex: 123456789012345) */
-};
-/* ============================================================ */
-var CONFIG={
-  GOOGLE_CLIENT_ID: SITE_KEYS.GOOGLE_CLIENT_ID || localStorage.getItem('nexvon_gcid') || '',
-  FB_APP_ID: SITE_KEYS.FB_APP_ID || localStorage.getItem('nexvon_fbid') || ''
-};
+/* Chaves de login real — preencha via botão "Configurar login real" na tela de acesso (salvo no navegador).
+   Requer domínio HTTPS registrado no Google Cloud Console e/ou Meta for Developers. */
+var CONFIG={GOOGLE_CLIENT_ID:localStorage.getItem('nexvon_gcid')||'',FB_APP_ID:localStorage.getItem('nexvon_fbid')||''};
 var ADMIN_EMAIL='admin@nexvon.ai', ADMIN_PASS='admin2100';
 function loadUsers(){
   try{var u=JSON.parse(localStorage.getItem(USERS_KEY))||{}}catch(e){var u={}}
@@ -754,13 +739,13 @@ document.getElementById('registerBtn').addEventListener('click',function(){
   if(p1.length<4)return showAuthMsg('A senha deve ter ao menos 4 caracteres.');
   if(p1!==p2)return showAuthMsg('As senhas não coincidem.');
   if(users[email])return showAuthMsg('Este e-mail já está cadastrado. Acesse sua conta.');
-  users[email]={pass:hash(p1),provider:'local',status:'active',name:name,birth:birth,profile:{lang:'Inglês',minutes:60,plan:'365',studyTime:'20:00'},logs:{},createdAt:Date.now()};
+  users[email]={pass:hash(p1),provider:'local',status:'pending',name:name,birth:birth,profile:{lang:'Inglês',minutes:60,plan:'365',studyTime:'20:00'},logs:{},createdAt:Date.now()};
   saveUsers(users);
   if(document.getElementById('rememberReg').checked)saveRegData(name,birth,email);
   var notifs=loadNotifs();
   notifs.unshift({id:Date.now(),type:'new_user',email:email,name:name,time:Date.now(),read:false});
   saveNotifs(notifs);
-  showAuthMsg('Cadastro realizado! Você já pode fazer login imediatamente.','ok');
+  showAuthMsg('Cadastro realizado! Aguarde a liberação do administrador.','info');
   setTimeout(function(){
     document.querySelectorAll('.auth-tab').forEach(function(x){x.classList.remove('active')});
     document.querySelector('.auth-tab[data-tab="login"]').classList.add('active');
@@ -773,7 +758,7 @@ document.getElementById('registerBtn').addEventListener('click',function(){
 function doLogin(email,pass){
   var u=users[email];
   if(!u)return showAuthMsg('E-mail não encontrado. Cadastre-se primeiro.');
-  /* login imediato: pending não bloqueia mais */
+  if(u.status==='pending')return showAuthMsg('Conta pendente de liberação. Aguarde o administrador.','info');
   if(u.status==='blocked')return showAuthMsg('Conta bloqueada pelo administrador. Contate o suporte.');
   if(u.pass!==hash(pass))return showAuthMsg('Senha incorreta. Tente novamente.');
   u.lastLogin=Date.now();saveUsers(users);
@@ -807,10 +792,10 @@ function socialLogin(provider){
     var email=document.getElementById('socEmail').value.trim().toLowerCase();
     if(name.length<3||!birth||!email||!email.includes('@')){alert('Preencha nome, data de nascimento (DD/MM/AAAA) e e-mail válido.');return}
     if(!users[email]){
-      users[email]={pass:hash('social'+email),provider:provider.toLowerCase(),status:'active',name:name,birth:birth,profile:{lang:'Inglês',minutes:60,plan:'365',studyTime:'20:00'},logs:{},createdAt:Date.now()};
+      users[email]={pass:hash('social'+email),provider:provider.toLowerCase(),status:'pending',name:name,birth:birth,profile:{lang:'Inglês',minutes:60,plan:'365',studyTime:'20:00'},logs:{},createdAt:Date.now()};
       var notifs=loadNotifs();notifs.unshift({id:Date.now(),type:'new_user',email:email,name:name,time:Date.now(),read:false});saveNotifs(notifs);
       saveUsers(users);saveRegData(name,birth,email);closeModal();
-      showAuthMsg('Cadastro realizado! Você já pode fazer login imediatamente.','ok');return;
+      showAuthMsg('Cadastro realizado! Aguarde a liberação do administrador.','info');return;
     }
     if(users[email].status==='pending'){closeModal();showAuthMsg('Conta pendente de liberação. Aguarde o administrador.','info');return}
     if(users[email].status==='blocked'){closeModal();showAuthMsg('Conta bloqueada pelo administrador.','err');return}
@@ -838,7 +823,7 @@ function handleSocialReal(provider,name,email){
   if(!email||!email.includes('@')){showAuthMsg('O provedor não retornou um e-mail válido.','err');return}
   var isNew=!users[email];
   if(isNew){
-    users[email]={pass:hash('social'+email),provider:provider.toLowerCase(),status:'active',name:name||email.split('@')[0],birth:'',profile:{lang:'Inglês',minutes:60,plan:'365',studyTime:'20:00',remindBefore:10},logs:{},createdAt:Date.now()};
+    users[email]={pass:hash('social'+email),provider:provider.toLowerCase(),status:'pending',name:name||email.split('@')[0],birth:'',profile:{lang:'Inglês',minutes:60,plan:'365',studyTime:'20:00',remindBefore:10},logs:{},createdAt:Date.now()};
     var notifs=loadNotifs();notifs.unshift({id:Date.now(),type:'new_user',email:email,name:name||email,time:Date.now(),read:false});saveNotifs(notifs);
     saveUsers(users);saveRegData(name||email.split('@')[0],'',email);
     showAuthMsg('Cadastro realizado via '+provider+'! Aguarde a liberação do administrador.','info');
@@ -874,47 +859,28 @@ function initFacebookReal(){
   var s=document.createElement('script');s.src='https://connect.facebook.net/en_US/sdk.js';s.async=true;s.defer=true;
   document.head.appendChild(s);
 }
-/* Login Google — abre direto a escolha de conta (popup) */
-function googleLoginReal(){
-  showAuthMsg('Abrindo escolha de conta do Google...','info');
-  if(!window.google){var s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.async=true;document.head.appendChild(s)}
+document.getElementById('googleBtn').addEventListener('click',function(){
+  if(!CONFIG.GOOGLE_CLIENT_ID){window.location.href='setup.html';return}
+  initGoogleReal();
+  showAuthMsg('Abrindo login do Google...','info');
   var tries=0;
-  var iv=setInterval(function(){
-    if(window.google&&google.accounts&&google.accounts.oauth2){
-      clearInterval(iv);
-      var tc=google.accounts.oauth2.initTokenClient({
-        client_id:CONFIG.GOOGLE_CLIENT_ID,
-        scope:'email profile',
-        callback:function(resp){
-          if(resp&&resp.access_token){
-            fetch('https://www.googleapis.com/oauth2/v3/userinfo',{headers:{Authorization:'Bearer '+resp.access_token}})
-              .then(function(r){return r.json()})
-              .then(function(u){if(u&&u.email)handleSocialReal('Google',u.name||u.email,u.email);else showAuthMsg('Falha ao obter dados do Google.','err')})
-              .catch(function(){showAuthMsg('Falha na conexão com o Google.','err')});
-          } else showAuthMsg('Login com Google cancelado.','err');
-        }
-      });
-      tc.requestAccessToken();
-    } else if(++tries>30){clearInterval(iv);showAuthMsg('Erro ao carregar o Google. Tente novamente.','err')}
+  var tryPrompt=setInterval(function(){
+    if(window.google&&google.accounts){clearInterval(tryPrompt);google.accounts.id.prompt()}
+    else if(++tries>20){clearInterval(tryPrompt);showAuthMsg('Biblioteca do Google carregando. Tente novamente.','info')}
   },150);
-}
-var _gb=document.getElementById('googleBtn');if(_gb)_gb.addEventListener('click',function(){
-  if(!CONFIG.GOOGLE_CLIENT_ID){showAuthMsg('Cole sua chave do Google no topo do arquivo index.html (SITE_KEYS).','err');return}
-  googleLoginReal();
 });
-/* Login Facebook — abre direto o diálogo do Facebook */
-var _fb=document.getElementById('fbBtn');if(_fb)_fb.addEventListener('click',function(){
-  if(!CONFIG.FB_APP_ID){showAuthMsg('Cole sua chave do Facebook no topo do arquivo index.html (SITE_KEYS).','err');return}
+document.getElementById('fbBtn').addEventListener('click',function(){
+  if(!CONFIG.FB_APP_ID){window.location.href='setup.html';return}
   initFacebookReal();
   showAuthMsg('Abrindo login do Facebook...','info');
   var tries=0;
-  var iv=setInterval(function(){
-    if(window.FB){clearInterval(iv);
+  var tryFB=setInterval(function(){
+    if(window.FB){clearInterval(tryFB);
       FB.login(function(resp){
         if(resp&&resp.authResponse){FB.api('/me',{fields:'name,email'},function(me){handleSocialReal('Facebook',me.name,me.email)})}
         else showAuthMsg('Login com Facebook cancelado.','err');
       },{scope:'email'});
-    } else if(++tries>30){clearInterval(iv);showAuthMsg('Erro ao carregar o Facebook. Tente novamente.','err')}
+    }else if(++tries>20){clearInterval(tryFB);showAuthMsg('SDK do Facebook carregando. Tente novamente.','info')}
   },150);
 });
 /* abre o assistente de configuração interativo (setup.html) */
@@ -1010,7 +976,7 @@ function enterSession(email){
   document.getElementById('todayDate').textContent=d.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'});
 }
 var saved=localStorage.getItem(SESSION_KEY);
-if(saved && users[saved] && users[saved].status!=='blocked'){enterSession(saved)}
+if(saved && users[saved] && users[saved].status!=='blocked' && users[saved].status!=='pending'){enterSession(saved)}
 
 function loadProfile(){
   var p=users[currentUser].profile||{lang:'Inglês',minutes:60,plan:'365',studyTime:'20:00',remindBefore:10};
@@ -1604,394 +1570,6 @@ function sendNotify(title,body){
   }
 }
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
-
-/* ===== GESTÃO COMPLETA: LOGS, RESET DE SENHA, SUB-ADMINS COM PERMISSÕES ===== */
-var PERMS=['users','logs','export','admins'];
-var PERM_LABELS={users:'Gerenciar usuários (liberar/bloquear/excluir)',logs:'Ver logs de atividade',export:'Exportar relatório PDF',admins:'Cadastrar novos administradores'};
-function logActivity(action,detail){
-  if(!currentUser)return;
-  var u=users[currentUser];if(!u)return;
-  if(!u.activity)u.activity=[];
-  u.activity.push({t:Date.now(),action:action,detail:detail||''});
-  if(u.activity.length>500)u.activity=u.activity.slice(-500);
-  if(!u.firstLogin)u.firstLogin=Date.now();
-  u.lastActive=Date.now();
-  saveUsers();
-}
-function can(perm){
-  if(!currentUser)return false;
-  var u=users[currentUser];if(!u)return false;
-  if(u.role==='super')return true;
-  if(u.role==='admin'&&u.perms&&u.perms[perm])return true;
-  return false;
-}
-function ensureAdminRole(){
-  var a=users['admin@nexvon.ai'];
-  if(a&&!a.role){a.role='super';a.perms={users:true,logs:true,export:true,admins:true};saveUsers()}
-}
-ensureAdminRole();
-/* Validação de e-mail no cadastro */
-var regEmailInput=document.getElementById('regEmail');
-if(regEmailInput){regEmailInput.setAttribute('type','email');regEmailInput.setAttribute('pattern','[^\\s@]+@[^\\s@]+\\.[^\\s@]+')}
-/* Logs de navegação */
-document.querySelectorAll('.tab-btn').forEach(function(b){
-  b.addEventListener('click',function(){logActivity('nav','Abriu: '+(b.textContent||'').trim())})
-});
-var _origEnter=enterSession;
-enterSession=function(email){
-  _origEnter(email);
-  logActivity('login','Login no sistema');
-  setTimeout(ensureAdminRole,100);
-};
-/* Logout com tempo de sessão */
-var _loginTime=Date.now();
-var logoutBtn=document.getElementById('logoutBtn')||document.querySelector('[id*=logout]');
-if(logoutBtn)logoutBtn.addEventListener('click',function(){
-  var mins=Math.round((Date.now()-_loginTime)/60000);
-  logActivity('auth','Saiu após '+mins+' min de sessão');
-});
-/* Estudo */
-document.querySelectorAll('.task-item, [id*=task]').forEach(function(el){
-  el.addEventListener('change',function(){logActivity('study','Marcou atividade de estudo')})
-});
-/* Logs de ação do admin */
-function adminLog(detail){if(currentUser&&users[currentUser]&&users[currentUser].role)logActivity('admin',detail)}
-/* Melhorar tabela admin com novos botões */
-function enhanceAdminTable(){
-  var rows=document.querySelectorAll('#adminTable tbody tr');
-  rows.forEach(function(tr){
-    var email=tr.dataset.email||(tr.querySelector('.user-email')?tr.querySelector('.user-email').textContent.trim():'');
-    if(!email||tr.querySelector('.btn-logs'))return;
-    var cell=tr.querySelector('td:last-child')||tr.insertCell(-1);
-    var isSocial=tr.textContent.indexOf('Google')>=0||tr.textContent.indexOf('Facebook')>=0;
-    var btns='';
-    if(can('logs'))btns+='<button class="btn-logs" data-email="'+email+'" style="background:rgba(0,229,255,.15);color:#00e5ff;border:1px solid rgba(0,229,255,.4);padding:3px 8px;border-radius:6px;font-size:.7rem;cursor:pointer;margin:2px">Logs</button>';
-    if(can('users')&&!isSocial)btns+='<button class="btn-resetpw" data-email="'+email+'" style="background:rgba(255,194,75,.15);color:#ffc24b;border:1px solid rgba(255,194,75,.4);padding:3px 8px;border-radius:6px;font-size:.7rem;cursor:pointer;margin:2px">Nova Senha</button>';
-    if(btns){var wrap=document.createElement('span');wrap.innerHTML=btns;cell.appendChild(wrap)}
-  });
-  /* Botão Novo Admin */
-  if(can('admins')&&!document.getElementById('newAdminBtn')){
-    var filterBar=document.querySelector('.admin-filters');
-    if(filterBar){
-      var nb=document.createElement('button');
-      nb.id='newAdminBtn';nb.className='btn-export';nb.style.marginLeft='8px';nb.style.background='linear-gradient(135deg,#ff2d95,#a855f7)';nb.style.color='#fff';
-      nb.textContent='+ Novo Admin';
-      nb.addEventListener('click',showNewAdminForm);
-      filterBar.appendChild(nb);
-    }
-  }
-}
-var _origRenderAdmin=renderAdmin;
-renderAdmin=function(){_origRenderAdmin();setTimeout(enhanceAdminTable,100)};
-/* Delegação de eventos dos novos botões */
-document.addEventListener('click',function(e){
-  var l=e.target.closest('.btn-logs');if(l){showUserLogs(l.dataset.email);return}
-  var r=e.target.closest('.btn-resetpw');if(r){resetUserPassword(r.dataset.email);return}
-});
-/* Ver logs do usuário */
-function showUserLogs(email){
-  var u=users[email];if(!u){openModal('<h3>Usuário não encontrado</h3>');return}
-  var act=(u.activity||[]).slice().reverse();
-  var totalMin=u.totalMinutes||0;
-  var html='<h3 style="color:#00e5ff;margin-bottom:14px">Logs de Atividade — '+email+'</h3>';
-  html+='<div style="display:flex;gap:16px;margin-bottom:14px;font-size:.85rem">';
-  html+='<div><b style="color:#a855f7">'+act.length+'</b><span class="stat-mini"> ações registradas</span></div>';
-  html+='<div><b style="color:#00ff9d">'+totalMin+'</b><span class="stat-mini"> min de estudo</span></div>';
-  if(u.lastActive)html+='<div><span class="stat-mini">Última ação: '+fmtDate(u.lastActive)+'</span></div>';
-  html+='</div>';
-  if(act.length===0){html+='<p style="color:#8a97b8">Nenhuma atividade registrada ainda.</p>'}
-  else{
-    html+='<div style="max-height:400px;overflow-y:auto;border:1px solid rgba(0,229,255,.2);border-radius:10px;padding:8px">';
-    act.forEach(function(a){
-      html+='<div class="log-item"><span class="log-time">'+fmtDate(a.t)+'</span><span class="log-action '+(a.action||'nav')+'">'+(a.action||'ação')+'</span><span class="log-detail">'+(a.detail||'')+'</span></div>';
-    });
-    html+='</div>';
-  }
-  openModal(html,true);adminLog('Visualizou logs de: '+email);
-}
-/* Resetar senha do usuário (só para contas não sociais) */
-function resetUserPassword(email){
-  var u=users[email];if(!u)return;
-  if(u.provider&&u.provider!=='email'){openModal('<h3 style="color:#ffc24b">Conta social</h3><p>Usuários que entram com Google/Facebook não têm senha. Eles devem redefinir no próprio Google/Facebook.</p>');return}
-  var nova='Nexvon@'+Math.floor(1000+Math.random()*9000);
-  u.password=hash(nova);
-  saveUsers();
-  openModal('<h3 style="color:#00ff9d">Senha redefinida!</h3><p>Usuário: <b>'+email+'</b></p><p>Nova senha temporária:</p><div style="background:rgba(0,255,157,.1);border:1px solid rgba(0,255,157,.4);border-radius:10px;padding:14px;text-align:center;font-family:monospace;font-size:1.3rem;color:#00ff9d;letter-spacing:2px;margin:10px 0">'+nova+'</div><p style="font-size:.8rem;color:#8a97b8">O usuário deve trocar esta senha no primeiro acesso.</p>',false);
-  adminLog('Redefiniu senha de: '+email);
-}
-/* Formulário de novo sub-admin */
-function showNewAdminForm(){
-  var checks=PERMS.map(function(p){return '<label class="perm-check"><input type="checkbox" class="perm-ck" value="'+p+'" checked> '+PERM_LABELS[p]+'</label>'}).join('');
-  var html='<h3 style="color:#ff2d95;margin-bottom:14px">Cadastrar Novo Administrador</h3>';
-  html+='<div class="field"><label>Nome completo</label><input type="text" id="naName" placeholder="Nome do admin"></div>';
-  html+='<div class="field"><label>E-mail</label><input type="email" id="naEmail" placeholder="email@exemplo.com"></div>';
-  html+='<div class="field"><label>Senha temporária</label><input type="text" id="naPass" value="Admin@'+Math.floor(1000+Math.random()*9000)+'"></div>';
-  html+='<p style="font-size:.8rem;color:#8a97b8;margin:10px 0 6px">Permissões deste administrador:</p>';
-  html+=checks;
-  html+='<button class="btn-export" id="naSubmit" style="margin-top:14px;width:100%;background:linear-gradient(135deg,#ff2d95,#a855f7);color:#fff">Criar Administrador</button>';
-  openModal(html,true);
-  document.getElementById('naSubmit').addEventListener('click',function(){
-    var name=document.getElementById('naName').value.trim();
-    var email=document.getElementById('naEmail').value.trim();
-    var pass=document.getElementById('naPass').value.trim();
-    if(!name||!email||!pass){alert('Preencha todos os campos.');return}
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){alert('E-mail inválido.');return}
-    if(users[email]){alert('Este e-mail já está cadastrado.');return}
-    var perms={};
-    document.querySelectorAll('.perm-ck:checked').forEach(function(c){perms[c.value]=true});
-    users[email]={name:name,email:email,password:hash(pass),birth:'',provider:'email',status:'active',role:'admin',perms:perms,createdAt:Date.now(),activity:[],logs:[]};
-    saveUsers();
-    closeModal();
-    renderAdmin();
-    adminLog('Criou novo admin: '+email);
-    alert('Administrador criado! Senha: '+pass);
-  });
-}
-/* Bloquear ações de admin sem permissão */
-document.addEventListener('click',function(e){
-  var t=e.target;
-  if(t.closest('#panel-admin')&&!can('users')){
-    var block=t.closest('.btn-liberar, .btn-bloquear, .btn-excluir, [id*=liberar], [id*=bloquear], [id*=excluir]');
-    if(block){e.preventDefault();e.stopPropagation();alert('Você não tem permissão para gerenciar usuários. Contate o super-admin.')}
-  }
-},true);
-
-/* ===== NOVO USUÁRIO PELO ADMIN + SENHA TEMPORÁRIA ===== */
-function showNewUserForm(){
-  var tempPass='User@'+Math.floor(1000+Math.random()*9000);
-  var html='<h3 style="color:#00e5ff;margin-bottom:14px">Cadastrar Novo Usuário</h3>';
-  html+='<div class="field"><label>Nome completo *</label><input type="text" id="nuName" placeholder="Nome do usuário"></div>';
-  html+='<div class="field"><label>E-mail *</label><input type="email" id="nuEmail" placeholder="email@exemplo.com"></div>';
-  html+='<div class="field"><label>Data de nascimento</label><input type="text" id="nuBirth" placeholder="DD/MM/AAAA" maxlength="10" inputmode="numeric"></div>';
-  html+='<div class="field"><label>Senha temporária * (o usuário troca no primeiro acesso)</label><input type="text" id="nuPass" value="'+tempPass+'"></div>';
-  html+='<button class="btn-export" id="nuSubmit" style="margin-top:14px;width:100%;background:linear-gradient(135deg,#00e5ff,#a855f7);color:#fff">Criar Usuário</button>';
-  openModal(html,true);
-  var bi=document.getElementById('nuBirth');
-  if(bi&&typeof bindBirthMask==='function')bindBirthMask(bi);
-  document.getElementById('nuSubmit').addEventListener('click',function(){
-    var name=document.getElementById('nuName').value.trim();
-    var email=document.getElementById('nuEmail').value.trim();
-    var birth=document.getElementById('nuBirth').value.trim();
-    var pass=document.getElementById('nuPass').value.trim();
-    if(!name||!email||!pass){alert('Preencha nome, e-mail e senha.');return}
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){alert('E-mail inválido.');return}
-    if(users[email]){alert('Este e-mail já está cadastrado.');return}
-    if(pass.length<6){alert('Senha deve ter ao menos 6 caracteres.');return}
-    users[email]={name:name,email:email,password:hash(pass),birth:birth||'',provider:'email',status:'active',createdAt:Date.now(),mustChangePassword:true,activity:[],logs:[],study:{}};
-    saveUsers();
-    closeModal();renderAdmin();
-    if(typeof adminLog==='function')adminLog('Cadastrou novo usuário: '+email);
-    alert('Usuário criado com sucesso!\n\nE-mail: '+email+'\nSenha temporária: '+pass+'\n\nO usuário DEVE trocar esta senha no primeiro acesso.');
-  });
-}
-var _origEnhance=enhanceAdminTable;
-enhanceAdminTable=function(){_origEnhance();
-  if(typeof can==='function'&&can('users')&&!document.getElementById('newUserBtn')){
-    var fb=document.querySelector('.admin-filters');
-    if(fb){var b=document.createElement('button');b.id='newUserBtn';b.className='btn-export';b.style.marginLeft='8px';b.style.background='linear-gradient(135deg,#00e5ff,#4dd0ff)';b.style.color='#04121a';b.textContent='+ Novo Usuário';b.addEventListener('click',showNewUserForm);fb.appendChild(b)}
-  }
-};
-/* Forçar troca de senha no primeiro acesso (senha temporária) */
-var _origEnter2=enterSession;
-enterSession=function(email){
-  _origEnter2(email);
-  var u=users[email];
-  if(u&&u.mustChangePassword){
-    setTimeout(function(){
-      openModal('<h3 style="color:#ffc24b;margin-bottom:10px">Troque sua senha</h3><p style="margin:10px 0;font-size:.9rem">Você está usando uma senha temporária. Por segurança, defina uma nova senha agora.</p><div class="field"><label>Nova senha (mín. 6 caracteres)</label><input type="password" id="forceNewPass" placeholder="Nova senha"></div><div class="field"><label>Confirmar nova senha</label><input type="password" id="forceConfPass" placeholder="Repetir senha"></div><button class="btn-export" id="forceSubmit" style="width:100%;margin-top:10px;background:linear-gradient(135deg,#ffc24b,#ff9d4d);color:#04121a">Salvar nova senha</button>',false);
-      document.getElementById('forceSubmit').addEventListener('click',function(){
-        var p1=document.getElementById('forceNewPass').value, p2=document.getElementById('forceConfPass').value;
-        if(p1.length<6){alert('Senha muito curta (mínimo 6 caracteres).');return}
-        if(p1!==p2){alert('As senhas não conferem.');return}
-        u.password=hash(p1);u.mustChangePassword=false;saveUsers();closeModal();
-        alert('Senha alterada com sucesso! Bem-vindo(a), '+(u.name||'')+'!');
-      });
-    },700);
-  }
-};
-
-/* ===== BOTÃO DE OLHO (mostrar/ocultar senha) em todos os campos ===== */
-function addEyeToggles(){
-  document.querySelectorAll('input[type=password]').forEach(function(inp){
-    if(inp.dataset.eye)return;inp.dataset.eye='1';
-    inp.style.paddingRight='40px';
-    var wrap=inp.parentElement;
-    if(getComputedStyle(wrap).position==='static')wrap.style.position='relative';
-    var btn=document.createElement('button');
-    btn.type='button';btn.setAttribute('aria-label','Mostrar senha');
-    btn.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8a97b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
-    btn.style.cssText='position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;z-index:5';
-    btn.addEventListener('click',function(e){e.preventDefault();
-      var svg=btn.querySelector('svg');
-      if(inp.type==='password'){inp.type='text';svg.setAttribute('stroke','#00e5ff')}
-      else{inp.type='password';svg.setAttribute('stroke','#8a97b8')}
-    });
-    wrap.appendChild(btn);
-  });
-}
-setInterval(addEyeToggles,800);
-
-/* ===== VER CONTA COMPLETA DO USUÁRIO (igual ao que ele vê) ===== */
-function showUserFullAccount(email){
-  var u=users[email];if(!u){openModal('<h3>Usuário não encontrado</h3>');return}
-  var stats=(typeof calcUserStats==='function')?calcUserStats(u):{total:0,streak:0,days:0,level:'A1'};
-  var html='<h3 style="color:#00e5ff;margin-bottom:14px">Conta Completa — '+(u.name||email)+'</h3>';
-  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;margin-bottom:14px;font-size:.85rem">';
-  html+='<div><b style="color:#a855f7">Nome:</b> '+(u.name||'—')+'</div>';
-  html+='<div><b style="color:#a855f7">E-mail:</b> '+email+'</div>';
-  html+='<div><b style="color:#a855f7">Nascimento:</b> '+(u.birth||'—')+'</div>';
-  html+='<div><b style="color:#a855f7">Provedor:</b> '+(u.provider||'email')+'</div>';
-  html+='<div><b style="color:#a855f7">Status:</b> '+(u.status||'active')+'</div>';
-  html+='<div><b style="color:#a855f7">Criado em:</b> '+(u.createdAt?fmtDate(u.createdAt):'—')+'</div>';
-  html+='<div><b style="color:#00ff9d">Minutos totais:</b> '+(stats.total||0)+'</div>';
-  html+='<div><b style="color:#00ff9d">Streak:</b> '+(stats.streak||0)+' dias</div>';
-  html+='<div><b style="color:#00ff9d">Dias estudados:</b> '+(stats.days||0)+'</div>';
-  html+='<div><b style="color:#00ff9d">Nível:</b> '+(stats.level||'A1')+'</div>';
-  html+='</div>';
-  if(u.cfg){html+='<h4 style="color:#a855f7;margin:10px 0 6px;font-family:Chakra Petch">Configurações do usuário</h4><div style="font-size:.82rem;color:#c8d2e8;margin-bottom:10px">Idioma alvo: <b>'+(u.cfg.lang||'—')+'</b> · Meta diária: <b>'+(u.cfg.minutes||'—')+' min</b> · Horário: <b>'+(u.cfg.time||'—')+'</b> · Plano: <b>'+(u.cfg.plan||'—')+' dias</b></div>'}
-  if(u.mustChangePassword){html+='<div style="background:rgba(255,194,75,.1);border:1px solid rgba(255,194,75,.4);border-radius:8px;padding:8px 12px;font-size:.8rem;color:#ffc24b;margin-bottom:10px">Usuário com senha temporária — deve trocar no próximo login.</div>'}
-  var act=(u.activity||[]).slice(-20).reverse();
-  html+='<h4 style="color:#a855f7;margin:10px 0 6px;font-family:Chakra Petch">Atividade recente (últimas 20)</h4>';
-  if(act.length===0)html+='<p style="color:#8a97b8;font-size:.82rem">Nenhuma atividade registrada.</p>';
-  else{html+='<div style="max-height:220px;overflow-y:auto;border:1px solid rgba(0,229,255,.2);border-radius:8px;padding:6px">';act.forEach(function(a){html+='<div class="log-item"><span class="log-time">'+fmtDate(a.t)+'</span><span class="log-action '+(a.action||'nav')+'">'+(a.action||'ação')+'</span><span class="log-detail">'+(a.detail||'')+'</span></div>'});html+='</div>'}
-  openModal(html,true);
-  if(typeof adminLog==='function')adminLog('Visualizou conta completa de: '+email);
-}
-/* ===== MONITOR DE TODOS OS LOGINS DO SISTEMA ===== */
-function showLoginMonitor(){
-  var logins=[];
-  Object.keys(users).forEach(function(em){var u=users[em];(u.activity||[]).forEach(function(a){if(a.action==='login'||a.action==='auth')logins.push({email:em,name:u.name,t:a.t,detail:a.detail})})});
-  logins.sort(function(a,b){return b.t-a.t});
-  var html='<h3 style="color:#ff2d95;margin-bottom:14px">Monitor de Logins do Sistema</h3>';
-  html+='<p style="font-size:.85rem;color:#8a97b8;margin-bottom:10px">Total de <b style="color:#ff2d95">'+logins.length+'</b> eventos de entrada/saída registrados.</p>';
-  if(logins.length===0)html+='<p style="color:#8a97b8">Nenhum login registrado ainda.</p>';
-  else{html+='<div style="max-height:420px;overflow-y:auto;border:1px solid rgba(255,45,149,.25);border-radius:10px;padding:6px">';logins.slice(0,150).forEach(function(l){html+='<div class="log-item"><span class="log-time">'+fmtDate(l.t)+'</span><span class="log-action login">'+(l.name||l.email)+'</span><span class="log-detail">'+(l.detail||'')+'</span></div>'});html+='</div>'}
-  openModal(html,true);
-  if(typeof adminLog==='function')adminLog('Abriu monitor de logins');
-}
-/* Delegação: botão Ver Conta */
-document.addEventListener('click',function(e){
-  var vc=e.target.closest('.btn-verconta');if(vc){showUserFullAccount(vc.dataset.email);return}
-  var lm=e.target.closest('#loginMonitorBtn');if(lm){showLoginMonitor();return}
-});
-/* Adicionar botões Ver Conta + Monitor de Logins */
-var _origEnhance2=enhanceAdminTable;
-enhanceAdminTable=function(){_origEnhance2();
-  document.querySelectorAll('#adminTable tbody tr').forEach(function(tr){
-    if(tr.querySelector('.btn-verconta'))return;
-    var email=tr.dataset.email||(tr.querySelector('.user-email')?tr.querySelector('.user-email').textContent.trim():'');
-    if(!email)return;
-    var cell=tr.querySelector('td:last-child');
-    if(cell&&typeof can==='function'&&can('logs')){
-      var b=document.createElement('button');b.className='btn-verconta';b.dataset.email=email;
-      b.style.cssText='background:rgba(168,85,247,.15);color:#a855f7;border:1px solid rgba(168,85,247,.4);padding:3px 8px;border-radius:6px;font-size:.7rem;cursor:pointer;margin:2px';
-      b.textContent='Ver Conta';cell.appendChild(b);
-    }
-  });
-  if(typeof can==='function'&&can('logs')&&!document.getElementById('loginMonitorBtn')){
-    var fb=document.querySelector('.admin-filters');
-    if(fb){var lm=document.createElement('button');lm.id='loginMonitorBtn';lm.className='btn-export';lm.style.marginLeft='8px';lm.style.background='linear-gradient(135deg,#ff2d95,#ff5c7a)';lm.style.color='#fff';lm.textContent='Monitor de Logins';lm.addEventListener('click',showLoginMonitor);fb.appendChild(lm)}
-  }
-};
-/* ===== SUPER ADMIN no cadastro de novo admin (100% permissões) ===== */
-var _origShowNewAdmin=showNewAdminForm;
-showNewAdminForm=function(){
-  _origShowNewAdmin();
-  var permsBox=document.querySelector('.perm-check')?.parentElement;
-  if(permsBox){
-    var superChk=document.createElement('label');
-    superChk.className='perm-check';superChk.style.cssText='background:rgba(255,45,149,.1);border:1px solid rgba(255,45,149,.4)';
-    superChk.innerHTML='<input type="checkbox" id="naSuper" style="accent-color:#ff2d95"> <b style="color:#ff2d95">Super Admin (100% de permissões — vê e altera TUDO)</b>';
-    permsBox.insertBefore(superChk,permsBox.firstChild);
-    document.getElementById('naSuper').addEventListener('change',function(){
-      document.querySelectorAll('.perm-ck').forEach(function(c){c.disabled=this.checked;c.checked=this.checked}.bind(this));
-    });
-  }
-  var submitBtn=document.getElementById('naSubmit');
-  if(submitBtn){
-    submitBtn.replaceWith(submitBtn.cloneNode(true));
-    document.getElementById('naSubmit').addEventListener('click',function(){
-      var name=document.getElementById('naName').value.trim();
-      var email=document.getElementById('naEmail').value.trim();
-      var pass=document.getElementById('naPass').value.trim();
-      var isSuper=document.getElementById('naSuper')?.checked;
-      if(!name||!email||!pass){alert('Preencha todos os campos.');return}
-      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){alert('E-mail inválido.');return}
-      if(users[email]){alert('Este e-mail já está cadastrado.');return}
-      var perms={};
-      if(isSuper){perms={users:true,logs:true,export:true,admins:true}}
-      else{document.querySelectorAll('.perm-ck:checked').forEach(function(c){perms[c.value]=true})}
-      users[email]={name:name,email:email,password:hash(pass),birth:'',provider:'email',status:'active',role:isSuper?'super':'admin',perms:perms,mustChangePassword:true,createdAt:Date.now(),activity:[],logs:[]};
-      saveUsers();closeModal();renderAdmin();
-      if(typeof adminLog==='function')adminLog('Criou admin '+(isSuper?'(SUPER) ':'')+': '+email);
-      alert('Administrador criado!'+(isSuper?' (SUPER ADMIN — acesso total)':'')+'\nE-mail: '+email+'\nSenha temporária: '+pass+'\nDeve trocar no primeiro acesso.');
-    });
-  }
-};
-
-/* ===== CORREÇÃO: esconder assistente IA antes do login ===== */
-setInterval(function(){
-  var fab=document.getElementById('aiFab');
-  if(fab)fab.style.display=currentUser?'flex':'none';
-  var panel=document.getElementById('aiPanel');
-  if(panel&&!currentUser)panel.classList.remove('open');
-},400);
-
-/* ===== EDITAR USUÁRIO (ver e alterar dados cadastrais) ===== */
-function editUser(email){
-  var u=users[email];if(!u){openModal('<h3>Usuário não encontrado</h3>');return}
-  var html='<h3 style="color:#00e5ff;margin-bottom:14px">Editar Usuário — '+(u.name||email)+'</h3>';
-  html+='<div class="field"><label>Nome completo</label><input type="text" id="edName" value="'+(u.name||'').replace(/"/g,'&quot;')+'"></div>';
-  html+='<div class="field"><label>E-mail</label><input type="email" id="edEmail" value="'+email.replace(/"/g,'&quot;')+'"></div>';
-  html+='<div class="field"><label>Data de nascimento</label><input type="text" id="edBirth" value="'+(u.birth||'')+'" placeholder="DD/MM/AAAA" maxlength="10" inputmode="numeric"></div>';
-  html+='<div class="field"><label>Status</label><select id="edStatus" style="width:100%;padding:10px;background:rgba(0,0,0,.35);border:1px solid rgba(0,229,255,.3);border-radius:9px;color:#e8f0ff"><option value="active">Ativo</option><option value="pending">Pendente</option><option value="blocked">Bloqueado</option></select></div>';
-  html+='<div class="field"><label>Nova senha (deixe em branco para manter)</label><input type="text" id="edPass" placeholder="Mín. 6 caracteres"></div>';
-  if(u.role){html+='<div class="field"><label>Cargo</label><select id="edRole" style="width:100%;padding:10px;background:rgba(0,0,0,.35);border:1px solid rgba(0,229,255,.3);border-radius:9px;color:#e8f0ff"><option value="admin">Admin</option><option value="super">Super Admin</option><option value="">Usuário comum</option></select></div>'}
-  html+='<button class="btn-export" id="edSave" style="width:100%;margin-top:12px;background:linear-gradient(135deg,#00e5ff,#a855f7);color:#fff">Salvar Alterações</button>';
-  openModal(html,true);
-  document.getElementById('edStatus').value=u.status||'active';
-  if(u.role)document.getElementById('edRole').value=u.role;
-  var bi=document.getElementById('edBirth');if(bi&&typeof bindBirthMask==='function')bindBirthMask(bi);
-  document.getElementById('edSave').addEventListener('click',function(){
-    var name=document.getElementById('edName').value.trim();
-    var newEmail=document.getElementById('edEmail').value.trim();
-    var birth=document.getElementById('edBirth').value.trim();
-    var status=document.getElementById('edStatus').value;
-    var newPass=document.getElementById('edPass').value.trim();
-    var roleEl=document.getElementById('edRole');var role=roleEl?roleEl.value:u.role;
-    if(!name||!newEmail){alert('Nome e e-mail são obrigatórios.');return}
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)){alert('E-mail inválido.');return}
-    if(newPass&&newPass.length<6){alert('Senha muito curta (mín. 6).');return}
-    if(newEmail!==email&&users[newEmail]){alert('Este novo e-mail já está cadastrado.');return}
-    if(newEmail!==email){users[newEmail]=u;delete users[email];u.email=newEmail}
-    u.name=name;u.birth=birth;u.status=status;
-    if(role)u.role=role;else delete u.role;
-    if(role==='super')u.perms={users:true,logs:true,export:true,admins:true};
-    if(newPass){u.password=hash(newPass);u.mustChangePassword=false}
-    saveUsers();closeModal();renderAdmin();
-    if(typeof adminLog==='function')adminLog('Editou usuário: '+email+' → '+newEmail);
-    alert('Dados salvos com sucesso!'+(newPass?'\nSenha redefinida para: '+newPass:''));
-  });
-}
-/* Delegação: botão Editar */
-document.addEventListener('click',function(e){
-  var ed=e.target.closest('.btn-editar');if(ed){editUser(ed.dataset.email);return}
-});
-/* Adicionar botão Editar na tabela admin */
-var _origEnhance3=enhanceAdminTable;
-enhanceAdminTable=function(){_origEnhance3();
-  document.querySelectorAll('#adminTable tbody tr').forEach(function(tr){
-    if(tr.querySelector('.btn-editar'))return;
-    var email=tr.dataset.email||(tr.querySelector('.user-email')?tr.querySelector('.user-email').textContent.trim():'');
-    if(!email)return;
-    var cell=tr.querySelector('td:last-child');
-    if(cell&&typeof can==='function'&&can('users')){
-      var b=document.createElement('button');b.className='btn-editar';b.dataset.email=email;
-      b.style.cssText='background:rgba(0,255,157,.15);color:#00ff9d;border:1px solid rgba(0,255,157,.4);padding:3px 8px;border-radius:6px;font-size:.7rem;cursor:pointer;margin:2px';
-      b.textContent='Editar';cell.appendChild(b);
-    }
-  });
-};
 
 /* ===== I18N / SELETOR DE IDIOMA (40 idiomas) ===== */
 var LANGS=[
