@@ -34,5 +34,3 @@ O assistente detecta seu domínio, te leva direto para criar as chaves do Google
 - `.github/workflows/deploy.yml` — Deploy automático
 - `netlify.toml` / `vercel.json` / `.htaccess` / `_redirects` / `.nojekyll`
 
-## 🔐 Admin
-- E-mail: `admin@nexvon.ai` · Senha: `admin2100` (troque no primeiro acesso!)
