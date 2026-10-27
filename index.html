@@ -817,13 +817,13 @@ document.getElementById('registerBtn').addEventListener('click',function(){
   if(p1.length<4)return showAuthMsg('A senha deve ter ao menos 4 caracteres.');
   if(p1!==p2)return showAuthMsg('As senhas não coincidem.');
   if(users[email])return showAuthMsg('Este e-mail já está cadastrado. Acesse sua conta.');
-  users[email]={pass:hash(p1),provider:'local',status:'active',name:name,birth:birth,profile:{lang:'Inglês',minutes:60,plan:'365',studyTime:'20:00'},logs:{},createdAt:Date.now()};
+  users[email]={pass:hash(p1),provider:'local',status:'pending',name:name,birth:birth,profile:{lang:'Inglês',minutes:60,plan:'365',studyTime:'20:00'},logs:{},createdAt:Date.now()};
   saveUsers(users);
   if(document.getElementById('rememberReg').checked)saveRegData(name,birth,email);
   var notifs=loadNotifs();
   notifs.unshift({id:Date.now(),type:'new_user',email:email,name:name,time:Date.now(),read:false});
   saveNotifs(notifs);
-  showAuthMsg('Cadastro realizado! Você já pode fazer login imediatamente.','ok');
+  showAuthMsg('Cadastro realizado! Aguarde a liberação do administrador — você será avisado assim que seu acesso for autorizado.','info');
   setTimeout(function(){
     document.querySelectorAll('.auth-tab').forEach(function(x){x.classList.remove('active')});
     document.querySelector('.auth-tab[data-tab="login"]').classList.add('active');
@@ -836,7 +836,7 @@ document.getElementById('registerBtn').addEventListener('click',function(){
 function doLogin(email,pass){
   var u=users[email];
   if(!u)return showAuthMsg('E-mail não encontrado. Cadastre-se primeiro.');
-  /* login imediato: pending não bloqueia mais */
+  if(u.status==='pending')return showAuthMsg('Conta pendente de liberação. Aguarde o administrador autorizar seu acesso.','info');
   if(u.status==='blocked')return showAuthMsg('Conta bloqueada pelo administrador. Contate o suporte.');
   if(u.pass!==hash(pass))return showAuthMsg('Senha incorreta. Tente novamente.');
   u.lastLogin=Date.now();saveUsers(users);
@@ -870,10 +870,10 @@ function socialLogin(provider){
     var email=document.getElementById('socEmail').value.trim().toLowerCase();
     if(name.length<3||!birth||!email||!email.includes('@')){alert('Preencha nome, data de nascimento (DD/MM/AAAA) e e-mail válido.');return}
     if(!users[email]){
-      users[email]={pass:hash('social'+email),provider:provider.toLowerCase(),status:'active',name:name,birth:birth,profile:{lang:'Inglês',minutes:60,plan:'365',studyTime:'20:00'},logs:{},createdAt:Date.now()};
+      users[email]={pass:hash('social'+email),provider:provider.toLowerCase(),status:'pending',name:name,birth:birth,profile:{lang:'Inglês',minutes:60,plan:'365',studyTime:'20:00'},logs:{},createdAt:Date.now()};
       var notifs=loadNotifs();notifs.unshift({id:Date.now(),type:'new_user',email:email,name:name,time:Date.now(),read:false});saveNotifs(notifs);
       saveUsers(users);saveRegData(name,birth,email);closeModal();
-      showAuthMsg('Cadastro realizado! Você já pode fazer login imediatamente.','ok');return;
+      showAuthMsg('Cadastro realizado! Aguarde a liberação do administrador.','info');return;
     }
     if(users[email].status==='pending'){closeModal();showAuthMsg('Conta pendente de liberação. Aguarde o administrador.','info');return}
     if(users[email].status==='blocked'){closeModal();showAuthMsg('Conta bloqueada pelo administrador.','err');return}
@@ -901,7 +901,7 @@ function handleSocialReal(provider,name,email){
   if(!email||!email.includes('@')){showAuthMsg('O provedor não retornou um e-mail válido.','err');return}
   var isNew=!users[email];
   if(isNew){
-    users[email]={pass:hash('social'+email),provider:provider.toLowerCase(),status:'active',name:name||email.split('@')[0],birth:'',profile:{lang:'Inglês',minutes:60,plan:'365',studyTime:'20:00',remindBefore:10},logs:{},createdAt:Date.now()};
+    users[email]={pass:hash('social'+email),provider:provider.toLowerCase(),status:'pending',name:name||email.split('@')[0],birth:'',profile:{lang:'Inglês',minutes:60,plan:'365',studyTime:'20:00',remindBefore:10},logs:{},createdAt:Date.now()};
     var notifs=loadNotifs();notifs.unshift({id:Date.now(),type:'new_user',email:email,name:name||email,time:Date.now(),read:false});saveNotifs(notifs);
     saveUsers(users);saveRegData(name||email.split('@')[0],'',email);
     showAuthMsg('Cadastro realizado via '+provider+'! Aguarde a liberação do administrador.','info');
@@ -1073,7 +1073,7 @@ function enterSession(email){
   document.getElementById('todayDate').textContent=d.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'});
 }
 var saved=localStorage.getItem(SESSION_KEY);
-if(saved && users[saved] && users[saved].status!=='blocked'){enterSession(saved)}
+if(saved && users[saved] && users[saved].status!=='blocked' && users[saved].status!=='pending'){enterSession(saved)}
 
 function loadProfile(){
   var p=users[currentUser].profile||{lang:'Inglês',minutes:60,plan:'365',studyTime:'20:00',remindBefore:10};
